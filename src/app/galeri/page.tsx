@@ -9,6 +9,7 @@ import { getSchools, getGalleryItems } from '@/lib/db';
 import type { GalleryItem, GalleryCategory } from '@/lib/types';
 import { GALLERY_CATEGORIES } from '@/lib/types';
 import { toggleThemeWithTransition } from '@/lib/theme';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 function toDirectImageUrl(url: string): string {
   if (!url) return url;
@@ -92,6 +93,8 @@ export default function GaleriPage() {
   }, [activePhoto]);
 
   const currentIdx = filteredGallery.findIndex(i => i.id === activePhoto?.id);
+
+  useScrollReveal([gallery, activeCategory, searchQuery]);
 
   return (
     <div className="landing-page static-page mesh-gradient-bg">
