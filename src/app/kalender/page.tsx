@@ -179,6 +179,8 @@ export default function KalenderPage() {
         activePage="kalender"
         onOpenLogin={() => router.push('/?login=1')}
       />
+
+      <main className="static-page-main">
         {/* Unified Hero Section */}
         <section className="pub-hero animate-fade-in">
           <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
