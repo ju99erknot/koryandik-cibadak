@@ -154,7 +154,7 @@ export default function UnduhanPage() {
   const totalDownloads = downloads.reduce((acc, d) => acc + (d.downloadCount || 0), 0);
 
   return (
-    <div className="landing-page static-page">
+    <div className="landing-page static-page mesh-gradient-bg">
       <style dangerouslySetInnerHTML={{ __html: `
         /* ─── DL HUB DESIGN SYSTEM ─── */
         .dlhub-wrapper { min-height: 100vh; background: var(--bg-space); }
@@ -901,10 +901,9 @@ export default function UnduhanPage() {
       ` }} />
 
       {/* Background Orbs */}
-      <div className="hero-mesh-bg" aria-hidden="true">
-        <div className="dlhub-hero-orb" style={{ width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent)', top: '-100px', left: '-100px' }} />
-        <div className="dlhub-hero-orb" style={{ width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(6,182,212,0.1), transparent)', top: '30%', right: '-80px', animationDelay: '2s' }} />
-        <div className="dlhub-hero-orb" style={{ width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(139,92,246,0.08), transparent)', bottom: '20%', left: '20%', animationDelay: '4s' }} />
+      <div className="pub-hero-mesh" aria-hidden="true">
+        <div className="pub-hero-orb" style={{ width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent)', top: '-150px', left: '-150px' }} />
+        <div className="pub-hero-orb" style={{ width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(139,92,246,0.08), transparent)', top: '40%', right: '-80px', animationDelay: '2s' }} />
       </div>
 
       <LandingNav activePage="unduhan" onOpenLogin={() => router.push('/?login=1')} />
@@ -912,13 +911,12 @@ export default function UnduhanPage() {
       <main className="static-page-main">
         {/* ─── HERO ─── */}
         <section className="dlhub-hero animate-fade-in">
-          <div className="dlhub-hero-badge">
+          <div className="dlhub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
             <i className="fa-solid fa-vault" />
             Perpustakaan Digital Resmi Koryandik
           </div>
-          <h1>
-            Pusat Unduhan <span className="hero-gradient-text">Administrasi</span><br />
-            Sekolah Cibadak
+          <h1 style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#8b5cf6 50%,#ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.1, letterSpacing: '-0.03em' }}>
+            Pusat Unduhan Administrasi
           </h1>
           <p className="dlhub-hero-subtitle">
             Akses seluruh regulasi, format laporan SPJ/LPJ, surat undangan resmi, dan SK penting untuk keperluan administrasi sekolah — gratis, selalu diperbarui.

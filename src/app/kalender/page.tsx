@@ -47,7 +47,7 @@ export default function KalenderPage() {
   };
 
   return (
-    <div className="landing-page static-page">
+    <div className="landing-page static-page mesh-gradient-bg">
       <style dangerouslySetInnerHTML={{ __html: `
         /* Extra styles for Pejabat Section on Kalender page */
         .kalender-officials-section {
@@ -170,28 +170,23 @@ export default function KalenderPage() {
       ` }} />
 
       {/* Dynamic Background Mesh */}
-      <div className="hero-mesh-bg" aria-hidden="true">
-        <div className="pub-hero-orb" style={{ width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(59,130,246,0.05), transparent)', top: '15%', left: '10%' }} />
-        <div className="pub-hero-orb" style={{ width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(6,182,212,0.04), transparent)', top: '55%', right: '10%', animationDelay: '2s' }} />
-        {/* Hero Specific Orbs (unclipped) */}
-        <div className="pub-hero-orb" style={{ width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(59,130,246,0.1), transparent)', top: '-100px', left: '-100px' }} />
-        <div className="pub-hero-orb" style={{ width: '350px', height: '350px', background: 'radial-gradient(circle, rgba(239,68,68,0.07), transparent)', bottom: '10%', right: '-60px', animationDelay: '3s' }} />
+      <div className="pub-hero-mesh" aria-hidden="true">
+        <div className="pub-hero-orb" style={{ width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent)', top: '-150px', left: '-150px' }} />
+        <div className="pub-hero-orb" style={{ width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(139,92,246,0.08), transparent)', top: '40%', right: '-80px', animationDelay: '2s' }} />
       </div>
 
       <LandingNav
         activePage="kalender"
         onOpenLogin={() => router.push('/?login=1')}
       />
-
-      <main className="static-page-main">
         {/* Unified Hero Section */}
         <section className="pub-hero animate-fade-in">
-          <div className="pub-hero-badge">
+          <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
             <i className="fa-solid fa-calendar-days" />
             Kalender &amp; Agenda Akademik
           </div>
-          <h1>
-            Jadwal Resmi <span className="hero-gradient-text">Kegiatan &amp; Agenda</span>
+          <h1 style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#8b5cf6 50%,#ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.1, letterSpacing: '-0.03em' }}>
+            Jadwal &amp; Agenda Resmi
           </h1>
           <p className="pub-hero-subtitle">
             Agenda resmi, rapat koordinasi, tenggat pengumpulan berkas wajib, dan hari libur nasional di lingkungan Koordinator Wilayah Pelayanan Pendidikan Kecamatan Cibadak.

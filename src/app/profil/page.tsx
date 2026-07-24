@@ -304,6 +304,11 @@ export default function ProfilKoryandik() {
         }
       ` }} />
       
+      <div className="pub-hero-mesh" aria-hidden="true">
+        <div className="pub-hero-orb" style={{ width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(59,130,246,0.12), transparent)', top: '-150px', left: '-150px' }} />
+        <div className="pub-hero-orb" style={{ width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(139,92,246,0.08), transparent)', top: '40%', right: '-80px', animationDelay: '2s' }} />
+      </div>
+
       <LandingNav
         activePage="profil"
         onOpenLogin={() => router.push('/?login=1')}
@@ -316,7 +321,7 @@ export default function ProfilKoryandik() {
             <i className="fa-solid fa-building-columns" />
             <span>Profil &amp; Organisasi Koryandik</span>
           </div>
-          <h1 className="galeri-title-gradient">
+          <h1 style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#8b5cf6 50%,#ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.1, letterSpacing: '-0.03em' }}>
             Koryandik Kec. Cibadak
           </h1>
           <p className="pub-hero-subtitle" style={{ maxWidth: '680px', margin: '0 auto 30px' }}>
