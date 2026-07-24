@@ -5146,19 +5146,72 @@ select.form-control:focus {
   56% { transform: scale(1); }
 }
 
-/* ─── Responsive ─── */
+/* ─── Responsive Footer ─── */
+/* Laptop kecil / tablet besar */
 @media (max-width: 1100px) {
   .ftx-inner {
     grid-template-columns: 1fr;
+    padding: 56px 6%;
   }
-  .ftx-brand-block { padding-right: 0; margin-bottom: 40px; }
+  .ftx-brand-block { padding-right: 0; margin-bottom: 40px; max-width: 640px; }
+  .ftx-brand-desc { max-width: none; }
   .ftx-divider-v { display: none; }
-  .ftx-links-block { grid-template-columns: 1fr 1fr; }
+  .ftx-links-block { grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
 }
+
+/* Tablet */
+@media (max-width: 900px) {
+  .ftx-links-block { grid-template-columns: 1fr 1fr; gap: 32px 28px; }
+  .ftx-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* HP besar */
 @media (max-width: 640px) {
-  .ftx-inner { padding: 48px 6%; }
-  .ftx-links-block { grid-template-columns: 1fr; }
-  .ftx-bottom-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .ftx-inner {
+    padding: 44px 20px;
+  }
+  .ftx-brand-block { margin-bottom: 32px; }
+  .ftx-logo { width: 46px; height: 46px; font-size: 20px; border-radius: 14px; }
+  .ftx-brand-name { font-size: 20px; }
+  .ftx-brand-desc { font-size: 13px; margin-bottom: 22px; }
+  .ftx-links-block {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .ftx-col-label { margin-bottom: 14px; }
+  .ftx-nav-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 8px;
+  }
+  .ftx-nav-btn { padding: 8px; font-size: 13px; }
+  .ftx-nav-arrow { display: none; }
+  .ftx-contact-pills { gap: 6px; }
+  .ftx-pill { padding: 7px 12px; font-size: 11.5px; }
+  .ftx-status-badge { flex-wrap: wrap; gap: 6px; padding: 7px 12px; }
+  .ftx-stats-grid { gap: 8px; }
+  .ftx-stat-card { padding: 14px 8px; border-radius: 14px; }
+  .ftx-stat-num { font-size: 20px; }
+  .ftx-bottom-inner {
+    padding: 18px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .ftx-copy, .ftx-made { font-size: 11.5px; }
+}
+
+/* HP kecil */
+@media (max-width: 400px) {
+  .ftx-inner { padding: 36px 16px; }
+  .ftx-brand-desc { font-size: 12.5px; }
+  .ftx-nav-list { grid-template-columns: 1fr; }
+  .ftx-contact-pills { flex-direction: column; align-items: stretch; }
+  .ftx-pill { justify-content: center; }
+  .ftx-stat-num { font-size: 18px; }
+  .ftx-stat-label { font-size: 9px; }
+  .ftx-status-chip { display: none; }
+  .ftx-bottom-inner { padding: 16px; }
 }
 
 
