@@ -187,9 +187,7 @@ export default function KalenderPage() {
             <i className="fa-solid fa-calendar-days" />
             Kalender &amp; Agenda Akademik
           </div>
-          <h1 style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#8b5cf6 50%,#ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.1, letterSpacing: '-0.03em' }}>
-            Jadwal &amp; Agenda Resmi
-          </h1>
+          <h1 className="pub-hero-title">Jadwal &amp; Agenda Resmi</h1>
           <p className="pub-hero-subtitle">
             Agenda resmi, rapat koordinasi, tenggat pengumpulan berkas wajib, dan hari libur nasional di lingkungan Koordinator Wilayah Pelayanan Pendidikan Kecamatan Cibadak.
           </p>

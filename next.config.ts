@@ -4,7 +4,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdnjs.cloudflare.com;
+  script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
   font-src 'self' https://cdnjs.cloudflare.com;
   img-src 'self' data: blob: https:;

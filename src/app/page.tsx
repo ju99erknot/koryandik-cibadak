@@ -211,7 +211,7 @@ export default function LandingPage() {
 
 
   // Helper status tracker
-  const getSelectedSchoolTrackerData = () => {
+  const trackerData = useMemo(() => {
     if (!selectedSearchSchool) return null;
     const targetSchool = schools.find(s => s.npsn === selectedSearchSchool);
     if (!targetSchool) return null;
@@ -226,36 +226,38 @@ export default function LandingPage() {
       progress: progressPercent,
       approvedCount: approved
     };
-  };
+  }, [selectedSearchSchool, schools, submissions, activeCategories]);
 
   // Leaderboard Calculation with Badges
-  const leaderboard = schools.map(sch => {
-    const schoolSubs = submissions.filter(s => s.schoolNpsn === sch.npsn);
-    const approvedCount = schoolSubs.filter(s => s.status === 'approved').length;
-    const totalCats = activeCategories.length || 1;
-    const progressPercent = Math.round((approvedCount / totalCats) * 100);
-    
-    // Badge system
-    let badge = null;
-    if (progressPercent === 100) {
-      badge = { icon: '🏆', name: 'Perfect', color: '#ffd700' };
-    } else if (progressPercent >= 90) {
-      badge = { icon: '⭐', name: 'Excellent', color: '#c0c0c0' };
-    } else if (progressPercent >= 75) {
-      badge = { icon: '🥉', name: 'Great', color: '#cd7f32' };
-    } else if (progressPercent >= 50) {
-      badge = { icon: '📈', name: 'On Track', color: '#3b82f6' };
-    }
-    
-    return {
-      ...sch,
-      progress: progressPercent,
-      approvedCount,
-      badge
-    };
-  })
-  .sort((a, b) => b.progress - a.progress || a.name.localeCompare(b.name))
-  .slice(0, 5);
+  const leaderboard = useMemo(() => {
+    return schools.map(sch => {
+      const schoolSubs = submissions.filter(s => s.schoolNpsn === sch.npsn);
+      const approvedCount = schoolSubs.filter(s => s.status === 'approved').length;
+      const totalCats = activeCategories.length || 1;
+      const progressPercent = Math.round((approvedCount / totalCats) * 100);
+      
+      // Badge system
+      let badge = null;
+      if (progressPercent === 100) {
+        badge = { icon: '🏆', name: 'Perfect', color: '#ffd700' };
+      } else if (progressPercent >= 90) {
+        badge = { icon: '⭐', name: 'Excellent', color: '#c0c0c0' };
+      } else if (progressPercent >= 75) {
+        badge = { icon: '🥉', name: 'Great', color: '#cd7f32' };
+      } else if (progressPercent >= 50) {
+        badge = { icon: '📈', name: 'On Track', color: '#3b82f6' };
+      }
+      
+      return {
+        ...sch,
+        progress: progressPercent,
+        approvedCount,
+        badge
+      };
+    })
+    .sort((a, b) => b.progress - a.progress || a.name.localeCompare(b.name))
+    .slice(0, 5);
+  }, [schools, submissions, activeCategories]);
 
   const speakText = (text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -332,7 +334,7 @@ export default function LandingPage() {
     return map[role] ?? { color: '#64748b', icon: 'fa-user', label: role };
   };
 
-  const getKecamatanProgressStats = () => {
+  const kecamatanProgressStats = useMemo(() => {
     const defaultStats = [
       { name: 'Profil PTK', val: 88, color: '#10b981' },
       { name: 'SPJ BOS', val: 72, color: '#3b82f6' },
@@ -361,9 +363,7 @@ export default function LandingPage() {
         color: mapItem.color
       };
     });
-  };
-
-  const kecamatanProgressStats = getKecamatanProgressStats();
+  }, [schools, submissions]);
 
   const totalSchoolsCount = schools.length;
   const totalStudentsCount = schools.reduce((acc, s) => acc + (s.studentCount || 0), 0);
@@ -392,7 +392,7 @@ export default function LandingPage() {
     return () => cancelAnimationFrame(rafId);
   }, [totalSchoolsCount, totalStudentsCount, totalTeachersCount]);
 
-  const trackerData = getSelectedSchoolTrackerData();
+  // trackerData is memoized above
 
   const getGugusProgress = (gugusId: string) => {
     const gugusSchools = schools.filter(s => s.gugus === gugusId);

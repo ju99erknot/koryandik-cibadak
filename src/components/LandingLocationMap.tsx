@@ -9,9 +9,15 @@ interface LandingLocationMapProps {
   schoolCount?: number;
   gugusCount?: number;
   profileSettings?: ProfileSettings | null;
+  compact?: boolean;
 }
 
-export default function LandingLocationMap({ schoolCount = 0, gugusCount = 5, profileSettings }: LandingLocationMapProps) {
+export default function LandingLocationMap({
+  schoolCount = 0,
+  gugusCount = 5,
+  profileSettings,
+  compact = false,
+}: LandingLocationMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const markerRef = useRef<any>(null);
@@ -100,6 +106,12 @@ export default function LandingLocationMap({ schoolCount = 0, gugusCount = 5, pr
       mapInstance.current = map;
       localMapInstance = map;
       setReady(true);
+
+      setTimeout(() => {
+        if (mapInstance.current) {
+          mapInstance.current.invalidateSize();
+        }
+      }, 200);
     });
 
     return () => {
@@ -133,20 +145,22 @@ export default function LandingLocationMap({ schoolCount = 0, gugusCount = 5, pr
   };
 
   return (
-    <section id="lokasi-koryandik" className="landing-map-section reveal-on-scroll">
-      <div className="section-header-premium">
-        <div className="section-eyebrow-premium">
-          <i className="fa-solid fa-location-crosshairs" aria-hidden="true" />
-          <span>Lokasi Pusat</span>
+    <section id="lokasi-koryandik" className={`landing-map-section ${compact ? 'is-compact-section' : 'reveal-on-scroll'}`}>
+      {!compact && (
+        <div className="section-header-premium">
+          <div className="section-eyebrow-premium">
+            <i className="fa-solid fa-location-crosshairs" aria-hidden="true" />
+            <span>Lokasi Pusat</span>
+          </div>
+          <h2>Peta Koordinasi <span className="hero-gradient-text">Koryandik Cibadak</span></h2>
+          <p>
+            Sekretariat berada di jantung Kecamatan Cibadak — hubungi atau kunjungi kami untuk bimbingan
+            administrasi pendidikan se-{schoolCount || '49'} sekolah binaan di {gugusCount} gugus wilayah.
+          </p>
         </div>
-        <h2>Peta Koordinasi <span className="hero-gradient-text">Koryandik Cibadak</span></h2>
-        <p>
-          Sekretariat berada di jantung Kecamatan Cibadak — hubungi atau kunjungi kami untuk bimbingan
-          administrasi pendidikan se-{schoolCount || '49'} sekolah binaan di {gugusCount} gugus wilayah.
-        </p>
-      </div>
+      )}
 
-      <div className={`landing-map-shell ${ready ? 'is-ready' : ''}`}>
+      <div className={`landing-map-shell ${ready ? 'is-ready' : ''} ${compact ? 'is-compact' : ''}`}>
         <div className="landing-map-frame">
           <div ref={mapRef} className="landing-map-canvas" aria-label="Peta lokasi Koryandik Cibadak" />
           <div className="landing-map-grid-overlay" aria-hidden="true" />
@@ -156,62 +170,64 @@ export default function LandingLocationMap({ schoolCount = 0, gugusCount = 5, pr
           </div>
         </div>
 
-        <aside className="landing-map-info card">
-          <div className="landing-map-info-glow" aria-hidden="true" />
-          <div className="card-body">
-            <div className="landing-map-info-header">
-              <div className="landing-map-info-icon">
-                <i className="fa-solid fa-building-columns" aria-hidden="true" />
+        {!compact && (
+          <aside className="landing-map-info card">
+            <div className="landing-map-info-glow" aria-hidden="true" />
+            <div className="card-body">
+              <div className="landing-map-info-header">
+                <div className="landing-map-info-icon">
+                  <i className="fa-solid fa-building-columns" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3>Sekretariat Koryandik</h3>
+                  <span className="landing-map-live">
+                    <span className="live-dot" /> Kantor Aktif
+                  </span>
+                </div>
               </div>
-              <div>
-                <h3>Sekretariat Koryandik</h3>
-                <span className="landing-map-live">
-                  <span className="live-dot" /> Kantor Aktif
-                </span>
-              </div>
-            </div>
 
-            <ul className="landing-map-info-list">
-              <li>
-                <i className="fa-solid fa-location-dot" aria-hidden="true" />
-                <span>{address}</span>
-              </li>
-              <li>
-                <i className="fa-solid fa-envelope" aria-hidden="true" />
-                <span>{email}</span>
-              </li>
-              {phone && phone !== '-' && (
+              <ul className="landing-map-info-list">
                 <li>
-                  <i className="fa-solid fa-phone" aria-hidden="true" />
-                  <span>{phone}</span>
+                  <i className="fa-solid fa-location-dot" aria-hidden="true" />
+                  <span>{address}</span>
                 </li>
-              )}
-              <li>
-                <i className="fa-solid fa-clock" aria-hidden="true" />
-                <span>Senin – Jumat, 08.00 – 15.00 WIB</span>
-              </li>
-            </ul>
+                <li>
+                  <i className="fa-solid fa-envelope" aria-hidden="true" />
+                  <span>{email}</span>
+                </li>
+                {phone && phone !== '-' && (
+                  <li>
+                    <i className="fa-solid fa-phone" aria-hidden="true" />
+                    <span>{phone}</span>
+                  </li>
+                )}
+                <li>
+                  <i className="fa-solid fa-clock" aria-hidden="true" />
+                  <span>Senin – Jumat, 08.00 – 15.00 WIB</span>
+                </li>
+              </ul>
 
-            <div className="landing-map-stats">
-              <div>
-                <strong>{schoolCount || '—'}</strong>
-                <span>Sekolah</span>
+              <div className="landing-map-stats">
+                <div>
+                  <strong>{schoolCount || '—'}</strong>
+                  <span>Sekolah</span>
+                </div>
+                <div>
+                  <strong>{gugusCount}</strong>
+                  <span>Gugus</span>
+                </div>
+                <div>
+                  <strong>5</strong>
+                  <span>Peran Portal</span>
+                </div>
               </div>
-              <div>
-                <strong>{gugusCount}</strong>
-                <span>Gugus</span>
-              </div>
-              <div>
-                <strong>5</strong>
-                <span>Peran Portal</span>
-              </div>
+
+              <button type="button" className="btn btn-primary btn-block" onClick={openDirections}>
+                <i className="fa-solid fa-diamond-turn-right" aria-hidden="true" /> Buka Rute Google Maps
+              </button>
             </div>
-
-            <button type="button" className="btn btn-primary btn-block" onClick={openDirections}>
-              <i className="fa-solid fa-diamond-turn-right" aria-hidden="true" /> Buka Rute Google Maps
-            </button>
-          </div>
-        </aside>
+          </aside>
+        )}
       </div>
     </section>
   );

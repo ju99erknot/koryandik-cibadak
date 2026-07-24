@@ -1,21 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * Custom hook to initiate IntersectionObserver for scroll reveal animations.
- * Dilengkapi proteksi cleanup memori 100% aman dari kebocoran saat unmount.
+ * Uses requestAnimationFrame for reliable DOM-ready timing instead of arbitrary setTimeout.
  */
-export function useScrollReveal(dependencies: any[] = []) {
+export function useScrollReveal(dependencies: unknown[] = []) {
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const elementsRef = useRef<Element[]>([]);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let observer: IntersectionObserver | null = null;
-    let revealElements: NodeListOf<Element> | null = null;
-
-    // Small delay so React's DOM has committed
-    const timeout = setTimeout(() => {
-      observer = new IntersectionObserver(
+    // Use rAF to ensure DOM is painted before querying
+    const rafId = requestAnimationFrame(() => {
+      observerRef.current = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -29,19 +29,19 @@ export function useScrollReveal(dependencies: any[] = []) {
         }
       );
 
-      revealElements = document.querySelectorAll('.reveal-on-scroll');
-      revealElements.forEach((el) => observer?.observe(el));
-    }, 80);
+      const elements = document.querySelectorAll('.reveal-on-scroll');
+      elementsRef.current = Array.from(elements);
+      elementsRef.current.forEach((el) => observerRef.current?.observe(el));
+    });
 
     return () => {
-      clearTimeout(timeout);
-      if (observer) {
-        if (revealElements) {
-          revealElements.forEach((el) => observer?.unobserve(el));
-        }
-        observer.disconnect();
+      cancelAnimationFrame(rafId);
+      if (observerRef.current) {
+        elementsRef.current.forEach((el) => observerRef.current?.unobserve(el));
+        observerRef.current.disconnect();
       }
+      elementsRef.current = [];
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 }
-

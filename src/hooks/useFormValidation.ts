@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 
 interface ValidationRule {
   required?: boolean;
@@ -17,11 +17,15 @@ interface ValidationErrors {
 }
 
 export function useFormValidation(rules: ValidationRules) {
+  const rulesRef = useRef(rules);
+  const rulesKey = useMemo(() => JSON.stringify(rules), [rules]);
+  useMemo(() => { rulesRef.current = rules; }, [rulesKey]);
+
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
   const validateField = useCallback((name: string, value: string) => {
-    const fieldRules = rules[name];
+    const fieldRules = rulesRef.current[name];
     if (!fieldRules) return null;
 
     if (fieldRules.required && !value.trim()) {
@@ -45,13 +49,13 @@ export function useFormValidation(rules: ValidationRules) {
     }
 
     return null;
-  }, [rules]);
+  }, [rulesKey]);
 
   const validate = useCallback((data: { [key: string]: string }): boolean => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
 
-    Object.keys(rules).forEach(key => {
+    Object.keys(rulesRef.current).forEach(key => {
       const error = validateField(key, data[key] || '');
       if (error) {
         newErrors[key] = error;
@@ -61,7 +65,7 @@ export function useFormValidation(rules: ValidationRules) {
 
     setErrors(newErrors);
     return isValid;
-  }, [rules, validateField]);
+  }, [rulesKey, validateField]);
 
   const handleChange = useCallback((name: string, value: string) => {
     if (touched[name]) {

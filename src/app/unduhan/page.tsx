@@ -915,9 +915,7 @@ export default function UnduhanPage() {
             <i className="fa-solid fa-vault" />
             Perpustakaan Digital Resmi Koryandik
           </div>
-          <h1 style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#8b5cf6 50%,#ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.1, letterSpacing: '-0.03em' }}>
-            Pusat Unduhan Administrasi
-          </h1>
+          <h1 className="pub-hero-title">Pusat Unduhan Administrasi</h1>
           <p className="dlhub-hero-subtitle">
             Akses seluruh regulasi, format laporan SPJ/LPJ, surat undangan resmi, dan SK penting untuk keperluan administrasi sekolah — gratis, selalu diperbarui.
           </p>

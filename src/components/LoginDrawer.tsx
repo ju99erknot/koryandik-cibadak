@@ -39,11 +39,21 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
   const [authOverlayActive, setAuthOverlayActive] = useState(false);
   const [authRoleName, setAuthRoleName] = useState('');
 
+  const loginTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (loginTimeoutRef.current) {
+        clearTimeout(loginTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const executeLogin = (session: any, successMsg: string, route: string, roleName: string) => {
     setAuthRoleName(roleName);
     setAuthOverlayActive(true);
     
-    setTimeout(() => {
+    loginTimeoutRef.current = setTimeout(() => {
       localStorage.setItem('koryandik_current_user', JSON.stringify(session));
       setAuthOverlayActive(false);
       onClose();
@@ -52,8 +62,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     }, 2500);
   };
 
-  // Auth Submit Handlers
-  const handleSchoolLogin = (e: React.FormEvent) => {
+  const handleSchoolLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSchoolNpsn) {
       toast.error('Pilih sekolah Anda terlebih dahulu.');
@@ -62,73 +71,95 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     const target = schools.find(s => s.npsn === selectedSchoolNpsn);
     if (!target) return;
 
-    if (schoolNpsnInput.trim() !== target.npsn) {
-      toast.error('NPSN salah! Gunakan NPSN sekolah Anda sebagai passcode untuk masuk.');
-      return;
-    }
-
-    const session = { 
+    const sessionData = { 
       npsn: target.npsn, 
       name: target.name, 
       role: 'school', 
       details: target,
       avatar: target.operatorAvatarUrl // Include operator avatar in session
     };
-    executeLogin(session, `Selamat datang, Operator ${target.name}!`, '/school/dashboard', `OPERATOR SEKOLAH - ${target.npsn}`);
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'school', identifier: target.npsn, passcode: schoolNpsnInput, sessionData })
+      });
+      if (!res.ok) throw new Error();
+      const { token } = await res.json();
+      localStorage.setItem('koryandik_session_token', token);
+      executeLogin(sessionData, `Selamat datang, Operator ${target.name}!`, '/school/dashboard', `OPERATOR SEKOLAH - ${target.npsn}`);
+    } catch {
+      toast.error('NPSN salah! Gunakan NPSN sekolah Anda sebagai passcode untuk masuk.');
+    }
   };
 
-  const handleGugusLogin = (e: React.FormEvent) => {
+  const handleGugusLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const gugus = guguses.find(g => g.id === selectedGugus);
     if (!gugus) return;
 
-    if (gugusPasscode.trim() !== gugus.passcode) {
-      toast.error('Passcode gugus salah! Gunakan NPSN Sekolah Inti.');
-      return;
-    }
+    const sessionData = { id: gugus.id, name: gugus.name, koordinator: gugus.koordinator, role: 'gugus' };
 
-    const session = { id: gugus.id, name: gugus.name, koordinator: gugus.koordinator, role: 'gugus' };
-    executeLogin(session, `Selamat datang, Koordinator ${gugus.name}!`, '/gugus/dashboard', `KOORDINATOR ${gugus.name.toUpperCase()}`);
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'gugus', identifier: gugus.id, passcode: gugusPasscode, sessionData })
+      });
+      if (!res.ok) throw new Error();
+      const { token } = await res.json();
+      localStorage.setItem('koryandik_session_token', token);
+      executeLogin(sessionData, `Selamat datang, Koordinator ${gugus.name}!`, '/gugus/dashboard', `KOORDINATOR ${gugus.name.toUpperCase()}`);
+    } catch {
+      toast.error('Passcode gugus salah! Gunakan NPSN Sekolah Inti.');
+    }
   };
 
-  const handleSupervisorLogin = (e: React.FormEvent, role: 'pengawas' | 'kkks' | 'pgri') => {
+  const handleSupervisorLogin = async (e: React.FormEvent, role: 'pengawas' | 'kkks' | 'pgri') => {
     e.preventDefault();
     const sup = supervisors.find(s => s.role === role);
     if (!sup) return;
 
     const passcode = role === 'pengawas' ? pengawasPassword : role === 'kkks' ? kkksPassword : pgriPassword;
+    const sessionData = { id: sup.id, name: sup.name, title: sup.title, role, avatar: sup.photoUrl };
 
-    if (passcode.trim() !== sup.passcode) {
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role, identifier: sup.id, passcode, sessionData })
+      });
+      if (!res.ok) throw new Error();
+      const { token } = await res.json();
+      localStorage.setItem('koryandik_session_token', token);
+      executeLogin(sessionData, `Selamat datang, ${sup.title}!`, `/${role}/dashboard`, sup.title.toUpperCase());
+    } catch {
       toast.error('Passcode Anda salah!');
-      return;
     }
-
-    const session = { id: sup.id, name: sup.name, title: sup.title, role, avatar: sup.photoUrl };
-    executeLogin(session, `Selamat datang, ${sup.title}!`, `/${role}/dashboard`, sup.title.toUpperCase());
   };
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Check database for admin credentials
     const adminUser = supervisors.find(s => s.role === 'admin');
     
-    if (adminUser) {
-      // Use database admin credentials
-      if (adminUsername.trim() === 'admin' && adminPassword === adminUser.passcode) {
-        const session = { id: adminUser.id, name: adminUser.name, role: 'admin', title: adminUser.title, avatar: adminUser.photoUrl };
-        executeLogin(session, 'Selamat datang kembali, Administrator!', '/admin/dashboard', adminUser.title.toUpperCase());
-        return;
-      }
-    }
-    
-    // Fallback to environment variables if no admin in database
-    const validUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
-    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
-    
-    if (adminUsername.trim() === validUsername && adminPassword === validPassword) {
-      const session = { name: 'Administrator', role: 'admin' };
-      executeLogin(session, 'Selamat datang kembali, Administrator!', '/admin/dashboard', 'SUPER ADMINISTRATOR');
-    } else {
+    const sessionData = adminUser 
+      ? { id: adminUser.id, name: adminUser.name, role: 'admin', title: adminUser.title, avatar: adminUser.photoUrl }
+      : { name: 'Administrator', role: 'admin' };
+      
+    try {
+      const identifier = adminUsername.trim();
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'admin', identifier, passcode: adminPassword, sessionData })
+      });
+      if (!res.ok) throw new Error();
+      const { token } = await res.json();
+      localStorage.setItem('koryandik_session_token', token);
+      const title = adminUser ? adminUser.title.toUpperCase() : 'SUPER ADMINISTRATOR';
+      executeLogin(sessionData, 'Selamat datang kembali, Administrator!', '/admin/dashboard', title);
+    } catch {
       toast.error('Username atau password salah!');
     }
   };

@@ -66,7 +66,6 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
       setSchools(schools);
       setCategories(categories);
       setAnnouncements(announcements);
-      window.clearTimeout(timer);
     };
     loadData();
   }, [isOpen]);

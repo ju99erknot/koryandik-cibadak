@@ -34,7 +34,7 @@ export function usePushNotifications() {
       setPermission(result);
       
       if (result === 'granted') {
-        await subscribeToPush();
+        await subscribeToPush(result);
         return true;
       }
       
@@ -45,15 +45,20 @@ export function usePushNotifications() {
     }
   };
 
-  const subscribeToPush = async () => {
-    if (!isSupported || permission !== 'granted') return;
+  const subscribeToPush = async (currentPermission?: NotificationPermission) => {
+    const effectivePermission = currentPermission ?? permission;
+    if (!isSupported || effectivePermission !== 'granted') return;
 
     try {
       const registration = await navigator.serviceWorker.register('/sw.js');
-      
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
+      if (!vapidKey) {
+        console.warn('VAPID public key not configured');
+        return null;
+      }
       const pushSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '')
+        applicationServerKey: urlBase64ToUint8Array(vapidKey)
       });
       
       setSubscription(pushSubscription);

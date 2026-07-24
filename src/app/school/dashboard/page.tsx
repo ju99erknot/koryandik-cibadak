@@ -112,6 +112,7 @@ export default function SchoolDashboard() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [nearestDeadline, setNearestDeadline] = useState<{ title: string; dateLabel: string } | null>(null);
   const [targetYear] = useState(new Date().getFullYear());
   const [announcementBannerEnabled, setAnnouncementBannerEnabled] = useState(true);
 
@@ -119,7 +120,7 @@ export default function SchoolDashboard() {
     const now = new Date();
     // Reset hours for date comparison
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    
+
     const upcoming = calendarEvents
       .filter(e => {
         const start = new Date(e.startDate).getTime();
@@ -130,9 +131,18 @@ export default function SchoolDashboard() {
     let targetTime = 0;
     if (upcoming.length > 0) {
       targetTime = new Date(`${upcoming[0].startDate}T23:59:59`).getTime();
+      const d = new Date(upcoming[0].startDate);
+      setNearestDeadline({
+        title: upcoming[0].title,
+        dateLabel: d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+      });
     } else {
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
       targetTime = endOfMonth.getTime();
+      setNearestDeadline({
+        title: 'Akhir Bulan Berjalan',
+        dateLabel: endOfMonth.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+      });
     }
 
     const updateTimer = () => {
@@ -374,7 +384,11 @@ export default function SchoolDashboard() {
               </div>
               <div>
                 <h3 style={{ fontSize: '15px', fontWeight: 'bold', margin: 0 }}>Pengingat Batas Akhir Unggah Berkas</h3>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '2px 0 0' }}>Batas waktu pengumpulan berkas Triwulan II berakhir pada 15 Juli {targetYear}</p>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '2px 0 0' }}>
+                  {nearestDeadline
+                    ? `${nearestDeadline.title} — ${nearestDeadline.dateLabel}`
+                    : 'Belum ada tenggat aktif.'}
+                </p>
               </div>
             </div>
             {/* Timer boxes */}

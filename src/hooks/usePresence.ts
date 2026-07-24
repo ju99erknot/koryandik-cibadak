@@ -1,50 +1,48 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { updatePresence, removePresence } from '@/lib/db';
 import type { SessionUser } from '@/lib/types';
 
-/**
- * Hook yang mengirim "heartbeat" ke tabel online_presence setiap 30 detik
- * agar admin bisa melihat siapa saja yang sedang online.
- * 
- * Dipasang di setiap dashboard page (school, gugus, pengawas, kkks, pgri).
- */
 export function usePresence(user: SessionUser | null, page?: string) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const currentPage = page || (typeof window !== 'undefined' ? window.location.pathname : '/dashboard');
+  const pathname = usePathname();
+  const currentPageRef = useRef(page || pathname);
+
+  // Keep ref in sync
+  useEffect(() => {
+    currentPageRef.current = page || pathname;
+  }, [page, pathname]);
 
   useEffect(() => {
     if (!user) return;
 
-    // Build presence ID based on role
     const presenceId = user.role === 'school'
       ? `school-${user.npsn || 'unknown'}`
       : `${user.role}-${user.id || user.name || 'unknown'}`;
 
-    const presenceData = {
+    const buildPresenceData = () => ({
       id: presenceId,
       role: user.role,
       userName: user.name || 'Unknown',
       npsn: user.npsn || null,
       gugusId: (user.details as Record<string, unknown>)?.gugus as string || user.gugusId || null,
-      page: currentPage,
-    };
+      page: currentPageRef.current,
+    });
 
-    // Kirim heartbeat pertama segera
-    updatePresence(presenceData);
+    // Send first heartbeat immediately
+    updatePresence(buildPresenceData());
 
-    // Kirim heartbeat setiap 30 detik
+    // Send heartbeat every 30 seconds
     intervalRef.current = setInterval(() => {
-      updatePresence(presenceData);
+      updatePresence(buildPresenceData());
     }, 30_000);
 
-    // Cleanup: hapus presence saat unmount (logout / pindah halaman)
     const handleBeforeUnload = () => {
       removePresence(presenceId);
     };
 
-    // Also handle visibility change for better cleanup
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         removePresence(presenceId);
@@ -60,8 +58,7 @@ export function usePresence(user: SessionUser | null, page?: string) {
       }
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      // Remove presence on cleanup to prevent ghost online users
       removePresence(presenceId);
     };
-  }, [user, currentPage]);
+  }, [user, page]);
 }

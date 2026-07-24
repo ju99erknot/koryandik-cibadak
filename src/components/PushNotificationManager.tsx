@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { usePushNotifications } from '@/lib/pushNotifications';
 import { triggerBrowserNotification } from '@/lib/notificationEvents';
 
@@ -13,6 +13,15 @@ export default function PushNotificationManager({ currentUser }: PushNotificatio
   const [showBanner, setShowBanner] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [result, setResult] = useState<'granted' | 'denied' | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isSupported || !currentUser) return;
@@ -32,7 +41,7 @@ export default function PushNotificationManager({ currentUser }: PushNotificatio
     const granted = await requestPermission();
     setResult(granted ? 'granted' : 'denied');
     localStorage.setItem('hide_push_prompt', 'true');
-    setTimeout(() => handleClose(), 2000);
+    closeTimerRef.current = setTimeout(() => handleClose(), 2000);
   };
 
   const handleClose = () => {
@@ -40,13 +49,13 @@ export default function PushNotificationManager({ currentUser }: PushNotificatio
     if (!result) {
       sessionStorage.setItem('hide_push_prompt_session', 'true');
     }
-    setTimeout(() => setShowBanner(false), 400);
+    hideTimerRef.current = setTimeout(() => setShowBanner(false), 400);
   };
 
   const handleNever = () => {
     localStorage.setItem('hide_push_prompt', 'true');
     setIsClosing(true);
-    setTimeout(() => setShowBanner(false), 400);
+    hideTimerRef.current = setTimeout(() => setShowBanner(false), 400);
   };
 
   if (!showBanner) return null;

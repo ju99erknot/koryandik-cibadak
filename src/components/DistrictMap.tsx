@@ -12,6 +12,12 @@ import FancySelect from '@/components/FancySelect';
 import { formatPhoneForWhatsApp } from '@/lib/phoneUtils';
 import 'leaflet/dist/leaflet.css';
 
+function escapeHtml(str: string): string {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
 interface DistrictMapProps {
   onSchoolClick?: (school: School) => void;
   isAdminMode?: boolean;
@@ -275,7 +281,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
 
             circle.bindPopup(`
               <div style="font-family: sans-serif; color: #1e293b; padding: 4px; min-width: 150px;">
-                <h4 style="margin: 0 0 4px; font-weight: bold;">${gugusNames[gId]}</h4>
+                <h4 style="margin: 0 0 4px; font-weight: bold;">${escapeHtml(gugusNames[gId] || '')}</h4>
                 <p style="margin: 0; font-size: 11px;">Rata-rata Kepatuhan: <strong style="color: ${gColor};">${avgProgress}%</strong></p>
                 <p style="margin: 4px 0 0; font-size: 10px; color: #64748b;">Sekolah Binaan: ${gugusSchools.length} Sekolah</p>
                 <p style="margin: 2px 0 0; font-size: 10px; color: #94a3b8;">
@@ -341,8 +347,9 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
 
         // Bind Popup with branding & online status details
         const customSchool = customSchoolsMap[school.npsn];
-        const logoHtml = customSchool?.logoUrl 
-          ? `<img src="${customSchool.logoUrl}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;float:left;margin-right:8px;" alt="Logo"/>` 
+        const isValidUrl = (url: string) => url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/');
+        const logoHtml = customSchool?.logoUrl && isValidUrl(customSchool.logoUrl)
+          ? `<img src="${escapeHtml(customSchool.logoUrl)}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;float:left;margin-right:8px;" alt="Logo"/>` 
           : '';
 
         const presenceStatusHtml = isOnline 
@@ -403,12 +410,12 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
         const popupContent = `
           <div style="font-family: sans-serif; padding: 4px; color: #1e293b; min-width: 180px;">
             <span style="font-size: 9px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;">
-              Gugus ${school.gugus} • ${school.level}
+              Gugus ${escapeHtml(school.gugus)} • ${escapeHtml(school.level)}
             </span>
             <div style="margin-top:6px;overflow:hidden;">
               ${logoHtml}
-              <h4 style="font-size: 13px; margin: 0 0 2px; font-weight: bold;">${school.name}</h4>
-              <p style="font-size: 10px; color: #64748b; margin: 0;">NPSN: ${school.npsn}</p>
+              <h4 style="font-size: 13px; margin: 0 0 2px; font-weight: bold;">${escapeHtml(school.name)}</h4>
+              <p style="font-size: 10px; color: #64748b; margin: 0;">NPSN: ${escapeHtml(school.npsn)}</p>
               ${presenceStatusHtml}
             </div>
             <div style="clear:both; font-size: 10px; border-top: 1px solid #cbd5e1; padding-top: 4px; margin-top: 6px; display: flex; justify-content: space-between;">

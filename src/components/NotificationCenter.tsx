@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getNotifications, markNotificationRead, markAllNotificationsRead } from '@/lib/db';
 import type { Notification } from '@/lib/types';
 import type { SessionUser } from '@/lib/types';
@@ -51,24 +51,23 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const loadNotifications = async () => {
+  const loadNotifications = useCallback(async () => {
     const role = currentUser?.role;
     const npsn = currentUser?.npsn;
     const gugusId = role === 'gugus' ? currentUser?.id : undefined;
     const notifications = await getNotifications(role, npsn, gugusId);
     setNotifications(notifications);
-  };
+  }, [currentUser]);
 
   useEffect(() => {
     loadNotifications();
     const interval = setInterval(loadNotifications, 30000);
-    const handleUpdate = () => loadNotifications();
-    window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, handleUpdate);
+    window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
     return () => {
       clearInterval(interval);
-      window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, handleUpdate);
+      window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
     };
-  }, [currentUser]);
+  }, [loadNotifications]);
 
   // Close panel on outside click
   useEffect(() => {

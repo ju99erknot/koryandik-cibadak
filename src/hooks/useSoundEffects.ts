@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef, useCallback } from 'react';
 
 type SoundType = 'click' | 'hover' | 'success' | 'error' | 'notification';
 
@@ -13,21 +13,25 @@ interface SoundEffects {
 export function useSoundEffects(enabled = true, customSounds?: SoundEffects) {
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && enabled) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-    }
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
+  const getOrCreateContext = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    if (!audioContextRef.current) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        audioContextRef.current = new AudioContextClass();
       }
-    };
-  }, [enabled]);
+    }
+    if (audioContextRef.current?.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
+    return audioContextRef.current;
+  }, []);
 
-  const playSound = (type: SoundType) => {
-    if (!enabled || !audioContextRef.current) return;
+  const playSound = useCallback((type: SoundType) => {
+    if (!enabled) return;
+    const context = getOrCreateContext();
+    if (!context) return;
 
-    const context = audioContextRef.current;
     const oscillator = context.createOscillator();
     const gainNode = context.createGain();
 
@@ -43,7 +47,7 @@ export function useSoundEffects(enabled = true, customSounds?: SoundEffects) {
 
     oscillator.start(context.currentTime);
     oscillator.stop(context.currentTime + soundConfig.duration);
-  };
+  }, [enabled, getOrCreateContext]);
 
   return { playSound };
 }

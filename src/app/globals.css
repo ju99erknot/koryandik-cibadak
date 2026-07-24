@@ -276,7 +276,7 @@ body {
   color: var(--text-primary);
   font-family: var(--font-body);
   transition: background-color var(--transition-normal), color var(--transition-normal);
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   font-size: clamp(0.875rem, 0.825rem + 0.25vw, 1rem); /* 14px - 16px */
   line-height: 1.6;
@@ -5095,6 +5095,28 @@ select.form-control:focus {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
+}
+
+/* ─── Judul Hero halaman publik (konsisten semua halaman) ─── */
+.pub-hero-title {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-weight: 900;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0 0 14px;
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .pub-hero-title {
+    font-size: clamp(1.75rem, 8vw, 2.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* ─── Bottom Bar ─── */

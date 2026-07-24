@@ -226,7 +226,7 @@ export default function SekolahDirectoryPage() {
             <i className="fa-solid fa-graduation-cap" />
             <span>Portal Sekolah Binaan</span>
           </div>
-          <h1 className="sekolah-hero-title">Direktori Sekolah</h1>
+          <h1 className="pub-hero-title">Direktori Sekolah</h1>
           <p className="pub-hero-subtitle" style={{ maxWidth: '600px', margin: '0 auto 28px' }}>
             Profil publik, data fasilitas, pimpinan, dan informasi koordinasi untuk seluruh sekolah dasar binaan Koryandik Kecamatan Cibadak.
           </p>

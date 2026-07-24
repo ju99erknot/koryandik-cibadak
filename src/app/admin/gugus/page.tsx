@@ -58,7 +58,7 @@ export default function AdminGugus() {
     setKoordinatorModal(gugus);
     setSelectedKoordinator(gugus.sekolahInti);
     setGugusName(gugus.name);
-    setGugusPasscode(gugus.passcode);
+    setGugusPasscode(gugus.passcode || '');
   };
 
   const handleSaveKoordinator = async () => {

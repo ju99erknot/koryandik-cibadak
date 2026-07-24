@@ -158,10 +158,13 @@ export async function upsertAppSetting(
           description: data.description as string | undefined,
           updatedAt: String(data.updated_at)
         };
-        invalidateAppSettingsCache();
-        const settings = await getAppSettings();
-        settings[key] = created;
-        setAppSettingsCache(settings);
+        // Update cache directly without re-fetching to avoid race condition
+        if (_appSettingsMemCache) {
+          _appSettingsMemCache.data[key] = created;
+        } else {
+          _appSettingsMemCache = { data: { [key]: created }, ts: Date.now() };
+        }
+        setAppSettingsCache(_appSettingsMemCache.data);
         return created;
       }
       if (error) {
@@ -172,16 +175,14 @@ export async function upsertAppSetting(
     }
   }
 
-  invalidateAppSettingsCache();
-  const settings = await getAppSettings();
-  const created: AppSetting = {
-    key,
-    value,
-    description,
-    updatedAt
-  };
-  settings[key] = created;
-  setAppSettingsCache(settings);
+  // Local fallback: update cache directly without re-fetching
+  const created: AppSetting = { key, value, description, updatedAt };
+  if (_appSettingsMemCache) {
+    _appSettingsMemCache.data[key] = created;
+  } else {
+    _appSettingsMemCache = { data: { [key]: created }, ts: Date.now() };
+  }
+  setAppSettingsCache(_appSettingsMemCache.data);
   return created;
 }
 
@@ -744,6 +745,19 @@ export async function saveSupervisors(supervisors: PengawasData[]): Promise<void
         photo_url: s.photoUrl,
         phone: s.phone
       }));
+
+      const { data: existing } = await supabase.from('supervisors').select('id');
+      const existingIds = new Set(((existing ?? []) as { id: string }[]).map(r => r.id));
+      const keepIds = new Set(supervisors.map(s => s.id));
+      const toDelete = [...existingIds].filter(id => !keepIds.has(id));
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase
+          .from('supervisors')
+          .delete()
+          .in('id', toDelete);
+        if (delError) throw delError;
+      }
+
       const { error } = await supabase
         .from('supervisors')
         .upsert(formatted);
@@ -752,7 +766,7 @@ export async function saveSupervisors(supervisors: PengawasData[]): Promise<void
       logger.error('Failed to save supervisors to Supabase', err);
     }
   }
-  
+
   if (typeof window !== 'undefined') {
     localStorage.setItem('koryandik_supervisors', JSON.stringify(supervisors));
   }
@@ -799,7 +813,8 @@ export async function getSubmissionsBySchool(npsn: string): Promise<Submission[]
       const { data, error } = await supabase
         .from('submissions')
         .select('*')
-        .eq('school_npsn', npsn);
+        .eq('school_npsn', npsn)
+        .order('submitted_at', { ascending: false });
       if (!error && data) {
         return data.map((s: Record<string, unknown>) => mapSubmissionRow(s));
       }
@@ -1064,6 +1079,27 @@ export async function addSubmission(submission: Omit<Submission, 'id' | 'submitt
 }
 
 // ========== LOGS ==========
+function mapLogRow(l: Record<string, unknown>): LogEntry {
+  return {
+    id: String(l.id),
+    action: l.action as string,
+    user: l.username as string,
+    role: l.role as string,
+    timestamp: l.timestamp as string,
+    details: l.details as string | undefined,
+  };
+}
+
+function toLogRow(entry: Omit<LogEntry, 'id' | 'timestamp'>): Record<string, unknown> {
+  return {
+    action: entry.action,
+    username: entry.user,
+    role: entry.role,
+    details: entry.details,
+    timestamp: new Date().toISOString(),
+  };
+}
+
 export async function getLogs(): Promise<LogEntry[]> {
   if (isSupabaseConfigured()) {
     try {
@@ -1072,14 +1108,7 @@ export async function getLogs(): Promise<LogEntry[]> {
         .select('*')
         .order('timestamp', { ascending: false });
       if (!error && data) {
-        return data.map((l: Record<string, unknown>) => ({
-          id: String(l.id),
-          action: l.action as string,
-          user: l.username as string,
-          role: l.role as string,
-          timestamp: l.timestamp as string,
-          details: l.details as string | undefined
-        }));
+        return data.map((l: Record<string, unknown>) => mapLogRow(l));
       }
     } catch (err) {
       logger.warn('Fallback to local logs', { error: err });
@@ -1095,13 +1124,7 @@ export async function addLog(entry: Omit<LogEntry, 'id' | 'timestamp'>): Promise
     try {
       await supabase
         .from('audit_logs')
-        .insert({
-          action: entry.action,
-          username: entry.user,
-          role: entry.role,
-          details: entry.details,
-          timestamp: new Date().toISOString()
-        });
+        .insert(toLogRow(entry));
       return;
     } catch (err) {
       logger.warn('Fallback add log', { error: err });
@@ -1477,6 +1500,37 @@ export async function markAllNotificationsRead(
   emitNotificationsUpdated();
 }
 
+/**
+ * Parse the day-of-month from a free-text deadline string.
+ * Tolerates: "tanggal 15", "sebelum 15", "batas: 15/07", "15 Juli", "2026-07-15", plain "15".
+ */
+function parseDeadlineDay(text: string): number | null {
+  if (!text) return null;
+  const iso = text.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (iso) {
+    const d = parseInt(iso[3], 10);
+    if (d >= 1 && d <= 31) return d;
+  }
+  const slash = text.match(/(\d{1,2})\/(\d{1,2})(?:\/\d{2,4})?/);
+  if (slash) {
+    const d = parseInt(slash[1], 10);
+    if (d >= 1 && d <= 31) return d;
+  }
+  const tanggal = text.match(/tanggal\s+(\d{1,2})/i);
+  if (tanggal) {
+    const d = parseInt(tanggal[1], 10);
+    if (d >= 1 && d <= 31) return d;
+  }
+  const nums = text.match(/\b(\d{1,2})\b/g);
+  if (nums) {
+    for (const n of nums) {
+      const d = parseInt(n, 10);
+      if (d >= 1 && d <= 31) return d;
+    }
+  }
+  return null;
+}
+
 export async function checkAndCreateDeadlineReminders(
   schoolNpsn: string,
   categories: Category[],
@@ -1516,9 +1570,9 @@ export async function checkAndCreateDeadlineReminders(
     const reminderAfter = reminderConfig.after ?? 2;
 
     if (cat.deadline) {
-      const match = cat.deadline.match(/tanggal\s+(\d+)/i);
-      if (match) {
-        deadlineDay = parseInt(match[1]);
+      const parsed = parseDeadlineDay(cat.deadline);
+      if (parsed !== null) {
+        deadlineDay = parsed;
       }
     } else {
       if (typeof defaultDeadline?.day === 'number') {

@@ -39,14 +39,25 @@ export default function LoadingSkeleton({
     <div
       className={`loading-skeleton ${className}`}
       style={{
+        position: 'relative',
+        overflow: 'hidden',
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
-        background: 'var(--card-border)',
+        background: 'color-mix(in srgb, var(--text-muted) 18%, transparent)',
         ...getVariantStyles(),
-        animation: animated ? 'shimmer 1.5s infinite linear' : 'none',
         ...style
       }}
-    />
+    >
+      {animated && (
+        <span style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--text-primary) 6%, transparent) 50%, transparent 100%)',
+          animation: 'sk-shimmer 1.6s ease-in-out infinite',
+        }} />
+      )}
+      <style dangerouslySetInnerHTML={{ __html: `@keyframes sk-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }` }} />
+    </div>
   );
 
   if (count > 1) {

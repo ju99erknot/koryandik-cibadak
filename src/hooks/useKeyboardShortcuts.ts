@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 
 interface Shortcut {
   key: string;
@@ -11,8 +11,11 @@ interface Shortcut {
 }
 
 export function useKeyboardShortcuts(shortcuts: Shortcut[]) {
+  const shortcutsRef = useRef(shortcuts);
+  shortcutsRef.current = shortcuts;
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    const shortcut = shortcuts.find(s => {
+    const shortcut = shortcutsRef.current.find(s => {
       const keyMatch = s.key.toLowerCase() === e.key.toLowerCase();
       
       // Adaptasi pintar untuk macOS: cmdKey dipetakan ke ctrl jika s.ctrl aktif
@@ -32,7 +35,7 @@ export function useKeyboardShortcuts(shortcuts: Shortcut[]) {
       e.preventDefault();
       shortcut.action();
     }
-  }, [shortcuts]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);

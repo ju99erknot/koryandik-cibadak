@@ -260,9 +260,7 @@ export default function FaqPage() {
             <i className="fa-solid fa-circle-question" />
             Pusat Bantuan Resmi
           </div>
-          <h1 style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#8b5cf6 50%,#ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 900, fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.1, letterSpacing: '-0.03em' }}>
-            Pertanyaan yang Sering Ditanyakan
-          </h1>
+          <h1 className="pub-hero-title">Pertanyaan yang Sering Ditanyakan</h1>
           <p className="pub-hero-subtitle">
             Temukan jawaban seputar penggunaan portal digital Koryandik Cibadak — dari login, unggah berkas, hingga koordinasi gugus wilayah.
           </p>

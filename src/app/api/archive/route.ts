@@ -65,6 +65,23 @@ export async function POST(request: NextRequest) {
     clearTimeout(timeout);
 
     // 4. Parse GAS response
+    if (!gasResponse.ok) {
+      const errorText = await gasResponse.text().catch(() => 'Unknown error');
+      return Response.json(
+        { status: 'error', message: `Google Apps Script error (${gasResponse.status}): ${errorText.substring(0, 200)}` },
+        { status: 502 }
+      );
+    }
+
+    const contentType = gasResponse.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const bodyPreview = await gasResponse.text().catch(() => '');
+      return Response.json(
+        { status: 'error', message: `Unexpected response format from Google Apps Script: ${bodyPreview.substring(0, 200)}` },
+        { status: 502 }
+      );
+    }
+
     const gasData: GASResponse = await gasResponse.json();
 
     if (gasData.status === 'success') {

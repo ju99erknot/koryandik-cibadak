@@ -20,6 +20,7 @@ export function generateSchoolSlug(name: string): string {
     .trim()
     // Replace "sd negeri" → "sdn"
     .replace(/^sd\s+negeri\b/i, 'sdn')
+    .replace(/^smp\s+negeri\b/i, 'smpn')
     // Replace "sekolah dasar" → "sd"
     .replace(/^sekolah\s+dasar\b/i, 'sd')
     // Replace multiple spaces/hyphens

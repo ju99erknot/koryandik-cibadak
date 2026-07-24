@@ -388,7 +388,7 @@ export default function GaleriPage() {
             <i className="fa-solid fa-images" />
             <span>Dokumentasi Resmi Koryandik</span>
           </div>
-          <h1 className="galeri-hero-title">Galeri Kegiatan</h1>
+          <h1 className="pub-hero-title">Galeri Kegiatan</h1>
           <p className="pub-hero-subtitle" style={{ maxWidth: '600px', margin: '0 auto 28px' }}>
             Kumpulan dokumentasi visual rapat koordinasi, pelatihan, monitoring sekolah binaan, dan upacara dinas se-Kecamatan Cibadak.
           </p>

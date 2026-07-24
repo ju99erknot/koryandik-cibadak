@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { getDashboardNav, DASHBOARD_BRANDS } from '@/lib/dashboardNav';
@@ -79,6 +79,7 @@ export default function DashboardShell({
   // Contact Directory & WhatsApp Simulator States
   const [isDirectoryOpen, setIsDirectoryOpen] = useState(false);
   const [waAlerts, setWaAlerts] = useState<any[]>([]);
+  const waTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   useEffect(() => {
     const handleWaEvent = (e: Event) => {
@@ -89,14 +90,17 @@ export default function DashboardShell({
       setWaAlerts((prev) => [newAlert, ...prev]);
 
       // Remove after 6 seconds
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setWaAlerts((prev) => prev.filter((alert) => alert.id !== id));
+        waTimeoutsRef.current.delete(timeoutId);
       }, 6000);
+      waTimeoutsRef.current.add(timeoutId);
     };
 
     window.addEventListener('koryandik_wa_simulated', handleWaEvent);
     return () => {
       window.removeEventListener('koryandik_wa_simulated', handleWaEvent);
+      waTimeoutsRef.current.forEach(id => clearTimeout(id));
     };
   }, []);
 

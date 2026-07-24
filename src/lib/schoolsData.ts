@@ -44,14 +44,14 @@ export interface GugusData {
   name: string;
   koordinator: string;
   sekolahInti: string; // NPSN sekolah inti
-  passcode: string;
+  passcode?: string; // Loaded from DB at runtime, NOT bundled in static data
 }
 
 export interface PengawasData {
   id: string;
   name: string;
   nip: string;
-  passcode: string;
+  passcode?: string; // Loaded from DB at runtime, NOT bundled in static data
   role: 'pengawas' | 'kkks' | 'pgri' | 'admin';
   title: string;
   wilayah: string;
@@ -69,11 +69,11 @@ export interface Category {
 
 // ============ 5 GUGUS ============
 export const gugusData: GugusData[] = [
-  { id: 'I', name: 'Gugus I - Cibadak', koordinator: '', sekolahInti: '20202645', passcode: '20202645' },
-  { id: 'II', name: 'Gugus II - Karangtengah', koordinator: '', sekolahInti: '20202154', passcode: '20202154' },
-  { id: 'III', name: 'Gugus III - Pamuruyan', koordinator: '', sekolahInti: '20201913', passcode: '20201913' },
-  { id: 'IV', name: 'Gugus IV - Batununggal', koordinator: '', sekolahInti: '20202210', passcode: '20202210' },
-  { id: 'V', name: 'Gugus V - Pamuruyan Swasta', koordinator: '', sekolahInti: '60726665', passcode: '60726665' },
+  { id: 'I', name: 'Gugus I - Cibadak', koordinator: '', sekolahInti: '20202645' },
+  { id: 'II', name: 'Gugus II - Karangtengah', koordinator: '', sekolahInti: '20202154' },
+  { id: 'III', name: 'Gugus III - Pamuruyan', koordinator: '', sekolahInti: '20201913' },
+  { id: 'IV', name: 'Gugus IV - Batununggal', koordinator: '', sekolahInti: '20202210' },
+  { id: 'V', name: 'Gugus V - Pamuruyan Swasta', koordinator: '', sekolahInti: '60726665' },
 ];
 
 // ============ PENGAWAS / KKKS / PGRI / ADMIN ============
@@ -82,7 +82,6 @@ export const supervisorData: PengawasData[] = [
     id: 'admin-1',
     name: 'Administrator Koryandik',
     nip: '-',
-    passcode: 'admin123',
     role: 'admin',
     title: 'Super Administrator',
     wilayah: 'Kecamatan Cibadak',
@@ -93,7 +92,6 @@ export const supervisorData: PengawasData[] = [
     id: 'pengawas-1',
     name: 'AHMAD YANI, S.Pd',
     nip: '196512151986031005',
-    passcode: '196512151986031005',
     role: 'pengawas',
     title: 'Pengawas Sekolah',
     wilayah: 'Kecamatan Cibadak',
@@ -104,7 +102,6 @@ export const supervisorData: PengawasData[] = [
     id: 'kkks-1',
     name: 'KURNIAWAN, S.Pd',
     nip: '197003121992032008',
-    passcode: '197003121992032008',
     role: 'kkks',
     title: 'Ketua KKKS',
     wilayah: 'Kecamatan Cibadak',
@@ -115,7 +112,6 @@ export const supervisorData: PengawasData[] = [
     id: 'pgri-1',
     name: 'ACENG MUSTOPA, S.Pd',
     nip: '196808081990011003',
-    passcode: '196808081990011003',
     role: 'pgri',
     title: 'Ketua PGRI Kec. Cibadak',
     wilayah: 'Kecamatan Cibadak',

@@ -17,6 +17,9 @@ interface DocumentReviewerProps {
 
 export default function DocumentReviewer({ submission, onApprove, onRejectSubmit, onClose }: DocumentReviewerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const [isScanning, setIsScanning] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const [revisionNotes, setRevisionNotes] = useState('');
@@ -57,17 +60,23 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
     closeButtonRef.current?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+    };
+  }, []);
 
   const startAiScan = () => {
     setIsScanning(true);
     setScanComplete(false);
-    setTimeout(() => {
+    scanTimerRef.current = setTimeout(() => {
       setIsScanning(false);
       setScanComplete(true);
       setChecklist({
