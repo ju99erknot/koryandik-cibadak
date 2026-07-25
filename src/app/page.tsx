@@ -1686,61 +1686,83 @@ export default function LandingPage() {
 
       {/* Floating Action Buttons Container */}
       <div className="no-print fab-container" style={{ fontFamily: 'inherit' }}>
-        {/* Chat Window - Powered by Gemini AI */}
+        {/* Ultra-Premium Glassmorphism AI Chat Window */}
         {chatOpen && (
           <div className="card animate-fade-in" style={{
-            width: '380px',
-            height: '560px',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.35), 0 0 30px rgba(59,130,246,0.15)',
+            width: '400px',
+            height: '580px',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.4), 0 0 40px rgba(59,130,246,0.25)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            border: '1px solid var(--card-border)',
-            background: 'var(--card-glass)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            borderRadius: '20px',
-            margin: 0
+            border: '1px solid rgba(255, 255, 255, 0.18)',
+            background: 'var(--card-glass, rgba(15, 23, 42, 0.92))',
+            backdropFilter: 'blur(30px)',
+            WebkitBackdropFilter: 'blur(30px)',
+            borderRadius: '24px',
+            margin: 0,
+            position: 'relative'
           }}>
+            {/* Ambient Background Blur Circle */}
+            <div style={{
+              position: 'absolute',
+              top: '-60px',
+              right: '-60px',
+              width: '180px',
+              height: '180px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(0,0,0,0) 70%)',
+              pointerEvents: 'none'
+            }} />
+
             {/* Header */}
             <div style={{
-              background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-              padding: '14px 18px',
+              background: 'linear-gradient(135deg, #0284c7 0%, #4f46e5 50%, #9333ea 100%)',
+              padding: '16px 20px',
               color: '#ffffff',
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              position: 'relative',
+              zIndex: 2
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '10px',
-                  background: 'rgba(255,255,255,0.2)',
-                  backdropFilter: 'blur(10px)',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '12px',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '16px',
-                  color: '#ffffff'
+                  fontSize: '18px',
+                  color: '#ffffff',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
                 }}>
                   <i className="fa-solid fa-robot"></i>
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '14px', fontWeight: 'bold', margin: 0, color: '#ffffff' }}>Koryandik AI Assistant</h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
-                    <span style={{ fontSize: '10px', opacity: 0.9, color: '#ffffff' }}>Online • Gemini 3.1 AI</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#ffffff', letterSpacing: '-0.2px' }}>
+                    Koryandik AI Assistant
+                  </h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 8px #22c55e' }}></span>
+                    <span style={{ fontSize: '10.5px', opacity: 0.95, color: '#e0f2fe', fontWeight: 500 }}>
+                      Pakar Juknis & Regulasi (Honor BOS Max 20%)
+                    </span>
                   </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <button
                   onClick={() => {
                     const nextSpeak = !chatSpeak;
                     setChatSpeak(nextSpeak);
                     if (nextSpeak) {
-                      speakText("Suara aktif. Saya Pak Kory, asisten AI resmi Koryandik Cibadak.");
+                      speakText("Suara aktif. Saya Pak Kory, asisten pintar Koryandik Cibadak.");
                       toast.success("Suara asisten aktif!");
                     } else {
                       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -1749,14 +1771,41 @@ export default function LandingPage() {
                       toast.success("Suara asisten dinonaktifkan.");
                     }
                   }}
-                  style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px', opacity: chatSpeak ? 1 : 0.6 }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    color: '#ffffff',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: chatSpeak ? 1 : 0.7,
+                    transition: 'all 0.2s'
+                  }}
                   title={chatSpeak ? "Bisukan suara" : "Aktifkan suara"}
                 >
                   <i className={chatSpeak ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark"}></i>
                 </button>
                 <button 
                   onClick={() => setChatOpen(false)}
-                  style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', fontSize: '16px' }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    color: '#ffffff',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
                 >
                   <i className="fa-solid fa-xmark"></i>
                 </button>
@@ -1765,19 +1814,20 @@ export default function LandingPage() {
 
             {/* Popular Questions Chips (Horizontal Scroll) */}
             <div style={{
-              padding: '8px 12px',
-              background: 'rgba(0,0,0,0.15)',
-              borderBottom: '1px solid var(--card-border)',
+              padding: '10px 14px',
+              background: 'rgba(0,0,0,0.2)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
               display: 'flex',
-              gap: '6px',
+              gap: '8px',
               overflowX: 'auto',
-              scrollbarWidth: 'none'
+              scrollbarWidth: 'none',
+              zIndex: 2
             }}>
               {[
+                '🚨 Max Honor BOS 20%',
                 '📋 Syarat TPG Triwulan',
-                '💰 Honor Maksimal BOS',
                 '📂 8 Kategori Berkas',
-                '🆔 Pengajuan NUPTK',
+                '🆔 Pengajuan NUPTK Baru',
                 '📝 Berkas Ditolak Harus Apa?'
               ].map((chip, idx) => (
                 <button
@@ -1786,15 +1836,17 @@ export default function LandingPage() {
                   disabled={chatTyping}
                   style={{
                     whiteSpace: 'nowrap',
-                    fontSize: '10.5px',
-                    padding: '4px 10px',
-                    borderRadius: '16px',
-                    background: 'rgba(59, 130, 246, 0.15)',
-                    border: '1px solid rgba(59, 130, 246, 0.3)',
-                    color: 'var(--text-primary)',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    padding: '5px 12px',
+                    borderRadius: '20px',
+                    background: idx === 0 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.15)',
+                    border: idx === 0 ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(59, 130, 246, 0.35)',
+                    color: idx === 0 ? '#fca5a5' : '#93c5fd',
                     cursor: chatTyping ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
                   }}
                 >
                   {chip}
@@ -1803,53 +1855,71 @@ export default function LandingPage() {
             </div>
 
             {/* Messages Area */}
-            <div style={{ flex: 1, padding: '14px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', zIndex: 2 }}>
               {chatMessages.map((msg, idx) => (
                 <div key={idx} style={{
                   alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                  maxWidth: '85%',
-                  background: msg.sender === 'user' ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'rgba(255,255,255,0.06)',
+                  maxWidth: '88%',
+                  background: msg.sender === 'user'
+                    ? 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)'
+                    : 'rgba(30, 41, 59, 0.88)',
                   color: msg.sender === 'user' ? '#ffffff' : 'var(--text-primary)',
-                  padding: '10px 14px',
-                  borderRadius: msg.sender === 'user' ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
-                  fontSize: '12.5px',
-                  lineHeight: '1.5',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  padding: '12px 16px',
+                  borderRadius: msg.sender === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                  fontSize: '13px',
+                  lineHeight: '1.55',
+                  boxShadow: msg.sender === 'user'
+                    ? '0 6px 20px rgba(37, 99, 235, 0.3)'
+                    : '0 6px 20px rgba(0, 0, 0, 0.2)',
                   position: 'relative',
-                  border: msg.sender === 'user' ? 'none' : '1px solid var(--card-border)'
+                  border: msg.sender === 'user' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)'
                 }}>
-                  {/* Basic Markdown Rendering */}
+                  {/* Rich Markdown & Callout Parsing */}
                   {msg.text.split('\n').map((line, lIdx) => {
-                    const htmlText = line
-                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    let htmlText = line
+                      .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #60a5fa;">$1</strong>')
                       .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+                    // Highlight 20% Honor rule callout badge if present
+                    if (line.includes('20%')) {
+                      htmlText = htmlText.replace(/(20%)/g, '<span style="background: rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 2px 6px; borderRadius: 4px; fontWeight: bold; border: 1px solid rgba(239, 68, 68, 0.4);">$1</span>');
+                    }
 
                     if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
                       return (
-                        <li key={lIdx} style={{ marginLeft: '14px', marginBottom: '3px' }} dangerouslySetInnerHTML={{ __html: htmlText.replace(/^[-*]\s+/, '') }} />
+                        <li key={lIdx} style={{ marginLeft: '14px', marginBottom: '4px', color: '#e2e8f0' }} dangerouslySetInnerHTML={{ __html: htmlText.replace(/^[-*]\s+/, '') }} />
                       );
                     }
+
+                    if (/^\d+\.\s+/.test(line.trim())) {
+                      return (
+                        <div key={lIdx} style={{ marginLeft: '4px', marginBottom: '6px', fontWeight: 600, color: '#f8fafc' }} dangerouslySetInnerHTML={{ __html: htmlText }} />
+                      );
+                    }
+
                     if (!line.trim()) return <div key={lIdx} style={{ height: '6px' }} />;
-                    return <p key={lIdx} style={{ margin: '0 0 4px 0' }} dangerouslySetInnerHTML={{ __html: htmlText }} />;
+                    return <p key={lIdx} style={{ margin: '0 0 5px 0' }} dangerouslySetInnerHTML={{ __html: htmlText }} />;
                   })}
 
+                  {/* Bot Message Action Buttons */}
                   {msg.sender === 'bot' && (
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '6px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '8px', paddingTop: '6px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                       <button
                         onClick={() => speakText(msg.text.replace(/[*_#\-]/g, ''))}
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: 'var(--text-muted)',
+                          color: '#94a3b8',
                           cursor: 'pointer',
-                          fontSize: '10px',
+                          fontSize: '11px',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '3px',
-                          padding: 0
+                          gap: '4px',
+                          padding: 0,
+                          fontWeight: 500
                         }}
                       >
-                        <i className="fa-solid fa-volume-low"></i> Dengarkan
+                        <i className="fa-solid fa-volume-low" style={{ color: '#38bdf8' }}></i> Dengarkan
                       </button>
                       <button
                         onClick={() => {
@@ -1859,16 +1929,34 @@ export default function LandingPage() {
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: 'var(--text-muted)',
+                          color: '#94a3b8',
                           cursor: 'pointer',
-                          fontSize: '10px',
+                          fontSize: '11px',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '3px',
-                          padding: 0
+                          gap: '4px',
+                          padding: 0,
+                          fontWeight: 500
                         }}
                       >
-                        <i className="fa-regular fa-copy"></i> Salin
+                        <i className="fa-regular fa-copy" style={{ color: '#a78bfa' }}></i> Salin
+                      </button>
+                      <button
+                        onClick={() => toast.success('Terima kasih atas ulasannya!')}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#94a3b8',
+                          cursor: 'pointer',
+                          fontSize: '11px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          padding: 0,
+                          fontWeight: 500
+                        }}
+                      >
+                        <i className="fa-regular fa-thumbs-up" style={{ color: '#4ade80' }}></i> Bermanfaat
                       </button>
                     </div>
                   )}
@@ -1877,17 +1965,18 @@ export default function LandingPage() {
               {chatTyping && (
                 <div style={{
                   alignSelf: 'flex-start',
-                  background: 'rgba(255,255,255,0.06)',
-                  padding: '10px 14px',
-                  borderRadius: '14px 14px 14px 2px',
+                  background: 'rgba(30, 41, 59, 0.88)',
+                  padding: '12px 16px',
+                  borderRadius: '18px 18px 18px 4px',
                   fontSize: '12px',
-                  color: 'var(--text-muted)',
+                  color: '#94a3b8',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.12)'
                 }}>
-                  <i className="fa-solid fa-spinner fa-spin" style={{ color: 'var(--accent)' }}></i>
-                  <span>Pak Kory sedang menganalisis Juknis...</span>
+                  <i className="fa-solid fa-spinner fa-spin" style={{ color: '#38bdf8', fontSize: '15px' }}></i>
+                  <span style={{ fontWeight: 500 }}>Pak Kory sedang menganalisis Juknis & Regulasi...</span>
                 </div>
               )}
             </div>
@@ -1899,47 +1988,52 @@ export default function LandingPage() {
                 handleSendAiMessage();
               }}
               style={{
-                padding: '10px 12px',
-                background: 'rgba(0, 0, 0, 0.25)',
-                borderTop: '1px solid var(--card-border)',
+                padding: '12px 16px',
+                background: 'rgba(0, 0, 0, 0.35)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '10px',
+                zIndex: 2
               }}
             >
               <input
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Tanyakan Juknis BOS, TPG, Dapodik..."
+                placeholder="Tanyakan Juknis BOS (Max 20%), TPG, Dapodik..."
                 disabled={chatTyping}
                 style={{
                   flex: 1,
                   background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid var(--card-border)',
-                  borderRadius: '12px',
-                  padding: '8px 12px',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  borderRadius: '14px',
+                  padding: '10px 14px',
                   color: 'var(--text-primary)',
-                  fontSize: '12px',
-                  outline: 'none'
+                  fontSize: '12.5px',
+                  outline: 'none',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
                 }}
               />
               <button
                 type="submit"
                 disabled={chatTyping || !chatInput.trim()}
                 style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '10px',
-                  background: chatInput.trim() && !chatTyping ? 'linear-gradient(135deg, #2563eb, #8b5cf6)' : 'rgba(255, 255, 255, 0.1)',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '12px',
+                  background: chatInput.trim() && !chatTyping
+                    ? 'linear-gradient(135deg, #0284c7 0%, #4f46e5 100%)'
+                    : 'rgba(255, 255, 255, 0.1)',
                   border: 'none',
                   color: '#ffffff',
                   cursor: chatInput.trim() && !chatTyping ? 'pointer' : 'not-allowed',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '13px',
-                  transition: 'all 0.2s ease'
+                  fontSize: '14px',
+                  transition: 'all 0.2s ease',
+                  boxShadow: chatInput.trim() && !chatTyping ? '0 4px 14px rgba(2, 132, 199, 0.4)' : 'none'
                 }}
               >
                 <i className="fa-solid fa-paper-plane"></i>
