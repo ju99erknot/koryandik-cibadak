@@ -1686,44 +1686,32 @@ export default function LandingPage() {
 
       {/* Floating Action Buttons Container */}
       <div className="no-print fab-container" style={{ fontFamily: 'inherit' }}>
-        {/* Ultra-Premium Glassmorphism AI Chat Window */}
+        {/* Ultra-Premium Theme-Aware AI Chat Window */}
         {chatOpen && (
           <div className="card animate-fade-in" style={{
             width: '400px',
             height: '580px',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.4), 0 0 40px rgba(59,130,246,0.25)',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            border: '1px solid rgba(255, 255, 255, 0.18)',
-            background: 'var(--card-glass, rgba(15, 23, 42, 0.92))',
-            backdropFilter: 'blur(30px)',
-            WebkitBackdropFilter: 'blur(30px)',
+            border: '1px solid var(--card-border)',
+            background: 'var(--card-glass)',
+            backdropFilter: 'blur(28px)',
+            WebkitBackdropFilter: 'blur(28px)',
             borderRadius: '24px',
             margin: 0,
             position: 'relative'
           }}>
-            {/* Ambient Background Blur Circle */}
-            <div style={{
-              position: 'absolute',
-              top: '-60px',
-              right: '-60px',
-              width: '180px',
-              height: '180px',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(0,0,0,0) 70%)',
-              pointerEvents: 'none'
-            }} />
-
             {/* Header */}
             <div style={{
-              background: 'linear-gradient(135deg, #0284c7 0%, #4f46e5 50%, #9333ea 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
               padding: '16px 20px',
               color: '#ffffff',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
               position: 'relative',
               zIndex: 2
             }}>
@@ -1740,7 +1728,7 @@ export default function LandingPage() {
                   justifyContent: 'center',
                   fontSize: '18px',
                   color: '#ffffff',
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                 }}>
                   <i className="fa-solid fa-robot"></i>
                 </div>
@@ -1751,7 +1739,7 @@ export default function LandingPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
                     <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 8px #22c55e' }}></span>
                     <span style={{ fontSize: '10.5px', opacity: 0.95, color: '#e0f2fe', fontWeight: 500 }}>
-                      Pakar Juknis & Regulasi (Honor BOS Max 20%)
+                      Asisten Pintar Regulasi & Administrasi
                     </span>
                   </div>
                 </div>
@@ -1815,8 +1803,8 @@ export default function LandingPage() {
             {/* Popular Questions Chips (Horizontal Scroll) */}
             <div style={{
               padding: '10px 14px',
-              background: 'rgba(0,0,0,0.2)',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'rgba(0,0,0,0.04)',
+              borderBottom: '1px solid var(--card-border)',
               display: 'flex',
               gap: '8px',
               overflowX: 'auto',
@@ -1824,8 +1812,8 @@ export default function LandingPage() {
               zIndex: 2
             }}>
               {[
-                '🚨 Max Honor BOS 20%',
-                '📋 Syarat TPG Triwulan',
+                '📋 Syarat Pencairan TPG',
+                '💰 Juknis Honorarium BOS',
                 '📂 8 Kategori Berkas',
                 '🆔 Pengajuan NUPTK Baru',
                 '📝 Berkas Ditolak Harus Apa?'
@@ -1840,13 +1828,13 @@ export default function LandingPage() {
                     fontWeight: 600,
                     padding: '5px 12px',
                     borderRadius: '20px',
-                    background: idx === 0 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.15)',
-                    border: idx === 0 ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(59, 130, 246, 0.35)',
-                    color: idx === 0 ? '#fca5a5' : '#93c5fd',
+                    background: 'var(--card-bg-elevated)',
+                    border: '1px solid var(--card-border)',
+                    color: 'var(--text-primary)',
                     cursor: chatTyping ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     flexShrink: 0,
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
                   }}
                 >
                   {chip}
@@ -1861,39 +1849,34 @@ export default function LandingPage() {
                   alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
                   maxWidth: '88%',
                   background: msg.sender === 'user'
-                    ? 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)'
-                    : 'rgba(30, 41, 59, 0.88)',
+                    ? 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)'
+                    : 'var(--card-bg-elevated)',
                   color: msg.sender === 'user' ? '#ffffff' : 'var(--text-primary)',
                   padding: '12px 16px',
                   borderRadius: msg.sender === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   fontSize: '13px',
                   lineHeight: '1.55',
                   boxShadow: msg.sender === 'user'
-                    ? '0 6px 20px rgba(37, 99, 235, 0.3)'
-                    : '0 6px 20px rgba(0, 0, 0, 0.2)',
+                    ? '0 6px 18px rgba(37, 99, 235, 0.25)'
+                    : '0 4px 14px rgba(0, 0, 0, 0.08)',
                   position: 'relative',
-                  border: msg.sender === 'user' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)'
+                  border: msg.sender === 'user' ? 'none' : '1px solid var(--card-border)'
                 }}>
                   {/* Rich Markdown & Callout Parsing */}
                   {msg.text.split('\n').map((line, lIdx) => {
-                    let htmlText = line
-                      .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #60a5fa;">$1</strong>')
+                    const htmlText = line
+                      .replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--primary); font-weight: 700;">$1</strong>')
                       .replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-                    // Highlight 20% Honor rule callout badge if present
-                    if (line.includes('20%')) {
-                      htmlText = htmlText.replace(/(20%)/g, '<span style="background: rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 2px 6px; borderRadius: 4px; fontWeight: bold; border: 1px solid rgba(239, 68, 68, 0.4);">$1</span>');
-                    }
 
                     if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
                       return (
-                        <li key={lIdx} style={{ marginLeft: '14px', marginBottom: '4px', color: '#e2e8f0' }} dangerouslySetInnerHTML={{ __html: htmlText.replace(/^[-*]\s+/, '') }} />
+                        <li key={lIdx} style={{ marginLeft: '14px', marginBottom: '4px' }} dangerouslySetInnerHTML={{ __html: htmlText.replace(/^[-*]\s+/, '') }} />
                       );
                     }
 
                     if (/^\d+\.\s+/.test(line.trim())) {
                       return (
-                        <div key={lIdx} style={{ marginLeft: '4px', marginBottom: '6px', fontWeight: 600, color: '#f8fafc' }} dangerouslySetInnerHTML={{ __html: htmlText }} />
+                        <div key={lIdx} style={{ marginLeft: '4px', marginBottom: '6px', fontWeight: 600 }} dangerouslySetInnerHTML={{ __html: htmlText }} />
                       );
                     }
 
@@ -1903,13 +1886,13 @@ export default function LandingPage() {
 
                   {/* Bot Message Action Buttons */}
                   {msg.sender === 'bot' && (
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '8px', paddingTop: '6px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '8px', paddingTop: '6px', borderTop: '1px solid var(--card-border)' }}>
                       <button
                         onClick={() => speakText(msg.text.replace(/[*_#\-]/g, ''))}
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: '#94a3b8',
+                          color: 'var(--text-secondary)',
                           cursor: 'pointer',
                           fontSize: '11px',
                           display: 'inline-flex',
@@ -1919,7 +1902,7 @@ export default function LandingPage() {
                           fontWeight: 500
                         }}
                       >
-                        <i className="fa-solid fa-volume-low" style={{ color: '#38bdf8' }}></i> Dengarkan
+                        <i className="fa-solid fa-volume-low" style={{ color: 'var(--primary)' }}></i> Dengarkan
                       </button>
                       <button
                         onClick={() => {
@@ -1929,7 +1912,7 @@ export default function LandingPage() {
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: '#94a3b8',
+                          color: 'var(--text-secondary)',
                           cursor: 'pointer',
                           fontSize: '11px',
                           display: 'inline-flex',
@@ -1939,14 +1922,14 @@ export default function LandingPage() {
                           fontWeight: 500
                         }}
                       >
-                        <i className="fa-regular fa-copy" style={{ color: '#a78bfa' }}></i> Salin
+                        <i className="fa-regular fa-copy" style={{ color: 'var(--accent)' }}></i> Salin
                       </button>
                       <button
                         onClick={() => toast.success('Terima kasih atas ulasannya!')}
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: '#94a3b8',
+                          color: 'var(--text-secondary)',
                           cursor: 'pointer',
                           fontSize: '11px',
                           display: 'inline-flex',
@@ -1956,7 +1939,7 @@ export default function LandingPage() {
                           fontWeight: 500
                         }}
                       >
-                        <i className="fa-regular fa-thumbs-up" style={{ color: '#4ade80' }}></i> Bermanfaat
+                        <i className="fa-regular fa-thumbs-up" style={{ color: '#22c55e' }}></i> Bermanfaat
                       </button>
                     </div>
                   )}
@@ -1965,17 +1948,17 @@ export default function LandingPage() {
               {chatTyping && (
                 <div style={{
                   alignSelf: 'flex-start',
-                  background: 'rgba(30, 41, 59, 0.88)',
+                  background: 'var(--card-bg-elevated)',
                   padding: '12px 16px',
                   borderRadius: '18px 18px 18px 4px',
                   fontSize: '12px',
-                  color: '#94a3b8',
+                  color: 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  border: '1px solid rgba(255, 255, 255, 0.12)'
+                  border: '1px solid var(--card-border)'
                 }}>
-                  <i className="fa-solid fa-spinner fa-spin" style={{ color: '#38bdf8', fontSize: '15px' }}></i>
+                  <i className="fa-solid fa-spinner fa-spin" style={{ color: 'var(--primary)', fontSize: '15px' }}></i>
                   <span style={{ fontWeight: 500 }}>Pak Kory sedang menganalisis Juknis & Regulasi...</span>
                 </div>
               )}
@@ -1989,8 +1972,8 @@ export default function LandingPage() {
               }}
               style={{
                 padding: '12px 16px',
-                background: 'rgba(0, 0, 0, 0.35)',
-                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+                background: 'rgba(0, 0, 0, 0.04)',
+                borderTop: '1px solid var(--card-border)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
@@ -2001,18 +1984,17 @@ export default function LandingPage() {
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Tanyakan Juknis BOS (Max 20%), TPG, Dapodik..."
+                placeholder="Tanyakan Juknis BOS, TPG, Dapodik, Berkas..."
                 disabled={chatTyping}
                 style={{
                   flex: 1,
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  background: 'var(--input-bg)',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '14px',
                   padding: '10px 14px',
                   color: 'var(--text-primary)',
                   fontSize: '12.5px',
-                  outline: 'none',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
+                  outline: 'none'
                 }}
               />
               <button
@@ -2023,8 +2005,8 @@ export default function LandingPage() {
                   height: '38px',
                   borderRadius: '12px',
                   background: chatInput.trim() && !chatTyping
-                    ? 'linear-gradient(135deg, #0284c7 0%, #4f46e5 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
+                    ? 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)'
+                    : 'var(--card-bg-elevated)',
                   border: 'none',
                   color: '#ffffff',
                   cursor: chatInput.trim() && !chatTyping ? 'pointer' : 'not-allowed',
@@ -2033,7 +2015,7 @@ export default function LandingPage() {
                   justifyContent: 'center',
                   fontSize: '14px',
                   transition: 'all 0.2s ease',
-                  boxShadow: chatInput.trim() && !chatTyping ? '0 4px 14px rgba(2, 132, 199, 0.4)' : 'none'
+                  boxShadow: chatInput.trim() && !chatTyping ? '0 4px 14px rgba(37, 99, 235, 0.3)' : 'none'
                 }}
               >
                 <i className="fa-solid fa-paper-plane"></i>
