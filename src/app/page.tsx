@@ -1688,9 +1688,7 @@ export default function LandingPage() {
       <div className="no-print fab-container" style={{ fontFamily: 'inherit' }}>
         {/* Ultra-Premium Theme-Aware AI Chat Window */}
         {chatOpen && (
-          <div className="card animate-fade-in" style={{
-            width: '400px',
-            height: '580px',
+          <div className="card animate-fade-in ai-chat-window" style={{
             boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
             display: 'flex',
             flexDirection: 'column',
@@ -1699,7 +1697,6 @@ export default function LandingPage() {
             background: 'var(--card-glass)',
             backdropFilter: 'blur(28px)',
             WebkitBackdropFilter: 'blur(28px)',
-            borderRadius: '24px',
             margin: 0,
             position: 'relative'
           }}>
