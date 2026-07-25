@@ -444,7 +444,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
       setMapError(error instanceof Error ? error.message : 'Failed to load map');
     }
     })();
-  }, [schools, isEditMode, selectedSchoolNpsn, activeGugus, isHeatmapMode, onlinePresenceList, submissions, customCoordsMap, customSchoolsMap, totalCategories]);
+  }, [schools, isEditMode, selectedSchoolNpsn, activeGugus, isHeatmapMode, JSON.stringify(onlinePresenceList), submissions, customCoordsMap, customSchoolsMap, totalCategories]);
 
   const handleManualCoordChange = async (lat: number, lng: number) => {
     const updated = await saveSchoolCoordinates(selectedSchoolNpsn, lat, lng);

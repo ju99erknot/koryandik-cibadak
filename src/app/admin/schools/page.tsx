@@ -233,13 +233,18 @@ export default function AdminSchools() {
                     const printWin = window.open('', '_blank');
                     if (!printWin) return;
 
-                    // Generate QR codes for all schools first
-                    const qrPromises = filteredSchools.map(async s => {
-                      const url = window.location.origin + '/?school=' + s.npsn;
-                      const dataUrl = await QRCode.toDataURL(url, { width: 130, margin: 1 });
-                      return { ...s, qrDataUrl: dataUrl };
-                    });
-                    const schoolsWithQr = await Promise.all(qrPromises);
+                    // Generate QR codes in chunks of 10 to prevent memory spikes
+                    const chunkSize = 10;
+                    const schoolsWithQr = [];
+                    for (let i = 0; i < filteredSchools.length; i += chunkSize) {
+                      const chunk = filteredSchools.slice(i, i + chunkSize);
+                      const chunkResults = await Promise.all(chunk.map(async s => {
+                        const url = window.location.origin + '/?school=' + s.npsn;
+                        const dataUrl = await QRCode.toDataURL(url, { width: 130, margin: 1 });
+                        return { ...s, qrDataUrl: dataUrl };
+                      }));
+                      schoolsWithQr.push(...chunkResults);
+                    }
 
                     const qrElements = schoolsWithQr.map(s => `
                       <div style="display:inline-block; text-align:center; margin:24px; padding:16px; border:1px solid #ddd; border-radius:12px; width:180px; page-break-inside:avoid; font-family:sans-serif;">
@@ -691,7 +696,32 @@ export default function AdminSchools() {
             </div>
             <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 16px' }}>Scan QR Code ini untuk membuka halaman login portal Koryandik</p>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-              <button className="btn btn-primary btn-sm" onClick={() => { const svg = document.querySelector('#qr-code-container svg'); if (!svg) return; const svgData = new XMLSerializer().serializeToString(svg); const canvas = document.createElement('canvas'); canvas.width = 400; canvas.height = 400; const ctx = canvas.getContext('2d'); const img = new Image(); img.onload = () => { if (ctx) { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 400, 400); ctx.drawImage(img, 0, 0, 400, 400); } const a = document.createElement('a'); a.download = `QR-${qrSchool.npsn}-${qrSchool.name.replace(/\s+/g, '_')}.png`; a.href = canvas.toDataURL('image/png'); a.click(); toast.success('QR Code berhasil diunduh!'); }; img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData))); }} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <button className="btn btn-primary btn-sm" onClick={() => {
+                const svg = document.querySelector('#qr-code-container svg');
+                if (!svg) return;
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const blobUrl = URL.createObjectURL(svgBlob);
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = () => {
+                  if (ctx) {
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, 400, 400);
+                    ctx.drawImage(img, 0, 0, 400, 400);
+                  }
+                  URL.revokeObjectURL(blobUrl);
+                  const a = document.createElement('a');
+                  a.download = `QR-${qrSchool.npsn}-${qrSchool.name.replace(/\s+/g, '_')}.png`;
+                  a.href = canvas.toDataURL('image/png');
+                  a.click();
+                  toast.success('QR Code berhasil diunduh!');
+                };
+                img.src = blobUrl;
+              }} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <i className="fa-solid fa-download"></i> Unduh PNG
               </button>
               <button className="btn btn-outline btn-sm" onClick={() => { const printWin = window.open('', '_blank'); if (!printWin) return; const svg = document.querySelector('#qr-code-container svg'); if (!svg) return; const svgData = new XMLSerializer().serializeToString(svg); printWin.document.write(`<html><head><title>QR Code - ${qrSchool.name}</title></head><body style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif"><div style="text-align:center"><h2>${qrSchool.name}</h2><p>NPSN: ${qrSchool.npsn}</p><div>${svgData}</div><p style="margin-top:16px;color:#666;font-size:12px">Scan untuk membuka portal Koryandik</p></div></body></html>`); printWin.document.close(); setTimeout(() => printWin.print(), 500); }} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

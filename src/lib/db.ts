@@ -898,9 +898,9 @@ export async function updateSubmission(id: string, updates: Partial<Submission>)
         }
 
         // ➡️ Auto-archive ke Google Drive Koryandik saat berkas disetujui
-        if (updates.status === 'approved' && submissionObj.driveLink) {
-          triggerDriveArchive(submissionObj).catch((err) =>
-            logger.warn('[DriveArchive] Gagal mengarsipkan', { error: err })
+        if (process.env.GAS_ARCHIVE_URL && submissionObj.driveLink) {
+          await triggerDriveArchive(submissionObj).catch((err) =>
+            logger.error('Failed to trigger Drive archiving', { error: String(err) })
           );
         }
 
@@ -945,7 +945,7 @@ export async function updateSubmission(id: string, updates: Partial<Submission>)
 
   // ➡️ Auto-archive ke Google Drive Koryandik saat berkas disetujui (fallback path)
   if (updates.status === 'approved' && subs[idx].driveLink) {
-    triggerDriveArchive(subs[idx]).catch((err) =>
+    await triggerDriveArchive(subs[idx]).catch((err) =>
       logger.warn('[DriveArchive] Gagal mengarsipkan', { error: err })
     );
   }
