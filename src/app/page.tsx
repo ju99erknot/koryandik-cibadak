@@ -8,6 +8,7 @@ import type { ProfileSettings } from '@/lib/types';
 import type { Submission } from '@/lib/db';
 import { toast } from 'sonner';
 import CommandPalette from '@/components/CommandPalette';
+import { playClickSound, playSuccessSound } from '@/lib/sound';
 import { formatPhoneForWhatsApp } from '@/lib/phoneUtils';
 import DistrictMap from '@/components/DistrictMap';
 import LandingLocationMap from '@/components/LandingLocationMap';
@@ -50,9 +51,10 @@ export default function LandingPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([
-    { sender: 'bot', text: 'Halo! 👋 Saya Asisten Virtual Koryandik Cibadak. Ada yang bisa saya bantu hari ini?' }
+    { sender: 'bot', text: 'Halo! 👋 Saya **Koryandik AI Assistant**, pakar regulasi & administrasi pendidikan Kecamatan Cibadak.\n\nAda yang bisa saya bantu terkait **Juknis BOS, TPG/Sertifikasi, Dapodik, NUPTK, atau Berkas Koryandik** hari ini?' }
   ]);
   const [chatTyping, setChatTyping] = useState(false);
 
@@ -279,18 +281,50 @@ export default function LandingPage() {
     }
   };
 
-  const handleFaqClick = (question: string, answer: string) => {
-    // Prevent double clicking while bot is typing
-    if (chatTyping) return;
-    setChatMessages(prev => [...prev, { sender: 'user', text: question }]);
+  const handleSendAiMessage = async (customPrompt?: string) => {
+    const promptText = (customPrompt || chatInput).trim();
+    if (!promptText || chatTyping) return;
+
+    playClickSound();
+
+    const newMessages = [...chatMessages, { sender: 'user' as const, text: promptText }];
+    setChatMessages(newMessages);
+    if (!customPrompt) setChatInput('');
     setChatTyping(true);
-    setTimeout(() => {
-      setChatMessages(prev => [...prev, { sender: 'bot', text: answer }]);
-      setChatTyping(false);
-      if (chatSpeak) {
-        speakText(answer);
+
+    try {
+      const history = newMessages
+        .slice(1)
+        .map(m => ({ role: m.sender === 'user' ? 'user' as const : 'model' as const, content: m.text }));
+
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: promptText, history }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.reply) {
+        setChatMessages(prev => [...prev, { sender: 'bot' as const, text: data.reply }]);
+        playSuccessSound();
+        if (chatSpeak) {
+          speakText(data.reply.replace(/[*_#\-]/g, ''));
+        }
+      } else {
+        const errorReply = data.message || 'Maaf, terjadi masalah saat menghubungi Asisten AI Koryandik.';
+        setChatMessages(prev => [...prev, { sender: 'bot' as const, text: errorReply }]);
       }
-    }, 800);
+    } catch {
+      setChatMessages(prev => [...prev, { sender: 'bot' as const, text: 'Maaf, terjadi gangguan koneksi internet.' }]);
+    } finally {
+      setChatTyping(false);
+    }
+  };
+
+  const handleFaqClick = (question: string) => {
+    if (chatTyping) return;
+    handleSendAiMessage(question);
   };
 
 
@@ -1652,44 +1686,61 @@ export default function LandingPage() {
 
       {/* Floating Action Buttons Container */}
       <div className="no-print fab-container" style={{ fontFamily: 'inherit' }}>
-        {/* Chat Window */}
+        {/* Chat Window - Powered by Gemini AI */}
         {chatOpen && (
           <div className="card animate-fade-in" style={{
-            width: '340px',
-            height: '460px',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.25)',
+            width: '380px',
+            height: '560px',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.35), 0 0 30px rgba(59,130,246,0.15)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
             border: '1px solid var(--card-border)',
             background: 'var(--card-glass)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '16px',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderRadius: '20px',
             margin: 0
           }}>
             {/* Header */}
             <div style={{
               background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-              padding: '16px 20px',
+              padding: '14px 18px',
               color: '#ffffff',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.2)',
+                  backdropFilter: 'blur(10px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  color: '#ffffff'
+                }}>
+                  <i className="fa-solid fa-robot"></i>
+                </div>
                 <div>
-                  <h4 style={{ fontSize: '14px', fontWeight: 'bold', margin: 0, color: '#ffffff' }}>Tanya Koryandik</h4>
-                  <span style={{ fontSize: '9px', opacity: 0.8, color: '#ffffff' }}>Asisten Virtual • Online</span>
+                  <h4 style={{ fontSize: '14px', fontWeight: 'bold', margin: 0, color: '#ffffff' }}>Koryandik AI Assistant</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+                    <span style={{ fontSize: '10px', opacity: 0.9, color: '#ffffff' }}>Online • Gemini 3.1 AI</span>
+                  </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <button
                   onClick={() => {
                     const nextSpeak = !chatSpeak;
                     setChatSpeak(nextSpeak);
                     if (nextSpeak) {
-                      speakText("Suara aktif. Saya akan membacakan jawaban untuk Anda.");
+                      speakText("Suara aktif. Saya Pak Kory, asisten AI resmi Koryandik Cibadak.");
                       toast.success("Suara asisten aktif!");
                     } else {
                       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -1712,90 +1763,188 @@ export default function LandingPage() {
               </div>
             </div>
 
+            {/* Popular Questions Chips (Horizontal Scroll) */}
+            <div style={{
+              padding: '8px 12px',
+              background: 'rgba(0,0,0,0.15)',
+              borderBottom: '1px solid var(--card-border)',
+              display: 'flex',
+              gap: '6px',
+              overflowX: 'auto',
+              scrollbarWidth: 'none'
+            }}>
+              {[
+                '📋 Syarat TPG Triwulan',
+                '💰 Honor Maksimal BOS',
+                '📂 8 Kategori Berkas',
+                '🆔 Pengajuan NUPTK',
+                '📝 Berkas Ditolak Harus Apa?'
+              ].map((chip, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleFaqClick(chip)}
+                  disabled={chatTyping}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '10.5px',
+                    padding: '4px 10px',
+                    borderRadius: '16px',
+                    background: 'rgba(59, 130, 246, 0.15)',
+                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    color: 'var(--text-primary)',
+                    cursor: chatTyping ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    flexShrink: 0
+                  }}
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+
             {/* Messages Area */}
-            <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ flex: 1, padding: '14px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {chatMessages.map((msg, idx) => (
                 <div key={idx} style={{
                   alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                  maxWidth: '80%',
-                  background: msg.sender === 'user' ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
+                  maxWidth: '85%',
+                  background: msg.sender === 'user' ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'rgba(255,255,255,0.06)',
                   color: msg.sender === 'user' ? '#ffffff' : 'var(--text-primary)',
                   padding: '10px 14px',
-                  borderRadius: msg.sender === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                  fontSize: '12px',
-                  lineHeight: '1.4',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  position: 'relative'
+                  borderRadius: msg.sender === 'user' ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
+                  fontSize: '12.5px',
+                  lineHeight: '1.5',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  position: 'relative',
+                  border: msg.sender === 'user' ? 'none' : '1px solid var(--card-border)'
                 }}>
-                  {msg.text}
+                  {/* Basic Markdown Rendering */}
+                  {msg.text.split('\n').map((line, lIdx) => {
+                    const htmlText = line
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+                    if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+                      return (
+                        <li key={lIdx} style={{ marginLeft: '14px', marginBottom: '3px' }} dangerouslySetInnerHTML={{ __html: htmlText.replace(/^[-*]\s+/, '') }} />
+                      );
+                    }
+                    if (!line.trim()) return <div key={lIdx} style={{ height: '6px' }} />;
+                    return <p key={lIdx} style={{ margin: '0 0 4px 0' }} dangerouslySetInnerHTML={{ __html: htmlText }} />;
+                  })}
+
                   {msg.sender === 'bot' && (
-                    <button
-                      onClick={() => speakText(msg.text)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--text-muted)',
-                        cursor: 'pointer',
-                        fontSize: '10px',
-                        display: 'block',
-                        marginTop: '6px',
-                        padding: 0,
-                        textAlign: 'left'
-                      }}
-                    >
-                      <i className="fa-solid fa-volume-low" style={{ marginRight: '4px' }}></i> Dengarkan jawaban
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '6px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                      <button
+                        onClick={() => speakText(msg.text.replace(/[*_#\-]/g, ''))}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                          fontSize: '10px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          padding: 0
+                        }}
+                      >
+                        <i className="fa-solid fa-volume-low"></i> Dengarkan
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(msg.text);
+                          toast.success('Jawaban disalin!');
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                          fontSize: '10px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          padding: 0
+                        }}
+                      >
+                        <i className="fa-regular fa-copy"></i> Salin
+                      </button>
+                    </div>
                   )}
                 </div>
               ))}
               {chatTyping && (
                 <div style={{
                   alignSelf: 'flex-start',
-                  background: 'rgba(255,255,255,0.05)',
+                  background: 'rgba(255,255,255,0.06)',
                   padding: '10px 14px',
-                  borderRadius: '12px 12px 12px 2px',
+                  borderRadius: '14px 14px 14px 2px',
                   fontSize: '12px',
-                  color: 'var(--text-muted)'
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
                 }}>
-                  <span>Mengetik...</span>
+                  <i className="fa-solid fa-spinner fa-spin" style={{ color: 'var(--accent)' }}></i>
+                  <span>Pak Kory sedang menganalisis Juknis...</span>
                 </div>
               )}
             </div>
 
-            {/* FAQ Options Grid */}
-            <div style={{ padding: '12px', borderTop: '1px solid var(--card-border)', background: 'rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 'bold', marginLeft: '4px' }}>Pertanyaan Populer:</span>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '110px', overflowY: 'auto' }}>
-                {[
-                  { q: '🔑 Bagaimana cara masuk portal?', a: 'Untuk masuk portal sekolah, pilih tab "Sekolah", pilih nama sekolah Anda, lalu masukkan NPSN sekolah Anda pada kolom password. Password Anda adalah nomor NPSN resmi sekolah.' },
-                  { q: '📂 Format berkas apa yang didukung?', a: 'Portal ini mendukung berkas berformat PDF dengan ukuran maksimal 10MB. Pastikan link Google Drive Anda telah diatur "Dapat diakses oleh siapa saja dengan link".' },
-                  { q: '⏰ Kapan batas akhir pengumpulan?', a: `Batas akhir pengumpulan berkas Triwulan II (SPJ BOS, TPG, Dapodik) adalah tanggal 15 Juli ${new Date().getFullYear()}. Anda dapat memantau hitung mundur di dashboard sekolah Anda.` },
-                  { q: '📝 Apa yang harus dilakukan jika berkas ditolak?', a: 'Jika status berkas Anda "Butuh Revisi" atau "Ditolak", klik tombol revisi pada daftar berkas, periksa catatan dari verifikator/admin, perbaiki file Anda di Drive, lalu kirim ulang.' }
-                ].map((faq, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleFaqClick(faq.q, faq.a)}
-                    disabled={chatTyping}
-                    style={{
-                      textAlign: 'left',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--card-border)',
-                      fontSize: '11px',
-                      cursor: 'pointer',
-                      color: 'var(--text-secondary)',
-                      transition: 'background 0.2s ease',
-                      width: '100%'
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
-                  >
-                    {faq.q}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* Input Bar (Free Form Questions) */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendAiMessage();
+              }}
+              style={{
+                padding: '10px 12px',
+                background: 'rgba(0, 0, 0, 0.25)',
+                borderTop: '1px solid var(--card-border)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Tanyakan Juknis BOS, TPG, Dapodik..."
+                disabled={chatTyping}
+                style={{
+                  flex: 1,
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid var(--card-border)',
+                  borderRadius: '12px',
+                  padding: '8px 12px',
+                  color: 'var(--text-primary)',
+                  fontSize: '12px',
+                  outline: 'none'
+                }}
+              />
+              <button
+                type="submit"
+                disabled={chatTyping || !chatInput.trim()}
+                style={{
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: '10px',
+                  background: chatInput.trim() && !chatTyping ? 'linear-gradient(135deg, #2563eb, #8b5cf6)' : 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  color: '#ffffff',
+                  cursor: chatInput.trim() && !chatTyping ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '13px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <i className="fa-solid fa-paper-plane"></i>
+              </button>
+            </form>
           </div>
         )}
 
