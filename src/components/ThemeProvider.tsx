@@ -49,7 +49,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   return (
     <>
       <Toaster
-        position="top-center"
+        position="top-right"
         theme={theme}
         toastOptions={{
           style: {

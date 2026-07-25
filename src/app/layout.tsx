@@ -8,7 +8,6 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import PushNotificationListener from '@/components/PushNotificationListener';
 import ScrollProgress from '@/components/ScrollProgress';
 import { ToastProvider } from '@/components/Toast';
-import { Toaster } from 'sonner';
 import CustomCursor from '@/components/CustomCursor';
 
 const inter = Inter({
@@ -112,21 +111,6 @@ export default function RootLayout({
             <DynamicIsland />
             <ConfirmDialog />
             <PushNotificationListener />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                style: {
-                  background: 'var(--card-glass)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid var(--card-border)',
-                  color: 'var(--text-primary)',
-                  borderRadius: '14px',
-                  fontSize: '13.5px',
-                  fontWeight: 500,
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-                },
-              }}
-            />
             {children}
           </ToastProvider>
         </ThemeProvider>
