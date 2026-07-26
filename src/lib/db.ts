@@ -331,6 +331,7 @@ export async function getSchoolByNpsn(npsn: string): Promise<School | undefined>
 }
 
 export async function updateSchool(npsn: string, updates: Partial<School>): Promise<School | null> {
+  const cleanNpsn = String(npsn).trim();
   if (isSupabaseConfigured()) {
     try {
       // Map to db column names
@@ -348,10 +349,8 @@ export async function updateSchool(npsn: string, updates: Partial<School>): Prom
       if (updates.lng !== undefined) dbUpdates.lng = updates.lng;
       if (updates.signatureUrl !== undefined) dbUpdates.signature_url = updates.signatureUrl;
       if (updates.stempelColor !== undefined) dbUpdates.stempel_color = updates.stempelColor;
-      // Avatar fields
       if (updates.principalAvatarUrl !== undefined) dbUpdates.principal_avatar_url = updates.principalAvatarUrl;
       if (updates.operatorAvatarUrl !== undefined) dbUpdates.operator_avatar_url = updates.operatorAvatarUrl;
-      // Social Media & Branding
       if (updates.website !== undefined) dbUpdates.website = updates.website;
       if (updates.instagram !== undefined) dbUpdates.instagram = updates.instagram;
       if (updates.facebook !== undefined) dbUpdates.facebook = updates.facebook;
@@ -371,13 +370,12 @@ export async function updateSchool(npsn: string, updates: Partial<School>): Prom
 
       const { data, error } = await supabase
         .from('schools')
-        .upsert({ npsn, ...dbUpdates })
-        .select()
-        .single();
+        .upsert({ npsn: cleanNpsn, ...dbUpdates })
+        .select();
       if (error) {
         console.error('[Supabase Error] Gagal upsert school profile:', error);
-      } else if (data) {
-        return mapSchoolRow(data as Record<string, unknown>);
+      } else if (data && data.length > 0) {
+        return mapSchoolRow(data[0] as Record<string, unknown>);
       }
     } catch (err) {
       console.error('[Supabase Exception] Update school catch:', err);
@@ -385,7 +383,7 @@ export async function updateSchool(npsn: string, updates: Partial<School>): Prom
   }
 
   const schools = await getSchools();
-  const idx = schools.findIndex((s) => s.npsn === npsn);
+  const idx = schools.findIndex((s) => String(s.npsn).trim() === cleanNpsn);
   if (idx === -1) return null;
   schools[idx] = { ...schools[idx], ...updates };
   if (!isSupabaseConfigured()) {
@@ -2058,31 +2056,31 @@ async function ensureSchoolExistsInDb(npsn: string): Promise<void> {
 // ========== SCHOOL PORTAL: FACILITY CRUD ==========
 
 export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): Promise<SchoolFacility> {
-  const newFacility: SchoolFacility = { ...facility, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
-  const key = `koryandik_facilities_${facility.schoolNpsn}`;
+  const cleanNpsn = String(facility.schoolNpsn).trim();
+  const newFacility: SchoolFacility = { ...facility, schoolNpsn: cleanNpsn, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
+  const key = `koryandik_facilities_${cleanNpsn}`;
   const existing = getStorageItem<SchoolFacility[]>(key, []);
   existing.push(newFacility);
   setStorageItem(key, existing);
 
   if (isSupabaseConfigured()) {
     try {
-      await ensureSchoolExistsInDb(facility.schoolNpsn);
+      await ensureSchoolExistsInDb(cleanNpsn);
       const { data, error } = await supabase
         .from('school_facilities')
         .insert({
           id: newFacility.id,
-          school_npsn: facility.schoolNpsn,
+          school_npsn: cleanNpsn,
           name: facility.name,
           icon: facility.icon,
           description: facility.description || null,
           sort_order: facility.sortOrder,
         })
-        .select()
-        .single();
+        .select();
       if (error) {
         console.error('[Supabase Error] Gagal insert facility:', error);
-      } else if (data) {
-        return mapFacilityRow(data as Record<string, unknown>);
+      } else if (data && data.length > 0) {
+        return mapFacilityRow(data[0] as Record<string, unknown>);
       }
     } catch (err) {
       console.error('[Supabase Exception] Add facility catch:', err);
@@ -2094,6 +2092,7 @@ export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): P
 }
 
 export async function updateSchoolFacility(id: string, schoolNpsn: string, updates: Partial<SchoolFacility>): Promise<SchoolFacility | null> {
+  const cleanNpsn = String(schoolNpsn).trim();
   if (isSupabaseConfigured()) {
     try {
       const dbUpdates: Record<string, unknown> = {};
@@ -2105,18 +2104,17 @@ export async function updateSchoolFacility(id: string, schoolNpsn: string, updat
         .from('school_facilities')
         .update(dbUpdates)
         .eq('id', id)
-        .select()
-        .single();
+        .select();
       if (error) {
         console.error('[Supabase Error] Gagal update facility:', error);
-      } else if (data) {
-        return mapFacilityRow(data as Record<string, unknown>);
+      } else if (data && data.length > 0) {
+        return mapFacilityRow(data[0] as Record<string, unknown>);
       }
     } catch (err) {
       console.error('[Supabase Exception] Update facility catch:', err);
     }
   }
-  const key = `koryandik_facilities_${schoolNpsn}`;
+  const key = `koryandik_facilities_${cleanNpsn}`;
   const items = getStorageItem<SchoolFacility[]>(key, []);
   const idx = items.findIndex(f => f.id === id);
   if (idx === -1) return null;
@@ -2126,8 +2124,9 @@ export async function updateSchoolFacility(id: string, schoolNpsn: string, updat
 }
 
 export async function deleteSchoolFacility(id: string, schoolNpsn: string): Promise<void> {
+  const cleanNpsn = String(schoolNpsn).trim();
   // Always remove from LocalStorage fallback
-  const key = `koryandik_facilities_${schoolNpsn}`;
+  const key = `koryandik_facilities_${cleanNpsn}`;
   const items = getStorageItem<SchoolFacility[]>(key, []);
   setStorageItem(key, items.filter(f => f.id !== id));
 
@@ -2146,32 +2145,32 @@ export async function deleteSchoolFacility(id: string, schoolNpsn: string): Prom
 // ========== SCHOOL PORTAL: ACHIEVEMENT CRUD ==========
 
 export async function addSchoolAchievement(achievement: Omit<SchoolAchievement, 'id'>): Promise<SchoolAchievement> {
-  const newAch: SchoolAchievement = { ...achievement, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
-  const key = `koryandik_achievements_${achievement.schoolNpsn}`;
+  const cleanNpsn = String(achievement.schoolNpsn).trim();
+  const newAch: SchoolAchievement = { ...achievement, schoolNpsn: cleanNpsn, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
+  const key = `koryandik_achievements_${cleanNpsn}`;
   const existing = getStorageItem<SchoolAchievement[]>(key, []);
   existing.push(newAch);
   setStorageItem(key, existing);
 
   if (isSupabaseConfigured()) {
     try {
-      await ensureSchoolExistsInDb(achievement.schoolNpsn);
+      await ensureSchoolExistsInDb(cleanNpsn);
       const { data, error } = await supabase
         .from('school_achievements')
         .insert({
           id: newAch.id,
-          school_npsn: achievement.schoolNpsn,
+          school_npsn: cleanNpsn,
           title: achievement.title,
           description: achievement.description || null,
           year: achievement.year || null,
           category: achievement.category,
           icon: achievement.icon,
         })
-        .select()
-        .single();
+        .select();
       if (error) {
         console.error('[Supabase Error] Gagal insert achievement:', error);
-      } else if (data) {
-        return mapAchievementRow(data as Record<string, unknown>);
+      } else if (data && data.length > 0) {
+        return mapAchievementRow(data[0] as Record<string, unknown>);
       }
     } catch (err) {
       console.error('[Supabase Exception] Add achievement catch:', err);
@@ -2183,6 +2182,7 @@ export async function addSchoolAchievement(achievement: Omit<SchoolAchievement, 
 }
 
 export async function updateSchoolAchievement(id: string, schoolNpsn: string, updates: Partial<SchoolAchievement>): Promise<SchoolAchievement | null> {
+  const cleanNpsn = String(schoolNpsn).trim();
   if (isSupabaseConfigured()) {
     try {
       const dbUpdates: Record<string, unknown> = {};
@@ -2195,18 +2195,17 @@ export async function updateSchoolAchievement(id: string, schoolNpsn: string, up
         .from('school_achievements')
         .update(dbUpdates)
         .eq('id', id)
-        .select()
-        .single();
+        .select();
       if (error) {
         console.error('[Supabase Error] Gagal update achievement:', error);
-      } else if (data) {
-        return mapAchievementRow(data as Record<string, unknown>);
+      } else if (data && data.length > 0) {
+        return mapAchievementRow(data[0] as Record<string, unknown>);
       }
     } catch (err) {
       console.error('[Supabase Exception] Update achievement catch:', err);
     }
   }
-  const key = `koryandik_achievements_${schoolNpsn}`;
+  const key = `koryandik_achievements_${cleanNpsn}`;
   const items = getStorageItem<SchoolAchievement[]>(key, []);
   const idx = items.findIndex(a => a.id === id);
   if (idx === -1) return null;
@@ -2216,8 +2215,9 @@ export async function updateSchoolAchievement(id: string, schoolNpsn: string, up
 }
 
 export async function deleteSchoolAchievement(id: string, schoolNpsn: string): Promise<void> {
+  const cleanNpsn = String(schoolNpsn).trim();
   // Always remove from LocalStorage fallback
-  const key = `koryandik_achievements_${schoolNpsn}`;
+  const key = `koryandik_achievements_${cleanNpsn}`;
   const items = getStorageItem<SchoolAchievement[]>(key, []);
   setStorageItem(key, items.filter(a => a.id !== id));
 
@@ -2236,19 +2236,20 @@ export async function deleteSchoolAchievement(id: string, schoolNpsn: string): P
 // ========== SCHOOL PORTAL: GALLERY CRUD ==========
 
 export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'createdAt'>, schoolNpsn: string): Promise<GalleryItem> {
+  const cleanNpsn = String(schoolNpsn).trim();
   const newItem: GalleryItem = { 
     ...item, 
     id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()),
     createdAt: new Date().toISOString()
   };
-  const key = `koryandik_gallery_${schoolNpsn}`;
+  const key = `koryandik_gallery_${cleanNpsn}`;
   const existing = getStorageItem<GalleryItem[]>(key, []);
   existing.push(newItem);
   setStorageItem(key, existing);
 
   if (isSupabaseConfigured()) {
     try {
-      await ensureSchoolExistsInDb(schoolNpsn);
+      await ensureSchoolExistsInDb(cleanNpsn);
       const { data, error } = await supabase
         .from('gallery')
         .insert({
@@ -2258,21 +2259,20 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
           image_url: item.imageUrl,
           category: item.category,
           date: item.date,
-          school_npsn: schoolNpsn,
+          school_npsn: cleanNpsn,
         })
-        .select()
-        .single();
+        .select();
       if (error) {
         console.error('[Supabase Error] Gagal insert gallery:', error);
-      } else if (data) {
+      } else if (data && data.length > 0) {
         return {
-          id: String(data.id),
-          title: String(data.title),
-          description: (data.description as string) || '',
-          imageUrl: String(data.image_url),
-          category: (data.category as GalleryItem['category']) || 'Lainnya',
-          date: String(data.date),
-          createdAt: String(data.created_at),
+          id: String(data[0].id),
+          title: String(data[0].title),
+          description: (data[0].description as string) || '',
+          imageUrl: String(data[0].image_url),
+          category: (data[0].category as GalleryItem['category']) || 'Lainnya',
+          date: String(data[0].date),
+          createdAt: String(data[0].created_at),
         };
       }
     } catch (err) {
