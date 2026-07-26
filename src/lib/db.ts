@@ -67,7 +67,11 @@ function getStorageItem<T>(key: string, fallback: T): T {
 
 function setStorageItem(key: string, value: unknown): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    logger.warn(`Failed to write to localStorage key "${key}"`, { error: err });
+  }
 }
 
 // In-memory cache for app settings to avoid repeated Supabase queries
@@ -233,7 +237,8 @@ function mapSchoolRow(s: Record<string, unknown>): School {
     vision: (s.vision as string | null) ?? null,
     mission: (s.mission as string | null) ?? null,
     accreditation: (s.accreditation as string | null) ?? null,
-    status: (s.status as string | null) ?? null,
+    status: (s.status as string | null)
+      || (((s.name as string) || '').toUpperCase().includes('NEGERI') ? 'Negeri' : 'Swasta'),
   };
 }
 
@@ -282,13 +287,15 @@ export async function getSchools(): Promise<School[]> {
       schools = schoolsData.map(s => ({
         ...s,
         ksPhone: s.ksPhone ?? null,
-        operatorPhone: s.operatorPhone ?? null
+        operatorPhone: s.operatorPhone ?? null,
+        status: s.status || ((s.name || '').toUpperCase().includes('NEGERI') ? 'Negeri' : 'Swasta'),
       }));
     } else {
       schools = custom.map(s => ({
         ...s,
         ksPhone: s.ksPhone ?? null,
-        operatorPhone: s.operatorPhone ?? null
+        operatorPhone: s.operatorPhone ?? null,
+        status: s.status || ((s.name || '').toUpperCase().includes('NEGERI') ? 'Negeri' : 'Swasta'),
       }));
     }
   }

@@ -42,6 +42,12 @@ function AnimatedNumber({ target, duration = 1200 }: { target: number; duration?
   return <span ref={ref}>{count.toLocaleString('id-ID')}</span>;
 }
 
+function getSchoolStatus(s: School): 'Negeri' | 'Swasta' {
+  if (s.status === 'Swasta') return 'Swasta';
+  const nameUpper = (s.name || '').toUpperCase();
+  return nameUpper.includes('NEGERI') ? 'Negeri' : 'Swasta';
+}
+
 type ViewMode = 'grid' | 'list' | 'compact';
 type SortMode = 'name' | 'students' | 'teachers' | 'gugus';
 
@@ -74,7 +80,7 @@ export default function SekolahDirectoryPage() {
         (s.principalName || '').toLowerCase().includes(search.toLowerCase()) ||
         s.npsn.includes(search);
       const matchGugus = filterGugus === 'all' || s.gugus === filterGugus;
-      const matchLevel = filterLevel === 'all' || s.status === filterLevel;
+      const matchLevel = filterLevel === 'all' || getSchoolStatus(s) === filterLevel;
       return matchSearch && matchGugus && matchLevel;
     });
     const sorted = [...list].sort((a, b) => {
@@ -90,8 +96,8 @@ export default function SekolahDirectoryPage() {
 
   const totalStudents = useMemo(() => schools.reduce((a, s) => a + s.studentCount, 0), [schools]);
   const totalTeachers = useMemo(() => schools.reduce((a, s) => a + s.teacherCount, 0), [schools]);
-  const negeriCount = useMemo(() => schools.filter(s => s.status === 'Negeri').length, [schools]);
-  const swastaCount = useMemo(() => schools.filter(s => s.status === 'Swasta').length, [schools]);
+  const negeriCount = useMemo(() => schools.filter(s => (filterGugus === 'all' || s.gugus === filterGugus) && getSchoolStatus(s) === 'Negeri').length, [schools, filterGugus]);
+  const swastaCount = useMemo(() => schools.filter(s => (filterGugus === 'all' || s.gugus === filterGugus) && getSchoolStatus(s) === 'Swasta').length, [schools, filterGugus]);
 
   const clearFilters = () => {
     setSearch(''); setFilterGugus('all'); setFilterLevel('all');
@@ -234,7 +240,7 @@ export default function SekolahDirectoryPage() {
           transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
           display: flex; flex-direction: column;
           position: relative;
-          overflow: hidden;
+          overflow: visible;
         }
         .skl-card:hover {
           border-color: var(--card-primary, var(--primary));
@@ -242,27 +248,15 @@ export default function SekolahDirectoryPage() {
           box-shadow: 0 20px 45px rgba(59,130,246,0.14);
         }
 
-        .skl-card-top-bar {
-          height: 4px;
-          width: 100%;
-          background: linear-gradient(90deg, var(--card-primary, var(--primary)), var(--card-accent, var(--accent)));
-        }
-
         .skl-card-header {
           position: relative;
-          padding: 16px 20px 16px;
-          background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.02));
+          padding: 20px 20px 24px;
+          border-radius: 18px 18px 0 0;
+          background: linear-gradient(135deg, var(--card-primary-tint, rgba(59,130,246,0.14)), var(--card-accent-tint, rgba(139,92,246,0.08)));
           border-bottom: 1px solid var(--card-border);
           display: flex;
           flex-direction: column;
           gap: 12px;
-        }
-
-        .skl-card-badges-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 6px;
         }
 
         .skl-card-header-row {
@@ -270,24 +264,36 @@ export default function SekolahDirectoryPage() {
         }
 
         .skl-card-logo {
-          width: 50px; height: 50px; border-radius: 14px; flex-shrink: 0;
+          width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
           display: flex; align-items: center; justify-content: center;
           font-size: 22px; color: #fff; overflow: hidden;
-          border: 2px solid rgba(255,255,255,0.2);
+          border: 2px solid rgba(255,255,255,0.3);
           box-shadow: 0 6px 16px rgba(0,0,0,0.1);
         }
         .skl-card-name { font-size: 15px; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.25; }
         .skl-card-npsn { font-size: 10.5px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 3px; }
 
-        .skl-badge {
-          font-size: 9.5px; font-weight: 800; padding: 4px 10px;
-          border-radius: 99px; text-transform: uppercase; letter-spacing: 0.04em;
-          border: 1px solid rgba(255,255,255,0.15);
-          box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-          display: inline-flex; align-items: center; gap: 4px;
+        .skl-card-badges {
+          position: absolute;
+          bottom: -13px;
+          left: 20px;
+          z-index: 10;
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
         }
 
-        .skl-card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+        .skl-badge {
+          font-size: 9.5px; font-weight: 800; padding: 5px 12px;
+          border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em;
+          border: 1.5px solid rgba(255,255,255,0.35);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+          display: inline-flex; align-items: center; gap: 4px;
+          color: #ffffff;
+          backdrop-filter: blur(8px);
+        }
+
+        .skl-card-body { padding: 26px 20px 20px; flex: 1; display: flex; flex-direction: column; }
 
         .skl-card-stats {
           display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
@@ -488,14 +494,14 @@ export default function SekolahDirectoryPage() {
             </button>
             {GUGUS_LIST.map(g => {
               const theme = getGugusTheme(g);
-              const count = schools.filter(s => s.gugus === g).length;
+              const count = schools.filter(s => s.gugus === g && (filterLevel === 'all' || getSchoolStatus(s) === filterLevel)).length;
               const isActive = filterGugus === g;
               return (
                 <button
                   key={g}
                   className={`skl-chip${isActive ? ' active' : ''}`}
                   style={isActive ? { background: `linear-gradient(135deg,${theme.primary},${theme.accent})` } : {}}
-                  onClick={() => { setFilterGugus(isActive ? 'all' : g); setFilterLevel('all'); }}
+                  onClick={() => setFilterGugus(isActive ? 'all' : g)}
                 >
                   <span style={{ width: 8, height: 8, borderRadius: '50%', background: theme.primary, display: 'inline-block', flexShrink: 0 }} />
                   Gugus {g}
@@ -577,30 +583,17 @@ export default function SekolahDirectoryPage() {
             {filtered.map((school, i) => {
               const theme = getGugusTheme(school.gugus);
               const slug = generateSchoolSlug(school.name);
-              const cardVars = { '--card-primary': theme.primary, '--card-accent': theme.accent } as React.CSSProperties;
+              const cardVars = {
+                '--card-primary': theme.primary,
+                '--card-accent': theme.accent,
+                '--card-primary-tint': `${theme.primary}22`,
+                '--card-accent-tint': `${theme.accent}14`
+              } as React.CSSProperties;
               return (
                 <RevealOnScroll key={school.npsn} delay={(i % 4) * 0.05} duration={0.45}>
                   <div className="skl-card reveal-on-scroll" style={{ ...cardVars, ['--reveal-delay' as string]: `${(i % 6) * 60}ms`, height: '100%' }}>
-                    {/* Top Accent Bar */}
-                    <div className="skl-card-top-bar" />
-
                     {/* Card Header */}
                     <div className="skl-card-header">
-                      {/* Badges Row */}
-                      <div className="skl-card-badges-row">
-                        <span className="skl-badge" style={{ background: `${theme.primary}18`, color: theme.primary, borderColor: `${theme.primary}40` }}>
-                          Gugus {school.gugus}
-                        </span>
-                        <span className="skl-badge" style={{
-                          background: school.status === 'Negeri' ? 'rgba(16,185,129,0.12)' : 'rgba(139,92,246,0.12)',
-                          color: school.status === 'Negeri' ? '#10b981' : '#8b5cf6',
-                          borderColor: school.status === 'Negeri' ? 'rgba(16,185,129,0.3)' : 'rgba(139,92,246,0.3)'
-                        }}>
-                          <i className={school.status === 'Negeri' ? 'fa-solid fa-landmark' : 'fa-solid fa-building'} style={{ fontSize: '9px' }} />
-                          {school.status || school.level}
-                        </span>
-                      </div>
-
                       {/* Header Logo + Info Row */}
                       <div className="skl-card-header-row">
                         <div className="skl-card-logo" style={{ background: school.logoUrl ? 'var(--card-glass)' : `linear-gradient(135deg,${theme.primary},${theme.accent})` }}>
@@ -612,6 +605,25 @@ export default function SekolahDirectoryPage() {
                           <h3 className="skl-card-name">{school.name}</h3>
                           <p className="skl-card-npsn">NPSN {school.npsn}</p>
                         </div>
+                      </div>
+
+                      {/* Floating Badges */}
+                      <div className="skl-card-badges">
+                        <span className="skl-badge" style={{ background: theme.primary, color: '#ffffff' }}>
+                          Gugus {school.gugus}
+                        </span>
+                        {(() => {
+                          const status = getSchoolStatus(school);
+                          return (
+                            <span className="skl-badge" style={{
+                              background: status === 'Negeri' ? '#10b981' : '#8b5cf6',
+                              color: '#ffffff'
+                            }}>
+                              <i className={status === 'Negeri' ? 'fa-solid fa-landmark' : 'fa-solid fa-building'} style={{ fontSize: '9px' }} />
+                              {status}
+                            </span>
+                          );
+                        })()}
                       </div>
                     </div>
 
@@ -716,7 +728,7 @@ export default function SekolahDirectoryPage() {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{school.name}</p>
                     <p style={{ fontSize: '10px', color: 'var(--text-muted)', margin: '2px 0 0', fontWeight: 600 }}>
-                      Gugus {school.gugus} · {school.status || school.level} · {school.studentCount} siswa
+                      Gugus {school.gugus} · {getSchoolStatus(school)} · {school.studentCount} siswa
                     </p>
                   </div>
                   <i className="fa-solid fa-arrow-right" style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }} />

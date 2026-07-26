@@ -9,25 +9,33 @@ export function usePresence(user: SessionUser | null, page?: string) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pathname = usePathname();
   const currentPageRef = useRef(page || pathname);
+  const userRef = useRef(user);
 
-  // Keep ref in sync
+  // Keep refs in sync without triggering effects
   useEffect(() => {
     currentPageRef.current = page || pathname;
   }, [page, pathname]);
 
   useEffect(() => {
-    if (!user) return;
+    userRef.current = user;
+  }, [user]);
 
-    const presenceId = user.role === 'school'
-      ? `school-${user.npsn || 'unknown'}`
-      : `${user.role}-${user.id || user.name || 'unknown'}`;
+  // Stabilize effect dependencies to only user identity, not object reference
+  const userId = user?.role === 'school'
+    ? `school-${user?.npsn || 'unknown'}`
+    : user ? `${user.role}-${user.id || user.name || 'unknown'}` : null;
+
+  useEffect(() => {
+    if (!userId || !userRef.current) return;
+
+    const presenceId = userId;
 
     const buildPresenceData = () => ({
       id: presenceId,
-      role: user.role,
-      userName: user.name || 'Unknown',
-      npsn: user.npsn || null,
-      gugusId: (user.details as Record<string, unknown>)?.gugus as string || user.gugusId || null,
+      role: userRef.current!.role,
+      userName: userRef.current!.name || 'Unknown',
+      npsn: userRef.current!.npsn || null,
+      gugusId: (userRef.current!.details as Record<string, unknown>)?.gugus as string || userRef.current!.gugusId || null,
       page: currentPageRef.current,
     });
 
@@ -60,5 +68,5 @@ export function usePresence(user: SessionUser | null, page?: string) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       removePresence(presenceId);
     };
-  }, [user, page]);
+  }, [userId]);
 }

@@ -105,61 +105,66 @@ export default function DashboardShell({
   }, []);
 
   // Sync profile state with localStorage & database on mount
+  const isUpdatingProfileRef = useRef(false);
+
   useEffect(() => {
     const loadProfile = async () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window === 'undefined' || isUpdatingProfileRef.current) return;
+      isUpdatingProfileRef.current = true;
+
+      try {
         const stored = localStorage.getItem('koryandik_current_user');
         if (stored) {
-          try {
-            const parsed = JSON.parse(stored) as SessionUser;
-            setCurrentUser(parsed);
-            
-            // Load fresh data from database for avatar
-            let avatar = parsed.avatar || '';
-            if (parsed.role === 'school' && parsed.npsn) {
-              // For school users, get fresh data from db
-              const { getSchoolByNpsn } = await import('@/lib/db');
-              const school = await getSchoolByNpsn(parsed.npsn);
-              if (school?.operatorAvatarUrl) {
-                avatar = school.operatorAvatarUrl;
-              }
-            } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(parsed.role) && parsed.id) {
-              // For supervisor/admin users, get fresh data from db
-              const { getSupervisors } = await import('@/lib/db');
-              const supervisors = await getSupervisors();
-              const sup = supervisors.find(s => s.id === parsed.id);
-              if (sup?.photoUrl) {
-                avatar = sup.photoUrl;
-              }
+          const parsed = JSON.parse(stored) as SessionUser;
+          setCurrentUser(parsed);
+          
+          // Load fresh data from database for avatar
+          let avatar = parsed.avatar || '';
+          if (parsed.role === 'school' && parsed.npsn) {
+            const { getSchoolByNpsn } = await import('@/lib/db');
+            const school = await getSchoolByNpsn(parsed.npsn);
+            if (school?.operatorAvatarUrl) {
+              avatar = school.operatorAvatarUrl;
             }
+          } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(parsed.role) && parsed.id) {
+            const { getSupervisors } = await import('@/lib/db');
+            const supervisors = await getSupervisors();
+            const sup = supervisors.find(s => s.id === parsed.id);
+            if (sup?.photoUrl) {
+              avatar = sup.photoUrl;
+            }
+          }
 
-            const initialName = parsed.role === 'school'
-              ? ((parsed.details as any)?.operatorName || parsed.name || 'Operator Sekolah')
-              : (parsed.name || '');
-            
-            setEditName(initialName);
-            setEditAvatar(avatar);
-            
-            // Update localStorage with fresh avatar if needed
-            if (avatar !== parsed.avatar) {
-              const updatedUser = { ...parsed, avatar };
+          const initialName = parsed.role === 'school'
+            ? ((parsed.details as any)?.operatorName || parsed.name || 'Operator Sekolah')
+            : (parsed.name || '');
+          
+          setEditName(initialName);
+          setEditAvatar(avatar);
+          
+          // Update localStorage with fresh avatar if needed
+          if (avatar && avatar !== parsed.avatar) {
+            const updatedUser = { ...parsed, avatar };
+            try {
               localStorage.setItem('koryandik_current_user', JSON.stringify(updatedUser));
-              setCurrentUser(updatedUser);
+            } catch (err) {
+              console.error('Failed to update avatar in storage:', err);
             }
-          } catch (e) {
-            console.error('Failed to parse current user:', e);
+            setCurrentUser(updatedUser);
           }
         }
+      } catch (e) {
+        console.error('Failed to parse current user:', e);
+      } finally {
+        isUpdatingProfileRef.current = false;
       }
     };
 
     loadProfile();
 
     window.addEventListener('koryandik_user_profile_updated', loadProfile);
-    window.addEventListener('storage', loadProfile);
     return () => {
       window.removeEventListener('koryandik_user_profile_updated', loadProfile);
-      window.removeEventListener('storage', loadProfile);
     };
   }, []);
 

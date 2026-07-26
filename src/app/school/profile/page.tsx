@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { School } from '@/lib/schoolsData';
-import { updateSchool, getSchoolFacilities, addSchoolFacility, updateSchoolFacility, deleteSchoolFacility, getSchoolAchievements, addSchoolAchievement, updateSchoolAchievement, deleteSchoolAchievement, getGalleryBySchool, addGalleryItemBySchool, deleteGalleryItemBySchool } from '@/lib/db';
+import { updateSchool, getSchools, getSchoolByNpsn, getSchoolFacilities, addSchoolFacility, updateSchoolFacility, deleteSchoolFacility, getSchoolAchievements, addSchoolAchievement, updateSchoolAchievement, deleteSchoolAchievement, getGalleryBySchool, addGalleryItemBySchool, deleteGalleryItemBySchool } from '@/lib/db';
 import type { SchoolFacility, SchoolAchievement, AchievementCategory, GalleryItem } from '@/lib/types';
 import { FACILITY_ICONS, ACHIEVEMENT_CATEGORIES } from '@/lib/types';
 import { toast } from 'sonner';
@@ -159,83 +159,144 @@ export default function SchoolProfile() {
 
   /* ─── Load school data ─── */
   useEffect(() => {
-    if (loading || !user?.details) return;
-    const details = user.details as unknown as School;
-    setSchool(details);
-    setPrincipalName(details.principalName || '');
-    setOperatorName(details.operatorName || '');
-    setKsPhone(details.ksPhone || '');
-    setOperatorPhone(details.operatorPhone || '');
-    setAddress(details.address || '');
-    setStudentCount(details.studentCount);
-    setTeacherCount(details.teacherCount);
-    setLogoUrl(details.logoUrl || '');
-    setSignatureUrl(details.signatureUrl || '');
-    setPrincipalAvatarUrl(details.principalAvatarUrl || '');
-    setOperatorAvatarUrl(details.operatorAvatarUrl || '');
-    setWebsite(details.website || '');
-    setInstagram(details.instagram || '');
-    setFacebook(details.facebook || '');
-    setYoutube(details.youtube || '');
-    setTiktok(details.tiktok || '');
-    setTwitter(details.twitter || '');
-    setLinkedin(details.linkedin || '');
-    setEmail(details.email || '');
-    setWhatsapp(details.whatsapp || '');
-    setTelegram(details.telegram || '');
-    setVision(details.vision || '');
-    setMission(details.mission || '');
-    setLat(details.lat ?? null);
-    setLng(details.lng ?? null);
-    setAccreditation(details.accreditation || 'B');
-    setStatus(details.status || 'Negeri');
-    setStempelColor(details.stempelColor || '#1d4ed8');
+    if (loading || !user) return;
 
-    // Load facilities, achievements & gallery
-    Promise.all([
-      getSchoolFacilities(details.npsn),
-      getSchoolAchievements(details.npsn),
-      getGalleryBySchool(details.npsn),
-    ]).then(([fac, ach, gal]) => {
-      setFacilities(fac);
-      setAchievements(ach);
-      setGalleryItems(gal);
-    });
+    let isMounted = true;
+    async function loadProfile() {
+      let details: School | null = (user?.details as unknown as School) || null;
+      const npsn = details?.npsn || (user as unknown as { npsn?: string })?.npsn;
+      if (!details && npsn) {
+        const found = await getSchoolByNpsn(npsn);
+        details = found || null;
+      }
+      if (!details) {
+        const all = await getSchools();
+        const found = all.find(s => s.npsn === npsn || s.name === user?.name);
+        details = found || null;
+      }
+      if (!details || !isMounted) return;
+
+      setSchool(details);
+      setPrincipalName(details.principalName || '');
+      setOperatorName(details.operatorName || '');
+      setKsPhone(details.ksPhone || '');
+      setOperatorPhone(details.operatorPhone || '');
+      setAddress(details.address || '');
+      setStudentCount(details.studentCount || 0);
+      setTeacherCount(details.teacherCount || 0);
+      setLogoUrl(details.logoUrl || '');
+      setSignatureUrl(details.signatureUrl || '');
+      setPrincipalAvatarUrl(details.principalAvatarUrl || '');
+      setOperatorAvatarUrl(details.operatorAvatarUrl || '');
+      setWebsite(details.website || '');
+      setInstagram(details.instagram || '');
+      setFacebook(details.facebook || '');
+      setYoutube(details.youtube || '');
+      setTiktok(details.tiktok || '');
+      setTwitter(details.twitter || '');
+      setLinkedin(details.linkedin || '');
+      setEmail(details.email || '');
+      setWhatsapp(details.whatsapp || '');
+      setTelegram(details.telegram || '');
+      setVision(details.vision || '');
+      setMission(details.mission || '');
+      setLat(details.lat ?? null);
+      setLng(details.lng ?? null);
+      setAccreditation(details.accreditation || 'B');
+      // Smart status detection: if status field is missing, detect from school name
+      const detectedStatus = details.status
+        || ((details.name || '').toUpperCase().includes('NEGERI') ? 'Negeri' : 'Swasta');
+      setStatus(detectedStatus);
+      setStempelColor(details.stempelColor || '#1d4ed8');
+
+      // Load facilities, achievements & gallery
+      try {
+        const [fac, ach, gal] = await Promise.all([
+          getSchoolFacilities(details.npsn),
+          getSchoolAchievements(details.npsn),
+          getGalleryBySchool(details.npsn),
+        ]);
+        if (isMounted) {
+          setFacilities(fac);
+          setAchievements(ach);
+          setGalleryItems(gal);
+        }
+      } catch (err) {
+        console.error('Error loading sub-resources:', err);
+      }
+    }
+
+    loadProfile();
+    return () => { isMounted = false; };
   }, [loading, user]);
 
-  /* ─── File upload helper ─── */
+  /* ─── File upload helper with automatic image compression ─── */
   const handleFileUpload = (setter: (v: string) => void, maxKb: number, label: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > maxKb * 1000) {
-      toast.error(`Ukuran file ${label} maksimal ${maxKb} KB.`);
+    if (file.size > maxKb * 1024 * 3) {
+      toast.error(`Ukuran file ${label} terlalu besar (maksimal ${maxKb} KB).`);
       return;
     }
     const reader = new FileReader();
     reader.onloadend = () => {
-      setter(reader.result as string);
-      setHasChanges(true);
-      toast.success(`${label} berhasil diunggah! Klik Simpan untuk menyimpan.`);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 500;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/webp', 0.85);
+          setter(compressed);
+        } else {
+          setter(reader.result as string);
+        }
+        setHasChanges(true);
+        toast.success(`${label} berhasil diunggah! Klik Simpan untuk menyimpan.`);
+      };
+      img.onerror = () => {
+        setter(reader.result as string);
+        setHasChanges(true);
+        toast.success(`${label} berhasil diunggah! Klik Simpan untuk menyimpan.`);
+      };
+      img.src = reader.result as string;
     };
     reader.readAsDataURL(file);
   };
 
   /* ─── Save profile ─── */
   const handleSaveProfile = async () => {
-    if (!school) return;
+    if (!school) {
+      toast.error('Data sekolah tidak ditemukan. Silakan login kembali.');
+      return;
+    }
     setSaving(true);
 
     const updatedSchool: School = {
       ...school,
       principalName, operatorName, ksPhone, operatorPhone,
-      address, studentCount, teacherCount,
+      address, studentCount: Number(studentCount) || 0, teacherCount: Number(teacherCount) || 0,
       logoUrl, signatureUrl, principalAvatarUrl, operatorAvatarUrl, stempelColor,
       website, instagram, facebook, youtube, tiktok, twitter, linkedin, email, whatsapp, telegram,
       vision, mission, lat, lng, accreditation, status,
     };
     setSchool(updatedSchool);
 
-    // Save to user session
+    // Save to user session safely
     const stored = localStorage.getItem('koryandik_current_user');
     if (stored) {
       try {
@@ -251,7 +312,7 @@ export default function SchoolProfile() {
     try {
       await updateSchool(school.npsn, {
         principalName, operatorName, ksPhone, operatorPhone,
-        address, studentCount, teacherCount,
+        address, studentCount: Number(studentCount) || 0, teacherCount: Number(teacherCount) || 0,
         logoUrl, signatureUrl, principalAvatarUrl, operatorAvatarUrl, stempelColor,
         website, instagram, facebook, youtube, tiktok, twitter, linkedin, email, whatsapp, telegram,
         vision, mission, lat, lng, accreditation, status,
@@ -263,7 +324,7 @@ export default function SchoolProfile() {
       }
     } catch (err) {
       console.error(err);
-      toast.error('Gagal menyimpan ke database.');
+      toast.error('Gagal menyimpan profil ke database.');
     } finally {
       setSaving(false);
     }
