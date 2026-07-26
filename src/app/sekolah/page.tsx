@@ -234,48 +234,60 @@ export default function SekolahDirectoryPage() {
           transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
           display: flex; flex-direction: column;
           position: relative;
+          overflow: hidden;
         }
-        .skl-card:hover { border-color: var(--card-primary, var(--primary)); transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+        .skl-card:hover {
+          border-color: var(--card-primary, var(--primary));
+          transform: translateY(-4px);
+          box-shadow: 0 20px 45px rgba(59,130,246,0.14);
+        }
+
+        .skl-card-top-bar {
+          height: 4px;
+          width: 100%;
+          background: linear-gradient(90deg, var(--card-primary, var(--primary)), var(--card-accent, var(--accent)));
+        }
 
         .skl-card-header {
           position: relative;
-          padding: 20px 20px 16px;
-          overflow: hidden;
-          border-radius: 18px 18px 0 0;
+          padding: 16px 20px 16px;
+          background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.02));
+          border-bottom: 1px solid var(--card-border);
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
         }
-        .skl-card-header::before {
-          content: '';
-          position: absolute; inset: 0;
-          opacity: 0.12;
-          background: linear-gradient(135deg, var(--card-primary, var(--primary)), var(--card-accent, var(--accent)));
+
+        .skl-card-badges-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 6px;
         }
+
         .skl-card-header-row {
           display: flex; align-items: center; gap: 14px;
-          position: relative; z-index: 2;
         }
+
         .skl-card-logo {
-          width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+          width: 50px; height: 50px; border-radius: 14px; flex-shrink: 0;
           display: flex; align-items: center; justify-content: center;
           font-size: 22px; color: #fff; overflow: hidden;
-          border: 2px solid rgba(255,255,255,0.15);
-          box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+          border: 2px solid rgba(255,255,255,0.2);
+          box-shadow: 0 6px 16px rgba(0,0,0,0.1);
         }
         .skl-card-name { font-size: 15px; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.25; }
-        .skl-card-npsn { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 3px; }
+        .skl-card-npsn { font-size: 10.5px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 3px; }
 
-        .skl-card-badges {
-          display: flex; gap: 6px; flex-wrap: wrap;
-          padding: 0 20px;
-          margin-top: -1px;
-        }
         .skl-badge {
-          font-size: 9.5px; font-weight: 800; padding: 5px 12px;
+          font-size: 9.5px; font-weight: 800; padding: 4px 10px;
           border-radius: 99px; text-transform: uppercase; letter-spacing: 0.04em;
-          border: 1px solid rgba(255,255,255,0.1);
-          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          border: 1px solid rgba(255,255,255,0.15);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+          display: inline-flex; align-items: center; gap: 4px;
         }
 
-        .skl-card-body { padding: 14px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+        .skl-card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
 
         .skl-card-stats {
           display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
@@ -568,36 +580,40 @@ export default function SekolahDirectoryPage() {
               const cardVars = { '--card-primary': theme.primary, '--card-accent': theme.accent } as React.CSSProperties;
               return (
                 <RevealOnScroll key={school.npsn} delay={(i % 4) * 0.05} duration={0.45}>
-                  <TiltCard intensity={4} glare style={{ borderRadius: 20, height: '100%' }}>
-                    <div className="skl-card reveal-on-scroll" style={{ ...cardVars, ['--reveal-delay' as string]: `${(i % 6) * 60}ms` }}>
-                      {/* Card Header with gradient bg */}
-                      <div className="skl-card-header">
-                        <div className="skl-card-header-row">
-                          <div className="skl-card-logo" style={{ background: school.logoUrl ? 'var(--card-glass)' : `linear-gradient(135deg,${theme.primary},${theme.accent})` }}>
-                            {school.logoUrl
-                              ? <img src={school.logoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 12 }} />
-                              : <i className="fa-solid fa-graduation-cap" />}
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <h3 className="skl-card-name">{school.name}</h3>
-                            <p className="skl-card-npsn">NPSN {school.npsn}</p>
-                          </div>
-                        </div>
-                      </div>
+                  <div className="skl-card reveal-on-scroll" style={{ ...cardVars, ['--reveal-delay' as string]: `${(i % 6) * 60}ms`, height: '100%' }}>
+                    {/* Top Accent Bar */}
+                    <div className="skl-card-top-bar" />
 
-                      {/* Badges between header and body */}
-                      <div className="skl-card-badges">
-                        <span className="skl-badge" style={{ background: `${theme.primary}dd`, color: '#fff' }}>
+                    {/* Card Header */}
+                    <div className="skl-card-header">
+                      {/* Badges Row */}
+                      <div className="skl-card-badges-row">
+                        <span className="skl-badge" style={{ background: `${theme.primary}18`, color: theme.primary, borderColor: `${theme.primary}40` }}>
                           Gugus {school.gugus}
                         </span>
                         <span className="skl-badge" style={{
-                          background: school.status === 'Negeri' ? 'rgba(16,185,129,0.85)' : 'rgba(139,92,246,0.85)',
-                          color: '#fff'
+                          background: school.status === 'Negeri' ? 'rgba(16,185,129,0.12)' : 'rgba(139,92,246,0.12)',
+                          color: school.status === 'Negeri' ? '#10b981' : '#8b5cf6',
+                          borderColor: school.status === 'Negeri' ? 'rgba(16,185,129,0.3)' : 'rgba(139,92,246,0.3)'
                         }}>
-                          <i className={school.status === 'Negeri' ? 'fa-solid fa-landmark' : 'fa-solid fa-building'} style={{ fontSize: '8px', marginRight: 3 }} />
+                          <i className={school.status === 'Negeri' ? 'fa-solid fa-landmark' : 'fa-solid fa-building'} style={{ fontSize: '9px' }} />
                           {school.status || school.level}
                         </span>
                       </div>
+
+                      {/* Header Logo + Info Row */}
+                      <div className="skl-card-header-row">
+                        <div className="skl-card-logo" style={{ background: school.logoUrl ? 'var(--card-glass)' : `linear-gradient(135deg,${theme.primary},${theme.accent})` }}>
+                          {school.logoUrl
+                            ? <img src={school.logoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 12 }} />
+                            : <i className="fa-solid fa-graduation-cap" />}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <h3 className="skl-card-name">{school.name}</h3>
+                          <p className="skl-card-npsn">NPSN {school.npsn}</p>
+                        </div>
+                      </div>
+                    </div>
 
                       {/* Card Body */}
                       <div className="skl-card-body">
@@ -635,8 +651,7 @@ export default function SekolahDirectoryPage() {
                         </MagneticButton>
                       </div>
                     </div>
-                  </TiltCard>
-                </RevealOnScroll>
+                  </RevealOnScroll>
               );
             })}
           </div>
