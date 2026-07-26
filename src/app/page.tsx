@@ -89,7 +89,12 @@ export default function LandingPage() {
       const params = new URLSearchParams(window.location.search);
       const authNotice = params.get('auth');
 
-      if (authNotice === 'forbidden') {
+      if (authNotice === 'misconfigured') {
+        toast.error(
+          'Konfigurasi server belum lengkap (SERVER_SECRET). Hubungi administrator.',
+          { duration: 8000 }
+        );
+      } else if (authNotice === 'forbidden') {
         toast.error('Anda tidak memiliki akses ke halaman tersebut.');
       } else if (authNotice === 'required') {
         toast.info('Sesi Anda telah berakhir. Silakan masuk kembali.');

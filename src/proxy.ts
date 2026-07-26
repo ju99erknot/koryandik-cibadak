@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifySession, SESSION_COOKIE_NAME } from '@/lib/session';
+import { verifySession, isSecretMisconfigured, SESSION_COOKIE_NAME } from '@/lib/session';
 import type { UserRole } from '@/lib/types';
 
 /**
@@ -34,6 +34,19 @@ export function proxy(request: NextRequest) {
 
   // Public route — nothing to enforce.
   if (!rule) return NextResponse.next();
+
+  // Surface a deployment mistake loudly and early. Without this the operator
+  // only discovers the missing secret when a user reports "login returns an
+  // error", with nothing in the UI explaining why.
+  if (isSecretMisconfigured()) {
+    console.error(
+      '[auth] SERVER_SECRET is missing or too short. Protected routes are ' +
+        'unavailable until it is set. Generate one with: openssl rand -hex 32'
+    );
+    const url = new URL('/', request.url);
+    url.searchParams.set('auth', 'misconfigured');
+    return NextResponse.redirect(url);
+  }
 
   const session = verifySession(request.cookies.get(SESSION_COOKIE_NAME)?.value);
 

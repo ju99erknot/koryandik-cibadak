@@ -120,7 +120,11 @@ export async function POST(req: Request) {
       success: true,
       user: { role: identity.role, sub: identity.sub },
     });
-  } catch {
+  } catch (error) {
+    // Log server-side: a misconfigured SERVER_SECRET surfaces here, and a
+    // silent 500 would leave the operator with "login is broken" and no clue
+    // why. The client still gets a generic message.
+    console.error('[auth] Login failed:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

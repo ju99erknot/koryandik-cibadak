@@ -31,6 +31,19 @@ export interface SessionPayload {
   exp: number;
 }
 
+/** Minimum entropy for the signing key, in characters. */
+const MIN_SECRET_LENGTH = 32;
+
+/**
+ * True when the deployment is missing a usable SERVER_SECRET in production.
+ * Exported so a health endpoint can surface the problem before a user hits it.
+ */
+export function isSecretMisconfigured(): boolean {
+  if (process.env.NODE_ENV !== 'production') return false;
+  const secret = process.env.SERVER_SECRET;
+  return !secret || secret.trim().length < MIN_SECRET_LENGTH;
+}
+
 function getSecret(): string {
   const secret = process.env.SERVER_SECRET;
 
@@ -43,7 +56,19 @@ function getSecret(): string {
           'Generate one with: openssl rand -hex 32'
       );
     }
+    console.warn(
+      '[auth] SERVER_SECRET is not set — using an insecure development ' +
+        'fallback. Set SERVER_SECRET before deploying to production.'
+    );
     return DEV_FALLBACK_SECRET;
+  }
+
+  if (process.env.NODE_ENV === 'production' && secret.trim().length < MIN_SECRET_LENGTH) {
+    // A short secret is brute-forceable, which defeats the signature entirely.
+    throw new Error(
+      `SERVER_SECRET must be at least ${MIN_SECRET_LENGTH} characters in production. ` +
+        'Generate one with: openssl rand -hex 32'
+    );
   }
 
   return secret;
