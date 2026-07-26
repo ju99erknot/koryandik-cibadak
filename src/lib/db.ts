@@ -2029,6 +2029,31 @@ export async function getGalleryBySchool(npsn: string): Promise<GalleryItem[]> {
   return combined;
 }
 
+async function ensureSchoolExistsInDb(npsn: string): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+  try {
+    const { data } = await supabase.from('schools').select('npsn').eq('npsn', npsn).maybeSingle();
+    if (!data) {
+      const found = schoolsData.find(s => s.npsn === npsn);
+      if (found) {
+        await supabase.from('schools').upsert({
+          npsn: found.npsn,
+          name: found.name,
+          level: found.level,
+          address: found.address || null,
+          gugus_id: found.gugus,
+          principal_name: found.principalName || null,
+          operator_name: found.operatorName || null,
+          student_count: found.studentCount || 0,
+          teacher_count: found.teacherCount || 0,
+        });
+      }
+    }
+  } catch (err) {
+    logger.warn('Failed to auto-ensure school in DB', { error: err });
+  }
+}
+
 // ========== SCHOOL PORTAL: FACILITY CRUD ==========
 
 export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): Promise<SchoolFacility> {
@@ -2040,9 +2065,11 @@ export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): P
 
   if (isSupabaseConfigured()) {
     try {
+      await ensureSchoolExistsInDb(facility.schoolNpsn);
       const { data, error } = await supabase
         .from('school_facilities')
         .insert({
+          id: newFacility.id,
           school_npsn: facility.schoolNpsn,
           name: facility.name,
           icon: facility.icon,
@@ -2051,10 +2078,16 @@ export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): P
         })
         .select()
         .single();
-      if (!error && data) return mapFacilityRow(data as Record<string, unknown>);
+      if (error) {
+        console.error('[Supabase Error] Gagal insert facility:', error);
+      } else if (data) {
+        return mapFacilityRow(data as Record<string, unknown>);
+      }
     } catch (err) {
-      logger.warn('Fallback add facility', { error: err });
+      console.error('[Supabase Exception] Add facility catch:', err);
     }
+  } else {
+    console.warn('[Supabase Config] Supabase belum terkonfigurasi di browser client.');
   }
   return newFacility;
 }
@@ -2073,9 +2106,13 @@ export async function updateSchoolFacility(id: string, schoolNpsn: string, updat
         .eq('id', id)
         .select()
         .single();
-      if (!error && data) return mapFacilityRow(data as Record<string, unknown>);
+      if (error) {
+        console.error('[Supabase Error] Gagal update facility:', error);
+      } else if (data) {
+        return mapFacilityRow(data as Record<string, unknown>);
+      }
     } catch (err) {
-      logger.warn('Fallback update facility', { error: err });
+      console.error('[Supabase Exception] Update facility catch:', err);
     }
   }
   const key = `koryandik_facilities_${schoolNpsn}`;
@@ -2090,10 +2127,14 @@ export async function updateSchoolFacility(id: string, schoolNpsn: string, updat
 export async function deleteSchoolFacility(id: string, schoolNpsn: string): Promise<void> {
   if (isSupabaseConfigured()) {
     try {
-      await supabase.from('school_facilities').delete().eq('id', id);
-      return;
+      const { error } = await supabase.from('school_facilities').delete().eq('id', id);
+      if (error) {
+        console.error('[Supabase Error] Gagal delete facility:', error);
+      } else {
+        return;
+      }
     } catch (err) {
-      logger.warn('Fallback delete facility', { error: err });
+      console.error('[Supabase Exception] Delete facility catch:', err);
     }
   }
   const key = `koryandik_facilities_${schoolNpsn}`;
@@ -2104,11 +2145,19 @@ export async function deleteSchoolFacility(id: string, schoolNpsn: string): Prom
 // ========== SCHOOL PORTAL: ACHIEVEMENT CRUD ==========
 
 export async function addSchoolAchievement(achievement: Omit<SchoolAchievement, 'id'>): Promise<SchoolAchievement> {
+  const newAch: SchoolAchievement = { ...achievement, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
+  const key = `koryandik_achievements_${achievement.schoolNpsn}`;
+  const existing = getStorageItem<SchoolAchievement[]>(key, []);
+  existing.push(newAch);
+  setStorageItem(key, existing);
+
   if (isSupabaseConfigured()) {
     try {
+      await ensureSchoolExistsInDb(achievement.schoolNpsn);
       const { data, error } = await supabase
         .from('school_achievements')
         .insert({
+          id: newAch.id,
           school_npsn: achievement.schoolNpsn,
           title: achievement.title,
           description: achievement.description || null,
@@ -2118,16 +2167,17 @@ export async function addSchoolAchievement(achievement: Omit<SchoolAchievement, 
         })
         .select()
         .single();
-      if (!error && data) return mapAchievementRow(data as Record<string, unknown>);
+      if (error) {
+        console.error('[Supabase Error] Gagal insert achievement:', error);
+      } else if (data) {
+        return mapAchievementRow(data as Record<string, unknown>);
+      }
     } catch (err) {
-      logger.warn('Fallback add achievement', { error: err });
+      console.error('[Supabase Exception] Add achievement catch:', err);
     }
+  } else {
+    console.warn('[Supabase Config] Supabase belum terkonfigurasi di browser client.');
   }
-  const newAch: SchoolAchievement = { ...achievement, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
-  const key = `koryandik_achievements_${achievement.schoolNpsn}`;
-  const existing = getStorageItem<SchoolAchievement[]>(key, []);
-  existing.push(newAch);
-  setStorageItem(key, existing);
   return newAch;
 }
 
@@ -2146,9 +2196,13 @@ export async function updateSchoolAchievement(id: string, schoolNpsn: string, up
         .eq('id', id)
         .select()
         .single();
-      if (!error && data) return mapAchievementRow(data as Record<string, unknown>);
+      if (error) {
+        console.error('[Supabase Error] Gagal update achievement:', error);
+      } else if (data) {
+        return mapAchievementRow(data as Record<string, unknown>);
+      }
     } catch (err) {
-      logger.warn('Fallback update achievement', { error: err });
+      console.error('[Supabase Exception] Update achievement catch:', err);
     }
   }
   const key = `koryandik_achievements_${schoolNpsn}`;
@@ -2163,10 +2217,14 @@ export async function updateSchoolAchievement(id: string, schoolNpsn: string, up
 export async function deleteSchoolAchievement(id: string, schoolNpsn: string): Promise<void> {
   if (isSupabaseConfigured()) {
     try {
-      await supabase.from('school_achievements').delete().eq('id', id);
-      return;
+      const { error } = await supabase.from('school_achievements').delete().eq('id', id);
+      if (error) {
+        console.error('[Supabase Error] Gagal delete achievement:', error);
+      } else {
+        return;
+      }
     } catch (err) {
-      logger.warn('Fallback delete achievement', { error: err });
+      console.error('[Supabase Exception] Delete achievement catch:', err);
     }
   }
   const key = `koryandik_achievements_${schoolNpsn}`;
@@ -2177,11 +2235,23 @@ export async function deleteSchoolAchievement(id: string, schoolNpsn: string): P
 // ========== SCHOOL PORTAL: GALLERY CRUD ==========
 
 export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'createdAt'>, schoolNpsn: string): Promise<GalleryItem> {
+  const newItem: GalleryItem = { 
+    ...item, 
+    id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()),
+    createdAt: new Date().toISOString()
+  };
+  const key = `koryandik_gallery_${schoolNpsn}`;
+  const existing = getStorageItem<GalleryItem[]>(key, []);
+  existing.push(newItem);
+  setStorageItem(key, existing);
+
   if (isSupabaseConfigured()) {
     try {
+      await ensureSchoolExistsInDb(schoolNpsn);
       const { data, error } = await supabase
         .from('gallery')
         .insert({
+          id: newItem.id,
           title: item.title,
           description: item.description || null,
           image_url: item.imageUrl,
@@ -2191,7 +2261,9 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
         })
         .select()
         .single();
-      if (!error && data) {
+      if (error) {
+        console.error('[Supabase Error] Gagal insert gallery:', error);
+      } else if (data) {
         return {
           id: String(data.id),
           title: String(data.title),
@@ -2203,18 +2275,11 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
         };
       }
     } catch (err) {
-      logger.warn('Fallback add gallery item', { error: err });
+      console.error('[Supabase Exception] Add gallery catch:', err);
     }
+  } else {
+    console.warn('[Supabase Config] Supabase belum terkonfigurasi di browser client.');
   }
-  const newItem: GalleryItem = { 
-    ...item, 
-    id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()),
-    createdAt: new Date().toISOString()
-  };
-  const key = `koryandik_gallery_${schoolNpsn}`;
-  const existing = getStorageItem<GalleryItem[]>(key, []);
-  existing.push(newItem);
-  setStorageItem(key, existing);
   return newItem;
 }
 
