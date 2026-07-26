@@ -1995,30 +1995,32 @@ export async function getSchoolAchievements(npsn: string): Promise<SchoolAchieve
 // ========== SCHOOL PORTAL: GALLERY PER SCHOOL ==========
 
 export async function getGalleryBySchool(npsn: string): Promise<GalleryItem[]> {
+  const cleanNpsn = String(npsn).trim();
   let dbGallery: GalleryItem[] = [];
   if (isSupabaseConfigured()) {
     try {
       const { data, error } = await supabase
         .from('gallery')
         .select('*')
-        .eq('school_npsn', npsn)
-        .order('date', { ascending: false });
-      if (!error && data && data.length > 0) {
+        .eq('school_npsn', cleanNpsn);
+      if (error) {
+        console.error('[Supabase Error] Gagal fetch gallery by school:', error);
+      } else if (data) {
         dbGallery = data.map((row: Record<string, unknown>) => ({
           id: String(row.id),
           title: String(row.title),
           description: (row.description as string) || '',
-          imageUrl: String(row.image_url),
+          imageUrl: String(row.image_url || row.imageUrl || ''),
           category: (row.category as GalleryItem['category']) || 'Lainnya',
-          date: String(row.date),
-          createdAt: String(row.created_at),
+          date: String(row.date || ''),
+          createdAt: String(row.created_at || ''),
         }));
       }
     } catch (err) {
-      logger.warn('Fallback gallery by school', { error: err });
+      console.error('[Supabase Exception] Fetch gallery by school catch:', err);
     }
   }
-  const localGallery = getStorageItem<GalleryItem[]>(`koryandik_gallery_${npsn}`, []);
+  const localGallery = getStorageItem<GalleryItem[]>(`koryandik_gallery_${cleanNpsn}`, []);
   const combined = [...dbGallery];
   for (const local of localGallery) {
     if (!combined.some(g => g.id === local.id)) {
