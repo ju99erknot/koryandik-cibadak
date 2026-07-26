@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { School } from '@/lib/schoolsData';
-import { updateSchool, getSchools, getSchoolByNpsn, getSchoolFacilities, addSchoolFacility, updateSchoolFacility, deleteSchoolFacility, getSchoolAchievements, addSchoolAchievement, updateSchoolAchievement, deleteSchoolAchievement, getGalleryBySchool, addGalleryItemBySchool, deleteGalleryItemBySchool } from '@/lib/db';
+import { updateSchool, getSchools, getSchoolByNpsn, getSchoolFacilities, addSchoolFacility, updateSchoolFacility, deleteSchoolFacility, getSchoolAchievements, addSchoolAchievement, updateSchoolAchievement, deleteSchoolAchievement, getGalleryBySchool, addGalleryItemBySchool, deleteGalleryItemBySchool, isSupabaseConfigured } from '@/lib/db';
 import type { SchoolFacility, SchoolAchievement, AchievementCategory, GalleryItem } from '@/lib/types';
 import { FACILITY_ICONS, ACHIEVEMENT_CATEGORIES } from '@/lib/types';
 import { toast } from 'sonner';
@@ -778,6 +778,26 @@ export default function SchoolProfile() {
       headerActions={<CommandPalette currentUser={{ role: 'school', details: school, npsn: school.npsn }} onThemeToggle={() => toggleThemeWithTransition()} />}
     >
       <div className="content-area">
+
+        {!isSupabaseConfigured() && (
+          <div style={{
+            padding: '14px 20px', borderRadius: '16px', marginBottom: '24px',
+            background: 'linear-gradient(135deg, rgba(239,68,68,0.15), rgba(245,158,11,0.1))',
+            border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444',
+            fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '12px',
+            boxShadow: '0 4px 12px rgba(239,68,68,0.1)'
+          }}>
+            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '20px', flexShrink: 0, color: '#f59e0b' }} />
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>
+                PERINGATAN: Supabase Belum Terhubung di Production
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 400, lineHeight: 1.4 }}>
+                Environment Variable (<code>NEXT_PUBLIC_SUPABASE_URL</code> &amp; <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>) belum terpasang atau belum di-Redeploy di Hosting Vercel. Seluruh data yang Anda isi saat ini hanya tersimpan lokal di browser ini dan TIDAK akan muncul di Incognito / pengunjung publik.
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ══════ HERO CARD ══════ */}
         <div className="animate-fade-in" style={{

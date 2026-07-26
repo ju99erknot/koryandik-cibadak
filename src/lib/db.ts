@@ -191,13 +191,17 @@ export async function upsertAppSetting(
 }
 
 // Helper to check if Supabase is properly configured
-const isSupabaseConfigured = () => {
-  return (
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://your-project-id.supabase.co' &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== 'placeholder' &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length > 50
+export const isSupabaseConfigured = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  return Boolean(
+    url &&
+    url !== 'https://your-project-id.supabase.co' &&
+    !url.includes('placeholder') &&
+    key &&
+    key !== 'placeholder' &&
+    key !== 'placeholder-key' &&
+    key.length > 10
   );
 };
 
