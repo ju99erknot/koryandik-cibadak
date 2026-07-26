@@ -371,15 +371,16 @@ export async function updateSchool(npsn: string, updates: Partial<School>): Prom
 
       const { data, error } = await supabase
         .from('schools')
-        .update(dbUpdates)
-        .eq('npsn', npsn)
+        .upsert({ npsn, ...dbUpdates })
         .select()
         .single();
-      if (!error && data) {
+      if (error) {
+        console.error('[Supabase Error] Gagal upsert school profile:', error);
+      } else if (data) {
         return mapSchoolRow(data as Record<string, unknown>);
       }
     } catch (err) {
-      logger.warn('Fallback update school', { error: err });
+      console.error('[Supabase Exception] Update school catch:', err);
     }
   }
 
