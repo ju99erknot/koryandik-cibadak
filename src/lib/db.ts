@@ -2126,21 +2126,21 @@ export async function updateSchoolFacility(id: string, schoolNpsn: string, updat
 }
 
 export async function deleteSchoolFacility(id: string, schoolNpsn: string): Promise<void> {
+  // Always remove from LocalStorage fallback
+  const key = `koryandik_facilities_${schoolNpsn}`;
+  const items = getStorageItem<SchoolFacility[]>(key, []);
+  setStorageItem(key, items.filter(f => f.id !== id));
+
   if (isSupabaseConfigured()) {
     try {
       const { error } = await supabase.from('school_facilities').delete().eq('id', id);
       if (error) {
         console.error('[Supabase Error] Gagal delete facility:', error);
-      } else {
-        return;
       }
     } catch (err) {
       console.error('[Supabase Exception] Delete facility catch:', err);
     }
   }
-  const key = `koryandik_facilities_${schoolNpsn}`;
-  const items = getStorageItem<SchoolFacility[]>(key, []);
-  setStorageItem(key, items.filter(f => f.id !== id));
 }
 
 // ========== SCHOOL PORTAL: ACHIEVEMENT CRUD ==========
@@ -2216,21 +2216,21 @@ export async function updateSchoolAchievement(id: string, schoolNpsn: string, up
 }
 
 export async function deleteSchoolAchievement(id: string, schoolNpsn: string): Promise<void> {
+  // Always remove from LocalStorage fallback
+  const key = `koryandik_achievements_${schoolNpsn}`;
+  const items = getStorageItem<SchoolAchievement[]>(key, []);
+  setStorageItem(key, items.filter(a => a.id !== id));
+
   if (isSupabaseConfigured()) {
     try {
       const { error } = await supabase.from('school_achievements').delete().eq('id', id);
       if (error) {
         console.error('[Supabase Error] Gagal delete achievement:', error);
-      } else {
-        return;
       }
     } catch (err) {
       console.error('[Supabase Exception] Delete achievement catch:', err);
     }
   }
-  const key = `koryandik_achievements_${schoolNpsn}`;
-  const items = getStorageItem<SchoolAchievement[]>(key, []);
-  setStorageItem(key, items.filter(a => a.id !== id));
 }
 
 // ========== SCHOOL PORTAL: GALLERY CRUD ==========
@@ -2285,17 +2285,21 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
 }
 
 export async function deleteGalleryItemBySchool(id: string, schoolNpsn: string): Promise<void> {
-  if (isSupabaseConfigured()) {
-    try {
-      await supabase.from('gallery').delete().eq('id', id);
-      return;
-    } catch (err) {
-      logger.warn('Fallback delete gallery item', { error: err });
-    }
-  }
+  // Always remove from LocalStorage fallback
   const key = `koryandik_gallery_${schoolNpsn}`;
   const items = getStorageItem<GalleryItem[]>(key, []);
   setStorageItem(key, items.filter(a => a.id !== id));
+
+  if (isSupabaseConfigured()) {
+    try {
+      const { error } = await supabase.from('gallery').delete().eq('id', id);
+      if (error) {
+        console.error('[Supabase Error] Gagal delete gallery item:', error);
+      }
+    } catch (err) {
+      console.error('[Supabase Exception] Delete gallery item catch:', err);
+    }
+  }
 }
 
 // ========== SCHOOL PORTAL & PENGAWAS: SUPERVISION NOTES ==========
