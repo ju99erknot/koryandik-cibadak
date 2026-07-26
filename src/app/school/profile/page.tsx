@@ -432,17 +432,64 @@ export default function SchoolProfile() {
       toast.error('Judul dan URL gambar harus diisi.'); return;
     }
     try {
-      const newItem = await addGalleryItemBySchool({
+      const itemData = {
         title: galleryForm.title.trim(),
         description: galleryForm.description.trim(),
         imageUrl: convertGDriveUrl(galleryForm.imageUrl.trim()),
         category: galleryForm.category,
         date: new Date().toISOString().slice(0, 10),
-      }, school.npsn);
-      setGalleryItems(prev => [newItem, ...prev]);
-      setGalleryForm({ title: '', description: '', imageUrl: '', category: 'Lainnya' });
-      toast.success('Foto galeri berhasil ditambahkan!');
-    } catch { toast.error('Gagal menambahkan foto galeri.'); }
+      };
+      
+      console.log('[Gallery Debug] school.npsn:', school.npsn);
+      console.log('[Gallery Debug] itemData:', JSON.stringify(itemData));
+      console.log('[Gallery Debug] isSupabaseConfigured:', isSupabaseConfigured());
+      
+      // Direct Supabase insert for debugging
+      const { supabase } = await import('@/lib/supabaseClient');
+      const directId = crypto.randomUUID();
+      console.log('[Gallery Debug] Attempting direct Supabase insert with id:', directId);
+      
+      const { data: directData, error: directError } = await supabase
+        .from('gallery')
+        .insert({
+          id: directId,
+          title: itemData.title,
+          description: itemData.description || null,
+          image_url: itemData.imageUrl,
+          category: itemData.category,
+          date: itemData.date,
+          school_npsn: String(school.npsn).trim(),
+        })
+        .select();
+      
+      if (directError) {
+        console.error('[Gallery Debug] DIRECT INSERT ERROR:', directError);
+        toast.error(`DB Error: ${directError.message} (code: ${directError.code})`);
+        return;
+      }
+      
+      console.log('[Gallery Debug] DIRECT INSERT SUCCESS:', directData);
+      
+      if (directData && directData.length > 0) {
+        const newItem: GalleryItem = {
+          id: String(directData[0].id),
+          title: String(directData[0].title),
+          description: (directData[0].description as string) || '',
+          imageUrl: String(directData[0].image_url),
+          category: (directData[0].category as GalleryItem['category']) || 'Lainnya',
+          date: String(directData[0].date || ''),
+          createdAt: String(directData[0].created_at || ''),
+        };
+        setGalleryItems(prev => [newItem, ...prev]);
+        setGalleryForm({ title: '', description: '', imageUrl: '', category: 'Lainnya' });
+        toast.success(`✅ Berhasil masuk database! ID: ${newItem.id.substring(0, 8)}...`);
+      } else {
+        toast.warning('Insert berhasil tapi data kosong di response');
+      }
+    } catch (err) {
+      console.error('[Gallery Debug] EXCEPTION:', err);
+      toast.error(`Exception: ${err instanceof Error ? err.message : String(err)}`);
+    }
   };
 
   const handleDeleteGalleryItem = async (id: string) => {
