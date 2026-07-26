@@ -82,23 +82,44 @@ export default function LandingPage() {
 
 
   useEffect(() => {
-    // Check local session
+    // Resume an existing session. The role must come from the server-verified
+    // cookie: redirecting based on localStorage alone would bounce the user
+    // straight back here (proxy.ts rejects the request), causing a loop.
     if (typeof window !== 'undefined') {
-      const savedUser = localStorage.getItem('koryandik_current_user');
-      if (savedUser) {
-        try {
-          const userObj = JSON.parse(savedUser);
-          if (userObj.role === 'admin') router.push('/admin/dashboard');
-          else if (userObj.role === 'gugus') router.push('/gugus/dashboard');
-          else if (userObj.role === 'pengawas') router.push('/pengawas/dashboard');
-          else if (userObj.role === 'kkks') router.push('/kkks/dashboard');
-          else if (userObj.role === 'pgri') router.push('/pgri/dashboard');
-          else if (userObj.role === 'school') router.push('/school/dashboard');
-        } catch {
-          localStorage.removeItem('koryandik_current_user');
-        }
+      const params = new URLSearchParams(window.location.search);
+      const authNotice = params.get('auth');
+
+      if (authNotice === 'forbidden') {
+        toast.error('Anda tidak memiliki akses ke halaman tersebut.');
+      } else if (authNotice === 'required') {
+        toast.info('Sesi Anda telah berakhir. Silakan masuk kembali.');
       }
 
+      if (authNotice) {
+        // Clean the URL so a refresh does not repeat the toast.
+        window.history.replaceState(null, '', window.location.pathname);
+      } else {
+        const dashboardByRole: Record<string, string> = {
+          admin: '/admin/dashboard',
+          gugus: '/gugus/dashboard',
+          pengawas: '/pengawas/dashboard',
+          kkks: '/kkks/dashboard',
+          pgri: '/pgri/dashboard',
+          school: '/school/dashboard',
+        };
+
+        fetch('/api/auth/session', { credentials: 'same-origin', cache: 'no-store' })
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data?.authenticated && dashboardByRole[data.role]) {
+              router.push(dashboardByRole[data.role]);
+            } else {
+              localStorage.removeItem('koryandik_current_user');
+              localStorage.removeItem('koryandik_session_token');
+            }
+          })
+          .catch(() => { /* stay on the landing page */ });
+      }
     }
 
     // Load all data in parallel with batched state updates (single re-render)

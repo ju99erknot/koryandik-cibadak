@@ -592,17 +592,18 @@ export async function getGugusData(existingSchools?: School[]): Promise<GugusDat
   let rawGugus: GugusData[] = [];
   if (isSupabaseConfigured()) {
     try {
+      // Explicit column list — see getSupervisors() above; `passcode` here is
+      // the coordinator login secret and must stay server-side.
       const { data, error } = await supabase
         .from('gugus')
-        .select('*')
+        .select('id, name, koordinator, sekolah_inti')
         .order('id');
       if (!error && data) {
         rawGugus = data.map((g: Record<string, unknown>) => ({
           id: g.id as string,
           name: g.name as string,
           koordinator: g.koordinator as string,
-          sekolahInti: g.sekolah_inti as string,
-          passcode: g.passcode as string
+          sekolahInti: g.sekolah_inti as string
         }));
       }
     } catch (err) {
@@ -628,8 +629,11 @@ export async function getGugusData(existingSchools?: School[]): Promise<GugusDat
     return aOrder - bOrder;
   });
 
-  // Enrich with sekolah inti passcode and koordinator
-  // Koordinator SELALU diambil dari operator_name sekolah inti (single source of truth)
+  // Enrich koordinator from the sekolah inti operator (single source of truth).
+  // NOTE: the gugus passcode is by design the sekolah-inti NPSN, which is
+  // public information already shown across the portal, so exposing it here is
+  // not a secret leak. The authoritative check still happens server-side in
+  // /api/auth against gugusSecrets.
   try {
     const allSchools = existingSchools || await getSchools();
     return rawGugus.map((g) => {
@@ -693,17 +697,19 @@ export async function getSupervisors(): Promise<PengawasData[]> {
   
   if (isSupabaseConfigured()) {
     try {
+      // Explicit column list: `select('*')` shipped `passcode` (and the NIP,
+      // which doubles as a passcode for supervisors) to every browser that
+      // loaded a public page. Credentials must never leave the server.
       const { data, error } = await supabase
         .from('supervisors')
-        .select('*')
+        .select('id, name, role, title, wilayah, photo_url, phone')
         .order('role')
         .order('name');
       if (!error && data) {
         supervisors = data.map((s: Record<string, unknown>) => ({
           id: s.id as string,
           name: s.name as string,
-          nip: s.nip as string,
-          passcode: s.passcode as string,
+          nip: '',
           role: s.role as 'pengawas' | 'kkks' | 'pgri' | 'admin',
           title: s.title as string,
           wilayah: s.wilayah as string,
@@ -744,17 +750,24 @@ export async function getSupervisors(): Promise<PengawasData[]> {
 export async function saveSupervisors(supervisors: PengawasData[]): Promise<void> {
   if (isSupabaseConfigured()) {
     try {
-      const formatted = supervisors.map(s => ({
-        id: s.id,
-        name: s.name,
-        nip: s.nip,
-        passcode: s.passcode,
-        role: s.role,
-        title: s.title,
-        wilayah: s.wilayah,
-        photo_url: s.photoUrl,
-        phone: s.phone
-      }));
+      // getSupervisors() no longer returns `nip`/`passcode` (they are secrets
+      // and stay server-side), so an unconditional upsert would blank them out
+      // and lock every supervisor out of the portal. Only write those columns
+      // when the caller explicitly supplied a new value.
+      const formatted = supervisors.map(s => {
+        const row: Record<string, unknown> = {
+          id: s.id,
+          name: s.name,
+          role: s.role,
+          title: s.title,
+          wilayah: s.wilayah,
+          photo_url: s.photoUrl,
+          phone: s.phone
+        };
+        if (s.nip !== undefined && s.nip !== '') row.nip = s.nip;
+        if (s.passcode !== undefined && s.passcode !== '') row.passcode = s.passcode;
+        return row;
+      });
 
       const { data: existing } = await supabase.from('supervisors').select('id');
       const existingIds = new Set(((existing ?? []) as { id: string }[]).map(r => r.id));

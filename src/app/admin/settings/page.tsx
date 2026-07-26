@@ -1391,8 +1391,7 @@ export default function AdminSettingsPage() {
                     <tr>
                       <th>Nama</th>
                       <th>Peran</th>
-                      <th>NIP</th>
-                      <th>Kode Akses</th>
+                      <th>Kredensial</th>
                       <th>Wilayah</th>
                       <th>Telepon</th>
                       <th>Aksi</th>
@@ -1439,8 +1438,10 @@ export default function AdminSettingsPage() {
                             {ROLE_LABELS[item.role] || item.role}
                           </span>
                         </td>
-                        <td style={{ fontSize: '12px', fontFamily: 'monospace' }}>{item.nip}</td>
-                        <td style={{ fontSize: '12px', fontFamily: 'monospace' }}>{item.passcode}</td>
+                        <td style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                          <i className="fa-solid fa-lock" style={{ marginRight: 6 }} aria-hidden="true"></i>
+                          Tersimpan di server
+                        </td>
                         <td style={{ fontSize: '12px' }}>{item.wilayah}</td>
                         <td style={{ fontSize: '12px' }}>{item.phone || '-'}</td>
                         <td>

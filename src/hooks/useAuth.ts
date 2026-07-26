@@ -5,6 +5,18 @@ import { useRouter } from 'next/navigation';
 import type { SessionUser, UserRole } from '@/lib/types';
 import { removePresence } from '@/lib/db';
 
+/**
+ * Client-side auth state.
+ *
+ * The authoritative check happens on the server (see `src/proxy.ts`): a request
+ * for a protected route never renders without a valid signed session cookie.
+ * This hook asks the server who the user is via `/api/auth/session` rather than
+ * trusting localStorage, which the user can edit freely.
+ *
+ * localStorage is still used, but only as a *presentation* cache for
+ * non-authoritative fields (display name, avatar, cached school details). The
+ * role returned by the server always wins.
+ */
 export function useAuth(requiredRole?: UserRole | UserRole[]) {
   const router = useRouter();
   const [user, setUser] = useState<SessionUser | null>(null);
@@ -17,71 +29,98 @@ export function useAuth(requiredRole?: UserRole | UserRole[]) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const stored = localStorage.getItem('koryandik_current_user');
-    const token = localStorage.getItem('koryandik_session_token');
-    
-    if (!stored || !token) {
-      // Redirect first; defer the loading flip so the effect body does not
-      // trigger a synchronous cascading render (react-hooks/set-state-in-effect).
-      router.push('/');
-      queueMicrotask(() => setLoading(false));
-      return;
-    }
+    let cancelled = false;
 
-    try {
-      // Validate token format
-      const parts = token.split(':');
-      if (parts.length !== 2) throw new Error('Invalid token format');
+    const clearLocalSession = () => {
+      localStorage.removeItem('koryandik_current_user');
+      localStorage.removeItem('koryandik_session_token');
+    };
 
-      // Decode token payload to extract the ORIGINAL session identity
-      const payloadDecoded = Buffer.from(parts[0], 'base64').toString('utf8');
-      const tokenPayload = JSON.parse(payloadDecoded);
+    const resolveSession = async () => {
+      let session: { role: UserRole; sub: string } | null = null;
 
-      // Parse current stored user data
-      const parsed = JSON.parse(stored) as SessionUser;
+      try {
+        const res = await fetch('/api/auth/session', {
+          credentials: 'same-origin',
+          cache: 'no-store',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.authenticated && data?.role) {
+            session = { role: data.role as UserRole, sub: String(data.sub ?? '') };
+          }
+        }
+      } catch {
+        // Network failure — treat as unauthenticated rather than assuming access.
+      }
 
-      // Validate identity match: core fields must match between token and stored data
-      // This allows profile updates (avatar, name, details) without invalidating the session
-      const identityMatch =
-        (tokenPayload.role === parsed.role) &&
-        (tokenPayload.npsn === parsed.npsn || tokenPayload.id === parsed.id);
+      if (cancelled) return;
 
-      if (!identityMatch) throw new Error('Token identity mismatch');
+      if (!session) {
+        clearLocalSession();
+        router.push('/');
+        setLoading(false);
+        return;
+      }
 
-      // Check role authorization
+      // Enforce the role client-side too, so the UI does not briefly render a
+      // dashboard the user may not enter. `proxy.ts` is the real gate.
       const roles = requiredRole
         ? Array.isArray(requiredRole) ? requiredRole : [requiredRole]
         : null;
 
-      if (roles && !roles.includes(parsed.role)) {
+      if (roles && !roles.includes(session.role)) {
         router.push('/');
-        queueMicrotask(() => setLoading(false));
+        setLoading(false);
         return;
       }
 
-      // Only update user state if identity actually changed (prevents infinite re-renders)
+      // Merge cached presentation data, but never let it override the
+      // server-issued role or subject.
+      let cached: Partial<SessionUser> = {};
+      try {
+        const stored = localStorage.getItem('koryandik_current_user');
+        if (stored) {
+          const parsed = JSON.parse(stored) as SessionUser;
+          const matchesSession =
+            session.role === 'school'
+              ? parsed.npsn === session.sub
+              : parsed.id === session.sub;
+          if (parsed.role === session.role && matchesSession) {
+            cached = parsed;
+          } else {
+            // Stale cache from a previous account: discard it.
+            localStorage.removeItem('koryandik_current_user');
+          }
+        }
+      } catch {
+        localStorage.removeItem('koryandik_current_user');
+      }
+
+      const resolved: SessionUser = {
+        ...cached,
+        role: session.role,
+        ...(session.role === 'school' ? { npsn: session.sub } : { id: session.sub }),
+      };
+
       const prev = userRef.current;
       const isSameUser = prev &&
-        prev.role === parsed.role &&
-        prev.npsn === parsed.npsn &&
-        prev.id === parsed.id &&
-        prev.name === parsed.name &&
-        prev.avatar === parsed.avatar;
+        prev.role === resolved.role &&
+        prev.npsn === resolved.npsn &&
+        prev.id === resolved.id &&
+        prev.name === resolved.name &&
+        prev.avatar === resolved.avatar;
 
-      // Commit the restored session in a microtask so the effect body itself
-      // stays free of synchronous setState calls, which would otherwise force
-      // an immediate cascading re-render on every mount.
-      queueMicrotask(() => {
-        if (!isSameUser) {
-          userRef.current = parsed;
-          setUser(parsed);
-        }
-        setLoading(false);
-      });
-    } catch {
-      router.push('/');
-      queueMicrotask(() => setLoading(false));
-    }
+      if (!isSameUser) {
+        userRef.current = resolved;
+        setUser(resolved);
+      }
+      setLoading(false);
+    };
+
+    resolveSession();
+
+    return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, roleKey]);
 
@@ -98,7 +137,11 @@ export function useAuth(requiredRole?: UserRole | UserRole[]) {
     }
     localStorage.removeItem('koryandik_current_user');
     localStorage.removeItem('koryandik_session_token');
-    router.push('/');
+
+    // Clear the httpOnly cookie server-side; it cannot be removed from JS.
+    fetch('/api/auth', { method: 'DELETE', credentials: 'same-origin' })
+      .catch(() => { /* best effort */ })
+      .finally(() => router.push('/'));
   }, [router]);
 
   return { user, loading, logout };

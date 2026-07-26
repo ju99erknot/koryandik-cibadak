@@ -50,6 +50,11 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     };
   }, []);
 
+  /**
+   * The authoritative session is the httpOnly cookie set by /api/auth. The
+   * object cached here only carries display data (name, avatar, school
+   * details); `useAuth` re-derives role and identity from the server.
+   */
   const executeLogin = (session: SessionUser, successMsg: string, route: string, roleName: string) => {
     setAuthRoleName(roleName);
     setAuthOverlayActive(true);
@@ -84,11 +89,10 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: 'school', identifier: target.npsn, passcode: schoolNpsnInput, sessionData })
+        credentials: 'same-origin',
+        body: JSON.stringify({ role: 'school', identifier: target.npsn, passcode: schoolNpsnInput })
       });
       if (!res.ok) throw new Error();
-      const { token } = await res.json();
-      localStorage.setItem('koryandik_session_token', token);
       executeLogin(sessionData, `Selamat datang, Operator ${target.name}!`, '/school/dashboard', `OPERATOR SEKOLAH - ${target.npsn}`);
     } catch {
       toast.error('NPSN salah! Gunakan NPSN sekolah Anda sebagai passcode untuk masuk.');
@@ -106,11 +110,10 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: 'gugus', identifier: gugus.id, passcode: gugusPasscode, sessionData })
+        credentials: 'same-origin',
+        body: JSON.stringify({ role: 'gugus', identifier: gugus.id, passcode: gugusPasscode })
       });
       if (!res.ok) throw new Error();
-      const { token } = await res.json();
-      localStorage.setItem('koryandik_session_token', token);
       executeLogin(sessionData, `Selamat datang, Koordinator ${gugus.name}!`, '/gugus/dashboard', `KOORDINATOR ${gugus.name.toUpperCase()}`);
     } catch {
       toast.error('Passcode gugus salah! Gunakan NPSN Sekolah Inti.');
@@ -129,11 +132,10 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role, identifier: sup.id, passcode, sessionData })
+        credentials: 'same-origin',
+        body: JSON.stringify({ role, identifier: sup.id, passcode })
       });
       if (!res.ok) throw new Error();
-      const { token } = await res.json();
-      localStorage.setItem('koryandik_session_token', token);
       executeLogin(sessionData, `Selamat datang, ${sup.title}!`, `/${role}/dashboard`, sup.title.toUpperCase());
     } catch {
       toast.error('Passcode Anda salah!');
@@ -153,11 +155,10 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: 'admin', identifier, passcode: adminPassword, sessionData })
+        credentials: 'same-origin',
+        body: JSON.stringify({ role: 'admin', identifier, passcode: adminPassword })
       });
       if (!res.ok) throw new Error();
-      const { token } = await res.json();
-      localStorage.setItem('koryandik_session_token', token);
       const title = adminUser ? adminUser.title.toUpperCase() : 'SUPER ADMINISTRATOR';
       executeLogin(sessionData, 'Selamat datang kembali, Administrator!', '/admin/dashboard', title);
     } catch {
