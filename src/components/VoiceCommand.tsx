@@ -3,10 +3,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { SessionUser } from '@/lib/types';
+import {
+  getSpeechRecognition,
+  type SpeechRecognitionInstance,
+  type SpeechRecognitionEvent,
+  type SpeechRecognitionErrorEvent,
+} from '@/lib/speechRecognition';
 
 interface VoiceCommandProps {
-  currentUser?: any;
-  onCommand?: (command: string, params: any) => void;
+  currentUser?: SessionUser;
+  onCommand?: (command: string, params: Record<string, unknown>) => void;
   variant?: 'icon' | 'fab';
 }
 
@@ -15,7 +22,7 @@ export default function VoiceCommand({ currentUser, onCommand, variant = 'icon' 
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   const processCommand = useCallback((command: string) => {
     console.log('Processing command:', command);
@@ -91,7 +98,7 @@ export default function VoiceCommand({ currentUser, onCommand, variant = 'icon' 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = getSpeechRecognition();
     
     if (SpeechRecognition) {
       let active = true;
@@ -112,7 +119,7 @@ export default function VoiceCommand({ currentUser, onCommand, variant = 'icon' 
         setIsListening(false);
       };
       
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         const current = event.resultIndex;
         const result = event.results[current];
         const transcriptText = result[0].transcript;
@@ -124,7 +131,7 @@ export default function VoiceCommand({ currentUser, onCommand, variant = 'icon' 
         }
       };
       
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
       };

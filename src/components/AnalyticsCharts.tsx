@@ -5,11 +5,16 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
+import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import type { Submission } from '@/lib/db';
+import type { Category, School } from '@/lib/schoolsData';
 
 interface AnalyticsChartsProps {
-  submissions: any[];
-  categories: any[];
-  schools: any[];
+  // Callers pass live data that may contain holes, so entries are treated as
+  // possibly-missing and every access below is already guarded.
+  submissions: (Submission | null | undefined)[];
+  categories: (Category | null | undefined)[];
+  schools: (School | null | undefined)[];
   variant?: 'full' | 'compact'; // full = admin, compact = school
 }
 
@@ -46,8 +51,8 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
       return {
         name,
         total: monthSubs.length,
-        approved: monthSubs.filter(s => s.status === 'approved').length,
-        rejected: monthSubs.filter(s => s.status === 'rejected').length,
+        approved: monthSubs.filter(s => s?.status === 'approved').length,
+        rejected: monthSubs.filter(s => s?.status === 'rejected').length,
       };
     });
   }, [validSubmissions]);
@@ -69,7 +74,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
 
   // --- 3. Category Completion ---
   const categoryData = useMemo(() => {
-    return validCategories.slice(0, 8).map((cat: any) => {
+    return validCategories.slice(0, 8).map((cat) => {
       if (!cat) return { name: '', persen: 0, approved: 0, total: 1 };
       const catSubs = validSubmissions.filter(s => s?.categoryId === cat.id);
       const approved = catSubs.filter(s => s?.status === 'approved').length;
@@ -125,7 +130,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(val: any) => [`${val} berkas`]} />
+                <Tooltip formatter={(val?: ValueType) => [`${val ?? 0} berkas`]} />
               </PieChart>
             </ResponsiveContainer>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -191,7 +196,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
                   <Cell key={i} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(val: any) => [`${val} berkas`]} />
+              <Tooltip formatter={(val?: ValueType) => [`${val ?? 0} berkas`]} />
             </PieChart>
           </ResponsiveContainer>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -218,7 +223,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
             <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} stroke="var(--text-muted)" unit="%" />
             <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={120} stroke="var(--text-muted)" />
             <Tooltip
-              formatter={(val: any) => [`${val}%`]}
+              formatter={(val?: ValueType) => [`${val ?? 0}%`]}
               contentStyle={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '10px', fontSize: '12px' }}
             />
             <Bar dataKey="persen" name="Kelengkapan" radius={[0, 6, 6, 0]} barSize={16}>

@@ -76,7 +76,7 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
     name: string;
     icon: string;
     section: string;
-    action: (e?: any) => void;
+    action: (e?: React.MouseEvent) => void;
   }> = [
     { id: 'nav-home', name: 'Ke Halaman Beranda Utama', icon: 'fa-solid fa-house', section: 'Navigasi', action: () => router.push('/') },
   ];
@@ -261,7 +261,7 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
             style={{
               position: 'fixed',
               inset: 0,
-              zIndex: 'var(--z-modal-full)' as any,
+              zIndex: 'var(--z-modal-full)' as React.CSSProperties['zIndex'],
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'center',

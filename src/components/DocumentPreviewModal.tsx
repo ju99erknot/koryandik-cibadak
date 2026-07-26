@@ -89,7 +89,7 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 'var(--z-modal-full)' as any,
+        zIndex: 'var(--z-modal-full)' as React.CSSProperties['zIndex'],
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

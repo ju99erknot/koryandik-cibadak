@@ -16,7 +16,9 @@ export function useSoundEffects(enabled = true, customSounds?: SoundEffects) {
   const getOrCreateContext = useCallback(() => {
     if (typeof window === 'undefined') return null;
     if (!audioContextRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass =
+      window.AudioContext ||
+      (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
         audioContextRef.current = new AudioContextClass();
       }

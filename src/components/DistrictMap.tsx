@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { confirmAction } from '@/components/ConfirmDialog';
 import FancySelect from '@/components/FancySelect';
 import { formatPhoneForWhatsApp } from '@/lib/phoneUtils';
+import type * as LeafletNS from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
 
@@ -64,15 +65,15 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
   const [drawerSchool, setDrawerSchool] = useState<School | null>(null);
   
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const circlesRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<LeafletNS.Map | null>(null);
+  const markersRef = useRef<LeafletNS.Marker[]>([]);
+  const circlesRef = useRef<LeafletNS.CircleMarker[]>([]);
   const [isHeatmapMode, setIsHeatmapMode] = useState(false);
   const isDark = useIsDarkTheme(true);
   const [totalCategories, setTotalCategories] = useState(8);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-  const tileLayerRef = useRef<any>(null);
+  const tileLayerRef = useRef<LeafletNS.TileLayer | null>(null);
 
   // Update tilelayer url when theme changes
   useEffect(() => {
@@ -82,10 +83,14 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
         : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
       tileLayerRef.current.setUrl(newTileUrl);
     }
-    // Force map to invalidate size when theme changes
-    if (mapInstanceRef.current) {
-      setTimeout(() => mapInstanceRef.current.invalidateSize(), 100);
-    }
+    // Force map to invalidate size when theme changes. The timer is cleared on
+    // cleanup and the ref re-checked inside the callback, because the map can be
+    // destroyed before it fires (guarding against a post-unmount call).
+    if (!mapInstanceRef.current) return;
+    const resizeTimer = setTimeout(() => {
+      mapInstanceRef.current?.invalidateSize();
+    }, 100);
+    return () => clearTimeout(resizeTimer);
   }, [isDark]);
 
   const loadData = async () => {
@@ -203,7 +208,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
         // Handle Map Click in Edit Mode
         map.off('click');
         if (isEditMode && selectedSchoolNpsn) {
-          map.on('click', async (e: any) => {
+          map.on('click', async (e: LeafletNS.LeafletMouseEvent) => {
             const newLat = parseFloat(e.latlng.lat.toFixed(6));
             const newLng = parseFloat(e.latlng.lng.toFixed(6));
             

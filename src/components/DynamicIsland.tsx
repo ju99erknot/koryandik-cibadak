@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { playSuccessSound } from '@/lib/sound';
+import '@/lib/appEvents';
 
 // For temporary toast notifications (like login success)
 export function showDynamicNotification(message: string, icon?: string) {
@@ -65,7 +66,7 @@ export default function DynamicIsland() {
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
-    const handleNotify = (e: any) => {
+    const handleNotify = (e: WindowEventMap['koryandik-notify']) => {
       setMessage(e.detail.message);
       if (e.detail.icon) setIcon(e.detail.icon);
       setMode('toast');
@@ -77,7 +78,7 @@ export default function DynamicIsland() {
       }, 4000);
     };
 
-    const handleCountdown = (e: any) => {
+    const handleCountdown = (e: WindowEventMap['koryandik-countdown']) => {
       clearTimeout(timeoutId); // Stop any toast hiding
       setMessage(e.detail.message);
       setTargetDate(new Date(e.detail.targetDateStr));
@@ -91,7 +92,7 @@ export default function DynamicIsland() {
     };
 
     // Upload lifecycle events
-    const handleUploadStart = (e: any) => {
+    const handleUploadStart = (e: WindowEventMap['koryandik-upload-start']) => {
       clearTimeout(timeoutId);
       setMessage(`Mengunggah: ${e.detail.fileName}`);
       setIcon('fa-cloud-arrow-up');
@@ -101,11 +102,11 @@ export default function DynamicIsland() {
       setActive(true);
     };
 
-    const handleUploadProgress = (e: any) => {
+    const handleUploadProgress = (e: WindowEventMap['koryandik-upload-progress']) => {
       setUploadProgress(e.detail.progress);
     };
 
-    const handleUploadComplete = (e: any) => {
+    const handleUploadComplete = (e: WindowEventMap['koryandik-upload-complete']) => {
       setUploadProgress(100);
       setUploadSuccess(e.detail.success);
       setMessage(e.detail.message);

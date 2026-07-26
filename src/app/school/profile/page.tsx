@@ -13,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import SchoolSocialMedia from '@/components/SchoolSocialMedia';
+import type * as LeafletNS from 'leaflet';
 
 /* ═══════════════════════════════════════════════════════════
    TABS CONFIG
@@ -136,8 +137,8 @@ export default function SchoolProfile() {
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<unknown>(null);
-  const markerRef = useRef<unknown>(null);
+  const mapInstanceRef = useRef<LeafletNS.Map | null>(null);
+  const markerRef = useRef<LeafletNS.Marker | null>(null);
 
   // ─── Saving state ───
   const [saving, setSaving] = useState(false);
@@ -510,10 +511,8 @@ export default function SchoolProfile() {
 
   const updateMapMarker = (newLat: number | null, newLng: number | null) => {
     if (newLat !== null && newLng !== null && markerRef.current && mapInstanceRef.current) {
-      const marker = markerRef.current as any;
-      const map = mapInstanceRef.current as any;
-      marker.setLatLng([newLat, newLng]);
-      map.panTo([newLat, newLng]);
+      markerRef.current.setLatLng([newLat, newLng]);
+      mapInstanceRef.current.panTo([newLat, newLng]);
     }
   };
 
@@ -567,7 +566,7 @@ export default function SchoolProfile() {
         clearTimeout(timer);
         if (mapInstanceRef.current) {
           try {
-            (mapInstanceRef.current as any).remove();
+            mapInstanceRef.current.remove();
           } catch (e) {
             console.error('Error cleaning up map:', e);
           }

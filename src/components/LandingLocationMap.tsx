@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { KORYANDIK_ADDRESS, KORYANDIK_CENTER } from '@/lib/mapConstants';
 import type { ProfileSettings } from '@/lib/types';
+import type * as LeafletNS from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
 
@@ -20,10 +21,10 @@ export default function LandingLocationMap({
   compact = false,
 }: LandingLocationMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<any>(null);
-  const markerRef = useRef<any>(null);
-  const tileRef = useRef<any>(null);
-  const pulseRef = useRef<any>(null);
+  const mapInstance = useRef<LeafletNS.Map | null>(null);
+  const markerRef = useRef<LeafletNS.Marker | null>(null);
+  const tileRef = useRef<LeafletNS.TileLayer | null>(null);
+  const pulseRef = useRef<LeafletNS.CircleMarker | null>(null);
   const isDark = useIsDarkTheme(true);
   const [ready, setReady] = useState(false);
 
@@ -39,7 +40,7 @@ export default function LandingLocationMap({
     if (!mapRef.current || typeof window === 'undefined') return;
 
     let cancelled = false;
-    let localMapInstance: any = null;
+    let localMapInstance: LeafletNS.Map | null = null;
 
     import('leaflet').then((L) => {
       if (cancelled || !mapRef.current) return;

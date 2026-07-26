@@ -12,6 +12,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 export default function PengawasDashboard() {
   const { user, loading, logout } = useAuth('pengawas');
@@ -212,7 +213,7 @@ export default function PengawasDashboard() {
                   <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} unit="%" />
                   <Tooltip
                     contentStyle={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '10px', fontSize: '12px' }}
-                    formatter={(value: any) => [`${value}%`, 'Progres']}
+                    formatter={(value?: ValueType) => [`${value ?? 0}%`, 'Progres']}
                   />
                   <Bar dataKey="progres" radius={[6, 6, 0, 0]} barSize={50}>
                     {guguses.map((_, idx) => (

@@ -59,7 +59,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
   });
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 'var(--z-modal-full)' as any, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 'var(--z-modal-full)' as React.CSSProperties['zIndex'], display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       {/* Backdrop */}
       <div
         onClick={onClose}

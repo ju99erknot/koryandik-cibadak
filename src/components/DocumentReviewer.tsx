@@ -99,7 +99,7 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
       aria-modal="true"
       aria-labelledby="doc-reviewer-title"
       aria-describedby="doc-reviewer-desc"
-      style={{ position: 'fixed', inset: 0, zIndex: 'var(--z-modal-full)' as any, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 'var(--z-modal-full)' as React.CSSProperties['zIndex'], display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
       <button
         type="button"

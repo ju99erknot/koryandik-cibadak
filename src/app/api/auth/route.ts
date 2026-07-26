@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { gugusSecrets, supervisorSecrets } from '@/lib/authSecrets';
+import type { SessionUser } from '@/lib/types';
 
 const SERVER_SECRET = process.env.SERVER_SECRET || 'koryandik-cibadak-secret-key-2026';
 
-function signToken(sessionUser: any): string {
+function signToken(sessionUser: SessionUser | Record<string, unknown>): string {
   const payloadStr = JSON.stringify(sessionUser);
   const payload = Buffer.from(payloadStr).toString('base64');
   const signature = crypto.createHmac('sha256', SERVER_SECRET).update(payloadStr).digest('hex');

@@ -7,6 +7,7 @@ import type { School, GugusData, PengawasData } from '@/lib/schoolsData';
 import { showDynamicNotification } from '@/components/DynamicIsland';
 import BiometricAuthOverlay from '@/components/BiometricAuthOverlay';
 import FancySelect from '@/components/FancySelect';
+import type { SessionUser } from '@/lib/types';
 
 interface LoginDrawerProps {
   isOpen: boolean;
@@ -49,7 +50,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     };
   }, []);
 
-  const executeLogin = (session: any, successMsg: string, route: string, roleName: string) => {
+  const executeLogin = (session: SessionUser, successMsg: string, route: string, roleName: string) => {
     setAuthRoleName(roleName);
     setAuthOverlayActive(true);
     
@@ -71,7 +72,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     const target = schools.find(s => s.npsn === selectedSchoolNpsn);
     if (!target) return;
 
-    const sessionData = { 
+    const sessionData: SessionUser = { 
       npsn: target.npsn, 
       name: target.name, 
       role: 'school', 
@@ -99,7 +100,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     const gugus = guguses.find(g => g.id === selectedGugus);
     if (!gugus) return;
 
-    const sessionData = { id: gugus.id, name: gugus.name, koordinator: gugus.koordinator, role: 'gugus' };
+    const sessionData: SessionUser = { id: gugus.id, name: gugus.name, koordinator: gugus.koordinator, role: 'gugus' };
 
     try {
       const res = await fetch('/api/auth', {
@@ -122,7 +123,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     if (!sup) return;
 
     const passcode = role === 'pengawas' ? pengawasPassword : role === 'kkks' ? kkksPassword : pgriPassword;
-    const sessionData = { id: sup.id, name: sup.name, title: sup.title, role, avatar: sup.photoUrl };
+    const sessionData: SessionUser = { id: sup.id, name: sup.name, title: sup.title, role, avatar: sup.photoUrl };
 
     try {
       const res = await fetch('/api/auth', {
@@ -143,7 +144,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
     e.preventDefault();
     const adminUser = supervisors.find(s => s.role === 'admin');
     
-    const sessionData = adminUser 
+    const sessionData: SessionUser = adminUser 
       ? { id: adminUser.id, name: adminUser.name, role: 'admin', title: adminUser.title, avatar: adminUser.photoUrl }
       : { name: 'Administrator', role: 'admin' };
       

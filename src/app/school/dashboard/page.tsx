@@ -19,6 +19,7 @@ import AnalyticsCharts from '@/components/AnalyticsCharts';
 import BulkUploadModal from '@/components/BulkUploadModal';
 import FancySelect from '@/components/FancySelect';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 export default function SchoolDashboard() {
   const router = useRouter();
@@ -573,7 +574,7 @@ export default function SchoolDashboard() {
                       </Pie>
                       <Tooltip 
                         contentStyle={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '10px', fontSize: '12px' }} 
-                        formatter={(value: any, name: any) => [`${value ?? 0} berkas`, name]}
+                        formatter={(value?: ValueType, name?: NameType) => [`${value ?? 0} berkas`, name]}
                       />
                     </PieChart>
                   </ResponsiveContainer>

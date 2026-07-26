@@ -14,6 +14,21 @@ import ContactDirectoryModal from '@/components/ContactDirectoryModal';
 import { updateSchool, getSupervisors, saveSupervisors } from '@/lib/db';
 import { toast } from 'sonner';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
+import type { WaSimulatedEventDetail } from '@/lib/appEvents';
+
+type WaAlert = WaSimulatedEventDetail & { id: string };
+
+/**
+ * SessionUser.details is intentionally `unknown` (its shape varies per role),
+ * so narrow it safely instead of casting through `any`.
+ */
+function getOperatorName(details: unknown): string | undefined {
+  if (details && typeof details === 'object' && 'operatorName' in details) {
+    const value = (details as { operatorName?: unknown }).operatorName;
+    if (typeof value === 'string' && value.trim() !== '') return value;
+  }
+  return undefined;
+}
 
 interface DashboardShellProps {
   user: SessionUser;
@@ -78,14 +93,14 @@ export default function DashboardShell({
 
   // Contact Directory & WhatsApp Simulator States
   const [isDirectoryOpen, setIsDirectoryOpen] = useState(false);
-  const [waAlerts, setWaAlerts] = useState<any[]>([]);
+  const [waAlerts, setWaAlerts] = useState<WaAlert[]>([]);
   const waTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   useEffect(() => {
-    const handleWaEvent = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      const id = Date.now() + Math.random().toString(36).substr(2, 5);
-      const newAlert = { id, ...detail };
+    const handleWaEvent = (e: WindowEventMap['koryandik_wa_simulated']) => {
+      const detail = e.detail;
+      const id = Date.now() + Math.random().toString(36).substring(2, 7);
+      const newAlert: WaAlert = { id, ...detail };
       
       setWaAlerts((prev) => [newAlert, ...prev]);
 
@@ -136,7 +151,7 @@ export default function DashboardShell({
           }
 
           const initialName = parsed.role === 'school'
-            ? ((parsed.details as any)?.operatorName || parsed.name || 'Operator Sekolah')
+            ? (getOperatorName(parsed.details) || parsed.name || 'Operator Sekolah')
             : (parsed.name || '');
           
           setEditName(initialName);
@@ -178,7 +193,7 @@ export default function DashboardShell({
 
   // Display name for avatar/profile: if school, use Operator Name instead of School Name
   const displayName = currentUser.role === 'school'
-    ? ((currentUser.details as any)?.operatorName || currentUser.name || 'Operator Sekolah')
+    ? (getOperatorName(currentUser.details) || currentUser.name || 'Operator Sekolah')
     : (currentUser.name || currentUser.id || 'User');
 
   const userInitial = displayName[0].toUpperCase();
@@ -583,7 +598,7 @@ export default function DashboardShell({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 'var(--z-modal)' as any,
+            zIndex: 'var(--z-modal)' as React.CSSProperties['zIndex'],
           }}
         >
           <div
@@ -759,7 +774,7 @@ export default function DashboardShell({
           position: 'fixed',
           top: '20px',
           right: '20px',
-          zIndex: 'var(--z-toast)' as any,
+          zIndex: 'var(--z-toast)' as React.CSSProperties['zIndex'],
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',

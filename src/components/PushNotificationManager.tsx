@@ -3,9 +3,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { usePushNotifications } from '@/lib/pushNotifications';
 import { triggerBrowserNotification } from '@/lib/notificationEvents';
+import type { SessionUser } from '@/lib/types';
 
 interface PushNotificationManagerProps {
-  currentUser?: any;
+  currentUser?: SessionUser;
 }
 
 export default function PushNotificationManager({ currentUser }: PushNotificationManagerProps) {

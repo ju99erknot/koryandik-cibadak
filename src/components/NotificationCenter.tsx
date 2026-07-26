@@ -159,7 +159,7 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
           border: '1px solid var(--card-border)',
           borderRadius: '20px',
           boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-          zIndex: 'var(--z-notification)' as any,
+          zIndex: 'var(--z-notification)' as React.CSSProperties['zIndex'],
           overflow: 'hidden',
           animation: 'notif-slide-in 0.2s ease-out'
         }}>

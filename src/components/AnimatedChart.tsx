@@ -6,7 +6,7 @@ import React from 'react';
 interface ChartData {
   name: string;
   value: number;
-  [key: string]: any;
+  [key: string]: string | number | undefined;
 }
 
 interface AnimatedChartProps {

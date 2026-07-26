@@ -101,15 +101,15 @@ export default function AdminSettingsPage() {
   const [showRawJson, setShowRawJson] = useState<Record<string, boolean>>({});
 
   // Helper to parse JSON settings safely
-  const getParsedValue = (key: string, defaultValue: any) => {
+  const getParsedValue = <T,>(key: string, defaultValue: T): T => {
     try {
-      return JSON.parse(formValues[key] || '{}') || defaultValue;
+      return (JSON.parse(formValues[key] || '{}') as T) || defaultValue;
     } catch {
       return defaultValue;
     }
   };
 
-  const updateParsedValue = (key: string, newValue: any) => {
+  const updateParsedValue = (key: string, newValue: unknown) => {
     setFormValues((prev) => ({
       ...prev,
       [key]: JSON.stringify(newValue, null, 2)
