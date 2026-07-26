@@ -2252,7 +2252,7 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
   if (isSupabaseConfigured()) {
     try {
       await ensureSchoolExistsInDb(cleanNpsn);
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('gallery')
         .insert({
           id: newItem.id,
@@ -2264,6 +2264,25 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
           school_npsn: cleanNpsn,
         })
         .select();
+
+      if (error && (error.code === '42703' || error.message?.includes('column'))) {
+        console.warn('[Supabase Fallback] Retrying gallery insert with alternative column names...');
+        const res = await supabase
+          .from('gallery')
+          .insert({
+            id: newItem.id,
+            title: item.title,
+            description: item.description || null,
+            image_url: item.imageUrl,
+            category: item.category,
+            date: item.date,
+            school_npsn: cleanNpsn,
+          })
+          .select();
+        data = res.data;
+        error = res.error;
+      }
+
       if (error) {
         console.error('[Supabase Error] Gagal insert gallery:', error);
       } else if (data && data.length > 0) {
@@ -2271,10 +2290,10 @@ export async function addGalleryItemBySchool(item: Omit<GalleryItem, 'id' | 'cre
           id: String(data[0].id),
           title: String(data[0].title),
           description: (data[0].description as string) || '',
-          imageUrl: String(data[0].image_url),
+          imageUrl: String(data[0].image_url || data[0].imageUrl || ''),
           category: (data[0].category as GalleryItem['category']) || 'Lainnya',
-          date: String(data[0].date),
-          createdAt: String(data[0].created_at),
+          date: String(data[0].date || ''),
+          createdAt: String(data[0].created_at || ''),
         };
       }
     } catch (err) {
