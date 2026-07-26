@@ -454,7 +454,6 @@ export default function SchoolProfile() {
         .insert({
           id: directId,
           title: itemData.title,
-          description: itemData.description || null,
           image_url: itemData.imageUrl,
           category: itemData.category,
           date: itemData.date,
