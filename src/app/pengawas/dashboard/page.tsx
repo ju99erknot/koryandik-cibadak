@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import type { School, Category, GugusData } from '@/lib/schoolsData';
-import { getSubmissions, getSchools, getCategories, getGugusData } from '@/lib/db';
+import { getSubmissions, getSchools, getCategories, getGugusData, getSupervisionNotes, addSupervisionNote, deleteSupervisionNote } from '@/lib/db';
 import type { Submission } from '@/lib/db';
+import type { SupervisionNote } from '@/lib/types';
+import { toast } from 'sonner';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import CommandPalette from '@/components/CommandPalette';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
@@ -21,13 +23,75 @@ export default function PengawasDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterGugus, setFilterGugus] = useState('all');
 
+  const [supervisionNotes, setSupervisionNotes] = useState<SupervisionNote[]>([]);
+  const [isSupervisionModalOpen, setIsSupervisionModalOpen] = useState(false);
+  const [selectedSchoolForNote, setSelectedSchoolForNote] = useState<School | null>(null);
+  const [noteForm, setNoteForm] = useState({
+    visitDate: new Date().toISOString().split('T')[0],
+    category: 'Akademik' as SupervisionNote['category'],
+    score: 5,
+    notes: '',
+    recommendations: '',
+  });
+
   useEffect(() => {
     if (loading || !user) return;
     getSubmissions().then(setSubmissions);
     getSchools().then(setSchools);
     getCategories().then(setCategories);
     getGugusData().then(setGuguses);
+    getSupervisionNotes().then(setSupervisionNotes);
   }, [loading, user]);
+
+  const handleOpenSupervisionModal = (school: School) => {
+    setSelectedSchoolForNote(school);
+    setNoteForm({
+      visitDate: new Date().toISOString().split('T')[0],
+      category: 'Akademik',
+      score: 5,
+      notes: '',
+      recommendations: '',
+    });
+    setIsSupervisionModalOpen(true);
+  };
+
+  const handleSaveSupervisionNote = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedSchoolForNote || !user) return;
+    if (!noteForm.notes.trim()) {
+      toast.error('Catatan supervisi wajib diisi.');
+      return;
+    }
+
+    try {
+      const created = await addSupervisionNote({
+        schoolNpsn: selectedSchoolForNote.npsn,
+        schoolName: selectedSchoolForNote.name,
+        supervisorId: user.id || 'supervisor',
+        supervisorName: user.name || 'Pengawas Pembina',
+        visitDate: noteForm.visitDate,
+        category: noteForm.category,
+        score: Number(noteForm.score) || 5,
+        notes: noteForm.notes.trim(),
+        recommendations: noteForm.recommendations.trim(),
+      });
+      setSupervisionNotes(prev => [created, ...prev]);
+      setIsSupervisionModalOpen(false);
+      toast.success(`Catatan supervisi untuk ${selectedSchoolForNote.name} berhasil disimpan!`);
+    } catch {
+      toast.error('Gagal menyimpan catatan supervisi.');
+    }
+  };
+
+  const handleDeleteSupervisionNote = async (id: string) => {
+    try {
+      await deleteSupervisionNote(id);
+      setSupervisionNotes(prev => prev.filter(n => n.id !== id));
+      toast.success('Catatan supervisi berhasil dihapus.');
+    } catch {
+      toast.error('Gagal menghapus catatan.');
+    }
+  };
 
   const filteredSchools = schools.filter(s => {
     const matchSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.npsn.includes(searchTerm);
@@ -202,6 +266,7 @@ export default function PengawasDashboard() {
                       <th>Gugus</th>
                       <th>Progress</th>
                       <th>Status</th>
+                      <th>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -237,6 +302,15 @@ export default function PengawasDashboard() {
                               <span className="badge badge-danger" style={{ fontSize: '10px' }}>{counts.rejected}</span>
                             </div>
                           </td>
+                          <td>
+                            <button
+                              className="btn btn-sm btn-primary"
+                              onClick={() => handleOpenSupervisionModal(school)}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', padding: '6px 12px', borderRadius: '8px' }}
+                            >
+                              <i className="fa-solid fa-clipboard-user"></i> Catat Supervisi
+                            </button>
+                          </td>
                         </tr>
                       );
                     })}
@@ -245,7 +319,154 @@ export default function PengawasDashboard() {
               </div>
             </div>
           </div>
+
+          {/* Supervision Notes History */}
+          <div className="card animate-fade-in" style={{ marginTop: '24px' }}>
+            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2><i className="fa-solid fa-clipboard-check"></i> Riwayat Catatan Supervisi Pengawas</h2>
+              <span className="badge badge-info">{supervisionNotes.length} Catatan</span>
+            </div>
+            <div className="card-body">
+              {supervisionNotes.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+                  {supervisionNotes.map((note) => (
+                    <div
+                      key={note.id}
+                      style={{
+                        padding: '16px',
+                        borderRadius: '14px',
+                        background: 'var(--card-glass)',
+                        border: '1px solid var(--card-border)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px',
+                        position: 'relative',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <strong style={{ fontSize: '14px', color: 'var(--text-primary)' }}>{note.schoolName}</strong>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }}></i>
+                            {new Date(note.visitDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </div>
+                        </div>
+                        <span className="badge badge-primary" style={{ fontSize: '10px' }}>{note.category}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Penilaian:</span>
+                        <div style={{ display: 'flex', gap: '2px', color: '#f59e0b', fontSize: '12px' }}>
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <i key={star} className={`fa-${star <= note.score ? 'solid' : 'regular'} fa-star`}></i>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.5, background: 'rgba(0,0,0,0.03)', padding: '10px', borderRadius: '8px' }}>
+                        <strong>Catatan:</strong> {note.notes}
+                      </div>
+
+                      {note.recommendations && (
+                        <div style={{ fontSize: '12px', color: '#0284c7', lineHeight: 1.5, background: 'rgba(2,132,199,0.08)', padding: '10px', borderRadius: '8px', borderLeft: '3px solid #0284c7' }}>
+                          <strong>Rekomendasi:</strong> {note.recommendations}
+                        </div>
+                      )}
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                        <small style={{ fontSize: '10px', opacity: 0.6 }}>Oleh: {note.supervisorName}</small>
+                        <button
+                          onClick={() => handleDeleteSupervisionNote(note.id)}
+                          style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}
+                          title="Hapus Catatan"
+                        >
+                          <i className="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '30px', opacity: 0.6 }}>
+                  <i className="fa-solid fa-clipboard-list" style={{ fontSize: '32px', marginBottom: '8px' }}></i>
+                  <p style={{ margin: 0 }}>Belum ada catatan supervisi yang dibuat.</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+
+      {/* Supervision Note Modal */}
+      {isSupervisionModalOpen && selectedSchoolForNote && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '20px', width: '100%', maxWidth: '520px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', margin: 'auto' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--card-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }}></i> Catat Supervisi Sekolah
+              </h3>
+              <button onClick={() => setIsSupervisionModalOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <form onSubmit={handleSaveSupervisionNote} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Sekolah Binaan</label>
+                <input type="text" className="form-control" value={`${selectedSchoolForNote.name} (${selectedSchoolForNote.npsn})`} disabled style={{ opacity: 0.8 }} />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Tanggal Kunjungan</label>
+                  <input type="date" className="form-control" value={noteForm.visitDate} onChange={(e) => setNoteForm({ ...noteForm, visitDate: e.target.value })} required />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Bidang Supervisi</label>
+                  <select className="form-control" value={noteForm.category} onChange={(e) => setNoteForm({ ...noteForm, category: e.target.value as SupervisionNote['category'] })}>
+                    <option value="Akademik">Akademik</option>
+                    <option value="Manajerial">Manajerial</option>
+                    <option value="SPJ BOS">SPJ BOS</option>
+                    <option value="Dapodik & ANBK">Dapodik & ANBK</option>
+                    <option value="Sarpras & UKS">Sarpras & UKS</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Penilaian Kesiapan (1 - 5 Bintang)</label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setNoteForm({ ...noteForm, score: star })}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '22px', color: star <= noteForm.score ? '#f59e0b' : 'var(--card-border)', transition: 'transform 0.15s' }}
+                    >
+                      <i className={`fa-${star <= noteForm.score ? 'solid' : 'regular'} fa-star`}></i>
+                    </button>
+                  ))}
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', marginLeft: '8px' }}>{noteForm.score} / 5</span>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Catatan Supervisi & Temuan</label>
+                <textarea className="form-control" rows={3} placeholder="Tuliskan temuan atau catatan evaluasi..." value={noteForm.notes} onChange={(e) => setNoteForm({ ...noteForm, notes: e.target.value })} required></textarea>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Rekomendasi Pembinaan</label>
+                <textarea className="form-control" rows={2} placeholder="Rekomendasi tindak lanjut untuk sekolah..." value={noteForm.recommendations} onChange={(e) => setNoteForm({ ...noteForm, recommendations: e.target.value })}></textarea>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '12px' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setIsSupervisionModalOpen(false)}>Batal</button>
+                <button type="submit" className="btn btn-primary"><i className="fa-solid fa-floppy-disk"></i> Simpan Catatan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardShell>
     </>
   );

@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { School, Category } from '@/lib/schoolsData';
-import { getSubmissionsBySchool, addSubmission, updateSubmission, getCategories, getAnnouncements, checkAndCreateDeadlineReminders, getAppSetting, getCalendarEvents, getRelatedLinks } from '@/lib/db';
+import { getSubmissionsBySchool, addSubmission, updateSubmission, getCategories, getAnnouncements, checkAndCreateDeadlineReminders, getAppSetting, getCalendarEvents, getRelatedLinks, getSupervisionNotesBySchool } from '@/lib/db';
 import type { Submission, Announcement } from '@/lib/db';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
-import type { SessionUser, CalendarEvent, RelatedLink } from '@/lib/types';
+import type { SessionUser, CalendarEvent, RelatedLink, SupervisionNote } from '@/lib/types';
 import { playCelebrationSound, playSuccessSound } from '@/lib/sound';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
@@ -29,6 +29,7 @@ export default function SchoolDashboard() {
   const [activeCategories, setActiveCategories] = useState<Category[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
+  const [supervisionNotes, setSupervisionNotes] = useState<SupervisionNote[]>([]);
 
 
   // Form states
@@ -170,6 +171,7 @@ export default function SchoolDashboard() {
     getCategories().then(setActiveCategories);
     getAnnouncements().then(setAnnouncements);
     getCalendarEvents().then(setCalendarEvents);
+    getSupervisionNotesBySchool(user.npsn).then(setSupervisionNotes);
     getAppSetting<{ enabled: boolean }>('announcement_banner_enabled', { enabled: true })
       .then((config) => setAnnouncementBannerEnabled(config?.enabled ?? true))
       .catch(() => setAnnouncementBannerEnabled(true));
@@ -353,6 +355,69 @@ export default function SchoolDashboard() {
               </div>
             </div>
           ))}
+
+          {/* 🚨 REVISION & REJECTION ALERT BANNER */}
+          {submissions.some(s => s.status === 'revision' || s.status === 'rejected') && (
+            <div className="animate-fade-in" style={{
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(239, 68, 68, 0.08) 100%)',
+              border: '1px solid rgba(245, 158, 11, 0.35)',
+              borderRadius: '16px',
+              padding: '16px 20px',
+              marginBottom: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <i className="fa-solid fa-triangle-exclamation" style={{ color: '#f59e0b', fontSize: '20px', animation: 'pulse 1.5s infinite' }}></i>
+                  <div>
+                    <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                      Pemberitahuan Revisi &amp; Catatan Pengawas
+                    </h3>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '2px 0 0' }}>
+                      Terdapat {submissions.filter(s => s.status === 'revision' || s.status === 'rejected').length} berkas yang memerlukan perhatian atau unggah ulang.
+                    </p>
+                  </div>
+                </div>
+                <span className="badge badge-warning" style={{ fontSize: '11px' }}>Perlu Tindakan</span>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px', marginTop: '4px' }}>
+                {submissions.filter(s => s.status === 'revision' || s.status === 'rejected').map(sub => {
+                  const cat = activeCategories.find(c => c.id === sub.categoryId);
+                  return (
+                    <div key={sub.id} style={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>{cat?.name || 'Berkas'}</span>
+                        <span className={`badge badge-${sub.status === 'revision' ? 'warning' : 'danger'}`} style={{ fontSize: '10px' }}>
+                          {sub.status === 'revision' ? 'Revisi' : 'Ditolak'}
+                        </span>
+                      </div>
+                      {sub.notes && (
+                        <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.03)', padding: '8px', borderRadius: '6px', borderLeft: '3px solid #f59e0b' }}>
+                          <i className="fa-solid fa-comment-dots" style={{ marginRight: '6px', color: '#f59e0b' }}></i>
+                          {sub.notes}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-xs"
+                        style={{ alignSelf: 'flex-end', fontSize: '10.5px' }}
+                        onClick={() => {
+                          setSelectedCatId(sub.categoryId);
+                          setFileNameInput(sub.fileName || `${cat?.name.replace(/\s/g, '_') || 'berkas'}_${school.npsn}.pdf`);
+                          setDriveLinkInput(sub.driveLink || '');
+                        }}
+                      >
+                        <i className="fa-solid fa-cloud-arrow-up"></i> Perbaiki &amp; Upload Ulang
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Deadline Countdown Banner */}
           <div className="card animate-fade-in" style={{
@@ -832,7 +897,52 @@ export default function SchoolDashboard() {
             {/* Analytics Status Donut */}
             <AnalyticsCharts submissions={submissions} categories={activeCategories} schools={[]} variant="compact" />
 
-
+            {/* Supervision Notes Widget */}
+            <div className="card animate-fade-in" style={{ gridColumn: 'span 3' }}>
+              <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2><i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }}></i> Catatan Supervisi &amp; Kunjungan Pengawas</h2>
+                <span className="badge badge-info">{supervisionNotes.length} Catatan</span>
+              </div>
+              <div className="card-body">
+                {supervisionNotes.length > 0 ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
+                    {supervisionNotes.map(note => (
+                      <div key={note.id} style={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span className="badge badge-primary" style={{ fontSize: '10px' }}>Bidang: {note.category}</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }}></i>
+                            {new Date(note.visitDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Rating Kesiapan:</span>
+                          <div style={{ color: '#f59e0b', fontSize: '12px', display: 'flex', gap: '2px' }}>
+                            {[1, 2, 3, 4, 5].map(star => (
+                              <i key={star} className={`fa-${star <= note.score ? 'solid' : 'regular'} fa-star`}></i>
+                            ))}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-primary)', background: 'rgba(0,0,0,0.03)', padding: '10px', borderRadius: '8px', lineHeight: 1.5 }}>
+                          <strong>Catatan Evaluasi:</strong> {note.notes}
+                        </div>
+                        {note.recommendations && (
+                          <div style={{ fontSize: '12px', color: '#0284c7', background: 'rgba(2,132,199,0.08)', padding: '10px', borderRadius: '8px', borderLeft: '3px solid #0284c7', lineHeight: 1.5 }}>
+                            <strong>Rekomendasi Tindak Lanjut:</strong> {note.recommendations}
+                          </div>
+                        )}
+                        <small style={{ fontSize: '10px', opacity: 0.6 }}>Pengawas: {note.supervisorName}</small>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
+                    <i className="fa-solid fa-user-check" style={{ fontSize: '28px', marginBottom: '8px' }}></i>
+                    <p style={{ margin: 0, fontSize: '13px' }}>Belum ada catatan kunjungan supervisi dari Pengawas Pembina.</p>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* List */}
             <div className="card animate-fade-in" style={{ gridColumn: 'span 3' }}>
@@ -844,7 +954,8 @@ export default function SchoolDashboard() {
                   <table className="data-table">
                     <thead>
                       <tr>
-                        <th>Kategori</th>
+                        <th>Kategori Berkas</th>
+                        <th>Alur Verifikasi</th>
                         <th>Status</th>
                         <th>File Name</th>
                         <th>Aksi</th>
@@ -859,6 +970,22 @@ export default function SchoolDashboard() {
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <i className={cat.icon} style={{ color: 'var(--primary)' }}></i>
                                 <span><strong>{cat.name}</strong></span>
+                              </div>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px' }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: sub ? '#22c55e' : 'var(--text-muted)' }}>
+                                  <i className={`fa-solid ${sub ? 'fa-circle-check' : 'fa-circle-dot'}`}></i> Diunggah
+                                </span>
+                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '8px', opacity: 0.4 }}></i>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: sub && sub.status !== 'pending' ? '#22c55e' : sub?.status === 'pending' ? '#f59e0b' : 'var(--text-muted)' }}>
+                                  <i className={`fa-solid ${sub && sub.status !== 'pending' ? 'fa-circle-check' : sub?.status === 'pending' ? 'fa-clock' : 'fa-circle-dot'}`}></i> Verifikasi
+                                </span>
+                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '8px', opacity: 0.4 }}></i>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: sub?.status === 'approved' ? '#22c55e' : sub?.status === 'revision' ? '#f59e0b' : sub?.status === 'rejected' ? '#ef4444' : 'var(--text-muted)' }}>
+                                  <i className={`fa-solid ${sub?.status === 'approved' ? 'fa-circle-check' : sub?.status === 'revision' ? 'fa-arrows-rotate' : sub?.status === 'rejected' ? 'fa-circle-xmark' : 'fa-circle-dot'}`}></i>
+                                  {sub?.status === 'approved' ? 'Disetujui' : sub?.status === 'revision' ? 'Revisi' : sub?.status === 'rejected' ? 'Ditolak' : 'Hasil'}
+                                </span>
                               </div>
                             </td>
                             <td>

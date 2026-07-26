@@ -152,3 +152,17 @@ export interface SchoolAchievement {
   icon: string;
 }
 
+export interface SupervisionNote {
+  id: string;
+  schoolNpsn: string;
+  schoolName: string;
+  supervisorId: string;
+  supervisorName: string;
+  visitDate: string;
+  category: 'Akademik' | 'Manajerial' | 'SPJ BOS' | 'Dapodik & ANBK' | 'Sarpras & UKS' | 'Lainnya';
+  score: number;
+  notes: string;
+  recommendations: string;
+  createdAt: string;
+}
+

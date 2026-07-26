@@ -5,7 +5,7 @@
 import { supabase } from './supabaseClient';
 import { schoolsData, categories as initialCategories, gugusData, supervisorData } from './schoolsData';
 import type { School, Category, GugusData, PengawasData } from './schoolsData';
-import type { NotificationTargetRole, SubmissionStatus, NotificationType, FaqItem, DownloadItem, ProfileSettings, CalendarEvent, GalleryItem, RelatedLink, Notification, SchoolFacility, SchoolAchievement, AchievementCategory } from './types';
+import type { NotificationTargetRole, SubmissionStatus, NotificationType, FaqItem, DownloadItem, ProfileSettings, CalendarEvent, GalleryItem, RelatedLink, Notification, SchoolFacility, SchoolAchievement, AchievementCategory, SupervisionNote } from './types';
 import { SUPERVISOR_ROLE_ORDER } from './types';
 import { emitNotificationsUpdated, maybeNotifyCurrentUser } from './notificationEvents';
 import { DEFAULT_FAQS, DEFAULT_DOWNLOADS, DEFAULT_PROFILE, DEFAULT_CALENDAR_EVENTS, DEFAULT_GALLERY, DEFAULT_RELATED_LINKS } from './dbSeeds';
@@ -1928,6 +1928,7 @@ function mapFacilityRow(row: Record<string, unknown>): SchoolFacility {
 }
 
 export async function getSchoolFacilities(npsn: string): Promise<SchoolFacility[]> {
+  let dbFacilities: SchoolFacility[] = [];
   if (isSupabaseConfigured()) {
     try {
       const { data, error } = await supabase
@@ -1936,13 +1937,20 @@ export async function getSchoolFacilities(npsn: string): Promise<SchoolFacility[
         .eq('school_npsn', npsn)
         .order('sort_order');
       if (!error && data) {
-        return data.map((r: Record<string, unknown>) => mapFacilityRow(r));
+        dbFacilities = data.map((r: Record<string, unknown>) => mapFacilityRow(r));
       }
     } catch (err) {
       logger.warn('Fallback to local facilities', { error: err });
     }
   }
-  return getStorageItem<SchoolFacility[]>(`koryandik_facilities_${npsn}`, []);
+  const localFacilities = getStorageItem<SchoolFacility[]>(`koryandik_facilities_${npsn}`, []);
+  const combined = [...dbFacilities];
+  for (const local of localFacilities) {
+    if (!combined.some(f => f.id === local.id || f.name.toLowerCase() === local.name.toLowerCase())) {
+      combined.push(local);
+    }
+  }
+  return combined;
 }
 
 // ========== SCHOOL PORTAL: ACHIEVEMENTS ==========
@@ -1960,6 +1968,7 @@ function mapAchievementRow(row: Record<string, unknown>): SchoolAchievement {
 }
 
 export async function getSchoolAchievements(npsn: string): Promise<SchoolAchievement[]> {
+  let dbAchievements: SchoolAchievement[] = [];
   if (isSupabaseConfigured()) {
     try {
       const { data, error } = await supabase
@@ -1968,18 +1977,26 @@ export async function getSchoolAchievements(npsn: string): Promise<SchoolAchieve
         .eq('school_npsn', npsn)
         .order('year', { ascending: false });
       if (!error && data) {
-        return data.map((r: Record<string, unknown>) => mapAchievementRow(r));
+        dbAchievements = data.map((r: Record<string, unknown>) => mapAchievementRow(r));
       }
     } catch (err) {
       logger.warn('Fallback to local achievements', { error: err });
     }
   }
-  return getStorageItem<SchoolAchievement[]>(`koryandik_achievements_${npsn}`, []);
+  const localAchievements = getStorageItem<SchoolAchievement[]>(`koryandik_achievements_${npsn}`, []);
+  const combined = [...dbAchievements];
+  for (const local of localAchievements) {
+    if (!combined.some(a => a.id === local.id || a.title.toLowerCase() === local.title.toLowerCase())) {
+      combined.push(local);
+    }
+  }
+  return combined;
 }
 
 // ========== SCHOOL PORTAL: GALLERY PER SCHOOL ==========
 
 export async function getGalleryBySchool(npsn: string): Promise<GalleryItem[]> {
+  let dbGallery: GalleryItem[] = [];
   if (isSupabaseConfigured()) {
     try {
       const { data, error } = await supabase
@@ -1988,7 +2005,7 @@ export async function getGalleryBySchool(npsn: string): Promise<GalleryItem[]> {
         .eq('school_npsn', npsn)
         .order('date', { ascending: false });
       if (!error && data && data.length > 0) {
-        return data.map((row: Record<string, unknown>) => ({
+        dbGallery = data.map((row: Record<string, unknown>) => ({
           id: String(row.id),
           title: String(row.title),
           description: (row.description as string) || '',
@@ -2002,12 +2019,25 @@ export async function getGalleryBySchool(npsn: string): Promise<GalleryItem[]> {
       logger.warn('Fallback gallery by school', { error: err });
     }
   }
-  return getStorageItem<GalleryItem[]>(`koryandik_gallery_${npsn}`, []);
+  const localGallery = getStorageItem<GalleryItem[]>(`koryandik_gallery_${npsn}`, []);
+  const combined = [...dbGallery];
+  for (const local of localGallery) {
+    if (!combined.some(g => g.id === local.id)) {
+      combined.push(local);
+    }
+  }
+  return combined;
 }
 
 // ========== SCHOOL PORTAL: FACILITY CRUD ==========
 
 export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): Promise<SchoolFacility> {
+  const newFacility: SchoolFacility = { ...facility, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
+  const key = `koryandik_facilities_${facility.schoolNpsn}`;
+  const existing = getStorageItem<SchoolFacility[]>(key, []);
+  existing.push(newFacility);
+  setStorageItem(key, existing);
+
   if (isSupabaseConfigured()) {
     try {
       const { data, error } = await supabase
@@ -2026,11 +2056,6 @@ export async function addSchoolFacility(facility: Omit<SchoolFacility, 'id'>): P
       logger.warn('Fallback add facility', { error: err });
     }
   }
-  const newFacility: SchoolFacility = { ...facility, id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()) };
-  const key = `koryandik_facilities_${facility.schoolNpsn}`;
-  const existing = getStorageItem<SchoolFacility[]>(key, []);
-  existing.push(newFacility);
-  setStorageItem(key, existing);
   return newFacility;
 }
 
@@ -2205,4 +2230,103 @@ export async function deleteGalleryItemBySchool(id: string, schoolNpsn: string):
   const key = `koryandik_gallery_${schoolNpsn}`;
   const items = getStorageItem<GalleryItem[]>(key, []);
   setStorageItem(key, items.filter(a => a.id !== id));
+}
+
+// ========== SCHOOL PORTAL & PENGAWAS: SUPERVISION NOTES ==========
+
+function mapSupervisionNoteRow(row: Record<string, unknown>): SupervisionNote {
+  return {
+    id: String(row.id),
+    schoolNpsn: String(row.school_npsn),
+    schoolName: String(row.school_name || ''),
+    supervisorId: String(row.supervisor_id || ''),
+    supervisorName: String(row.supervisor_name || ''),
+    visitDate: String(row.visit_date || ''),
+    category: (row.category as SupervisionNote['category']) || 'Akademik',
+    score: (row.score as number) || 5,
+    notes: String(row.notes || ''),
+    recommendations: String(row.recommendations || ''),
+    createdAt: String(row.created_at || new Date().toISOString()),
+  };
+}
+
+export async function getSupervisionNotes(): Promise<SupervisionNote[]> {
+  let dbNotes: SupervisionNote[] = [];
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('supervision_notes')
+        .select('*')
+        .order('visit_date', { ascending: false });
+      if (!error && data) {
+        dbNotes = data.map((r: Record<string, unknown>) => mapSupervisionNoteRow(r));
+      }
+    } catch (err) {
+      logger.warn('Fallback get supervision notes', { error: err });
+    }
+  }
+  const localNotes = getStorageItem<SupervisionNote[]>('koryandik_supervision_notes', []);
+  const combined = [...dbNotes];
+  for (const local of localNotes) {
+    if (!combined.some(n => n.id === local.id)) {
+      combined.push(local);
+    }
+  }
+  return combined.sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
+}
+
+export async function getSupervisionNotesBySchool(npsn: string): Promise<SupervisionNote[]> {
+  const allNotes = await getSupervisionNotes();
+  return allNotes.filter(n => n.schoolNpsn === npsn);
+}
+
+export async function addSupervisionNote(note: Omit<SupervisionNote, 'id' | 'createdAt'>): Promise<SupervisionNote> {
+  const newNote: SupervisionNote = {
+    ...note,
+    id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId()),
+    createdAt: new Date().toISOString(),
+  };
+
+  const key = 'koryandik_supervision_notes';
+  const existing = getStorageItem<SupervisionNote[]>(key, []);
+  existing.unshift(newNote);
+  setStorageItem(key, existing);
+
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('supervision_notes')
+        .insert({
+          school_npsn: note.schoolNpsn,
+          school_name: note.schoolName,
+          supervisor_id: note.supervisorId,
+          supervisor_name: note.supervisorName,
+          visit_date: note.visitDate,
+          category: note.category,
+          score: note.score,
+          notes: note.notes,
+          recommendations: note.recommendations,
+        })
+        .select()
+        .single();
+      if (!error && data) return mapSupervisionNoteRow(data as Record<string, unknown>);
+    } catch (err) {
+      logger.warn('Fallback add supervision note to Supabase', { error: err });
+    }
+  }
+
+  return newNote;
+}
+
+export async function deleteSupervisionNote(id: string): Promise<void> {
+  if (isSupabaseConfigured()) {
+    try {
+      await supabase.from('supervision_notes').delete().eq('id', id);
+    } catch (err) {
+      logger.warn('Fallback delete supervision note', { error: err });
+    }
+  }
+  const key = 'koryandik_supervision_notes';
+  const items = getStorageItem<SupervisionNote[]>(key, []);
+  setStorageItem(key, items.filter(n => n.id !== id));
 }
