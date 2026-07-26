@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import type { GugusData, PengawasData } from '@/lib/schoolsData';
 import { getGugusData, getSupervisors, getSchools, getProfileSettings } from '@/lib/db';
 import type { ProfileSettings } from '@/lib/types';
+import { useClientOnce } from '@/hooks/useIsClient';
 import CommandPalette from '@/components/CommandPalette';
 import LandingNav from '@/components/LandingNav';
 import LandingFooter from '@/components/LandingFooter';
@@ -42,12 +43,15 @@ const CORE_VALUES = [
 ];
 
 function OfficeStatus() {
-  const [now, setNow] = useState<Date | null>(null);
+  // Initial clock read happens client-side only (avoids an SSR mismatch and a
+  // cascading setState-in-effect); the interval keeps it ticking afterwards.
+  const initialNow = useClientOnce(() => new Date(), null as Date | null);
+  const [tick, setTick] = useState<Date | null>(null);
   useEffect(() => {
-    setNow(new Date());
-    const t = setInterval(() => setNow(new Date()), 60_000);
+    const t = setInterval(() => setTick(new Date()), 60_000);
     return () => clearInterval(t);
   }, []);
+  const now = tick ?? initialNow;
   if (!now) return null;
   const day = now.getDay();
   const mins = now.getHours() * 60 + now.getMinutes();

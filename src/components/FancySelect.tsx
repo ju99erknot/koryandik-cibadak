@@ -85,11 +85,7 @@ export default function FancySelect({
   };
 
   useEffect(() => {
-    if (!open) {
-      setQuery('');
-      setHighlight(0);
-      return;
-    }
+    if (!open) return;
     updateMenuPosition();
     if (showSearch) searchRef.current?.focus();
 
@@ -108,9 +104,15 @@ export default function FancySelect({
       if (rootRef.current?.contains(target)) return;
       if (menuRef.current?.contains(target)) return;
       setOpen(false);
+      setQuery('');
+      setHighlight(0);
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        setQuery('');
+        setHighlight(0);
+      }
     };
     document.addEventListener('mousedown', handleClick);
     document.addEventListener('keydown', handleKey);
@@ -120,16 +122,30 @@ export default function FancySelect({
     };
   }, []);
 
+  // Resetting the transient menu state lives in the close path instead of an
+  // effect on `open`, avoiding a cascading render after every close.
+  const closeMenu = () => {
+    setOpen(false);
+    setQuery('');
+    setHighlight(0);
+  };
+
+  const openMenu = () => {
+    setQuery('');
+    setHighlight(0);
+    setOpen(true);
+  };
+
   const pick = (val: string) => {
     onChange(val);
-    setOpen(false);
+    closeMenu();
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!open) {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
         e.preventDefault();
-        setOpen(true);
+        openMenu();
       }
       return;
     }
@@ -226,7 +242,7 @@ export default function FancySelect({
         aria-haspopup="listbox"
         aria-expanded={open}
         disabled={disabled}
-        onClick={() => !disabled && setOpen((o) => !o)}
+        onClick={() => !disabled && (open ? closeMenu() : openMenu())}
         onKeyDown={onKeyDown}
       >
         {icon && <i className={`fancy-select-icon ${icon}`} aria-hidden="true" />}

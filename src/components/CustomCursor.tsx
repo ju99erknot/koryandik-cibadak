@@ -1,18 +1,18 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useClientOnce } from '@/hooks/useIsClient';
 
 export default function CustomCursor() {
   const outerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
+  // 1. Feature detection: only activate custom cursor on devices supporting
+  //    hover pointers. Resolved client-side without an extra render pass.
+  const isEnabled = useClientOnce(() => window.matchMedia('(hover: hover)').matches, false);
 
   useEffect(() => {
-    // 1. Feature detection: only activate custom cursor on devices supporting hover pointers
-    const mediaQuery = window.matchMedia('(hover: hover)');
-    if (!mediaQuery.matches) return;
-    setIsEnabled(true);
+    if (!isEnabled) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       // Direct DOM manipulation — avoids React setState re-renders (120-240fps)

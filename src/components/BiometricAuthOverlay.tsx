@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useClientOnce } from '@/hooks/useIsClient';
 
 export default function BiometricAuthOverlay({ active, roleName }: { active: boolean, roleName: string }) {
   const [matrixText, setMatrixText] = useState('');
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    }
-  }, []);
+  // Read the theme class on the client only; doing it in an effect would add a
+  // cascading render just to flip a boolean.
+  const isDark = useClientOnce(
+    () => document.documentElement.classList.contains('dark'),
+    true
+  );
 
   useEffect(() => {
     if (!active) return;

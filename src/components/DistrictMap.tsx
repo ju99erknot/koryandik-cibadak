@@ -11,6 +11,7 @@ import { confirmAction } from '@/components/ConfirmDialog';
 import FancySelect from '@/components/FancySelect';
 import { formatPhoneForWhatsApp } from '@/lib/phoneUtils';
 import 'leaflet/dist/leaflet.css';
+import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
 
 function escapeHtml(str: string): string {
   const div = document.createElement('div');
@@ -67,25 +68,11 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
   const markersRef = useRef<any[]>([]);
   const circlesRef = useRef<any[]>([]);
   const [isHeatmapMode, setIsHeatmapMode] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const isDark = useIsDarkTheme(true);
   const [totalCategories, setTotalCategories] = useState(8);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const tileLayerRef = useRef<any>(null);
-
-  // MutationObserver for theme detection
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    setIsDark(document.documentElement.classList.contains('dark'));
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-    return () => observer.disconnect();
-  }, []);
 
   // Update tilelayer url when theme changes
   useEffect(() => {
@@ -126,7 +113,8 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
   };
 
   useEffect(() => {
-    loadData();
+    // Kick the first load out of the effect body to avoid a cascading render.
+    const frame = requestAnimationFrame(() => { loadData(); });
 
     // Poll online users list every 15s
     const timer = setInterval(async () => {
@@ -134,7 +122,10 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
       setOnlinePresenceList(users);
     }, 15000);
 
-    return () => clearInterval(timer);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearInterval(timer);
+    };
   }, []);
 
   const getCoordinates = (school: School, index: number) => {

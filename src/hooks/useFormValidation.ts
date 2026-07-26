@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface ValidationRule {
   required?: boolean;
@@ -18,8 +18,11 @@ interface ValidationErrors {
 
 export function useFormValidation(rules: ValidationRules) {
   const rulesRef = useRef(rules);
-  const rulesKey = useMemo(() => JSON.stringify(rules), [rules]);
-  useMemo(() => { rulesRef.current = rules; }, [rulesKey]);
+  // Sync in an effect rather than inside useMemo: useMemo must stay pure, and
+  // writing to a ref from it is a side effect (react-hooks/refs).
+  useEffect(() => {
+    rulesRef.current = rules;
+  }, [rules]);
 
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
@@ -49,7 +52,7 @@ export function useFormValidation(rules: ValidationRules) {
     }
 
     return null;
-  }, [rulesKey]);
+  }, []);
 
   const validate = useCallback((data: { [key: string]: string }): boolean => {
     const newErrors: ValidationErrors = {};
@@ -65,7 +68,7 @@ export function useFormValidation(rules: ValidationRules) {
 
     setErrors(newErrors);
     return isValid;
-  }, [rulesKey, validateField]);
+  }, [validateField]);
 
   const handleChange = useCallback((name: string, value: string) => {
     if (touched[name]) {

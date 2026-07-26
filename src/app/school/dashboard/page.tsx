@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import type { School, Category } from '@/lib/schoolsData';
 import { getSubmissionsBySchool, addSubmission, updateSubmission, getCategories, getAnnouncements, checkAndCreateDeadlineReminders, getAppSetting, getCalendarEvents, getRelatedLinks, getSupervisionNotesBySchool } from '@/lib/db';
@@ -113,13 +113,10 @@ export default function SchoolDashboard() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [nearestDeadline, setNearestDeadline] = useState<{ title: string; dateLabel: string } | null>(null);
-  const [targetYear] = useState(new Date().getFullYear());
-  const [announcementBannerEnabled, setAnnouncementBannerEnabled] = useState(true);
-
-  useEffect(() => {
+  // Derived from calendarEvents — computed during render instead of mirrored
+  // into state via an effect (react-hooks/set-state-in-effect).
+  const deadlineInfo = useMemo(() => {
     const now = new Date();
-    // Reset hours for date comparison
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
     const upcoming = calendarEvents
@@ -129,22 +126,29 @@ export default function SchoolDashboard() {
       })
       .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
-    let targetTime = 0;
     if (upcoming.length > 0) {
-      targetTime = new Date(`${upcoming[0].startDate}T23:59:59`).getTime();
       const d = new Date(upcoming[0].startDate);
-      setNearestDeadline({
+      return {
+        targetTime: new Date(`${upcoming[0].startDate}T23:59:59`).getTime(),
         title: upcoming[0].title,
         dateLabel: d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-      });
-    } else {
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-      targetTime = endOfMonth.getTime();
-      setNearestDeadline({
-        title: 'Akhir Bulan Berjalan',
-        dateLabel: endOfMonth.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-      });
+      };
     }
+
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    return {
+      targetTime: endOfMonth.getTime(),
+      title: 'Akhir Bulan Berjalan',
+      dateLabel: endOfMonth.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+    };
+  }, [calendarEvents]);
+
+  const nearestDeadline = { title: deadlineInfo.title, dateLabel: deadlineInfo.dateLabel };
+  const [targetYear] = useState(new Date().getFullYear());
+  const [announcementBannerEnabled, setAnnouncementBannerEnabled] = useState(true);
+
+  useEffect(() => {
+    const targetTime = deadlineInfo.targetTime;
 
     const updateTimer = () => {
       const currentTime = new Date().getTime();
@@ -159,10 +163,13 @@ export default function SchoolDashboard() {
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
       setTimeLeft({ days, hours, minutes, seconds });
     };
-    updateTimer();
+    const frame = requestAnimationFrame(updateTimer);
     const interval = setInterval(updateTimer, 1000);
-    return () => clearInterval(interval);
-  }, [calendarEvents]);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearInterval(interval);
+    };
+  }, [deadlineInfo]);
 
   useEffect(() => {
     if (!user?.npsn) return;

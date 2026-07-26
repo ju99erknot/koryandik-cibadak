@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, use, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import LandingNav from '@/components/LandingNav';
 import LandingFooter from '@/components/LandingFooter';
 import BackToTop from '@/components/BackToTop';
@@ -787,9 +788,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                 </div>
                 <div>
                   <div className="breadcrumb-neo" style={{ marginBottom: 12 }}>
-                    <a href="/">Beranda</a>
+                    <Link href="/">Beranda</Link>
                     <i className="fa-solid fa-chevron-right" style={{ fontSize: 9 }} />
-                    <a href="/sekolah">Sekolah Binaan</a>
+                    <Link href="/sekolah">Sekolah Binaan</Link>
                     <i className="fa-solid fa-chevron-right" style={{ fontSize: 9 }} />
                     <span style={{ color: theme.primary }}>{school.name}</span>
                   </div>

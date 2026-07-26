@@ -19,7 +19,12 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  // Keep the latest onClose in a ref via an effect: writing to a ref during
+  // render is a side effect and breaks concurrent rendering (react-hooks/refs).
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   const [isScanning, setIsScanning] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const [revisionNotes, setRevisionNotes] = useState('');

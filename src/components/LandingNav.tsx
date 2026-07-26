@@ -34,10 +34,15 @@ export default function LandingNav({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setNavScrolled(window.scrollY > 50);
     const handleScroll = () => setNavScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Sync the initial value in a rAF callback rather than synchronously in the
+    // effect body, which would force an immediate cascading re-render.
+    const frame = requestAnimationFrame(handleScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   // Close dropdown when clicking outside

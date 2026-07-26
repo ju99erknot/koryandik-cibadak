@@ -15,23 +15,25 @@ interface NotificationBadgeProps {
 export default function NotificationBadge({ role, npsn, gugusId, className, style }: NotificationBadgeProps) {
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const loadUnreadCount = async () => {
-    try {
-      const count = await getUnreadNotificationCount(role, npsn, gugusId);
-      setUnreadCount(count);
-    } catch (err) {
-      console.error('Error fetching unread count:', err);
-    }
-  };
-
   useEffect(() => {
-    loadUnreadCount();
-    const interval = setInterval(loadUnreadCount, 30000);
-    const handleUpdate = () => loadUnreadCount();
-    window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, handleUpdate);
+    let cancelled = false;
+
+    const refresh = async () => {
+      try {
+        const count = await getUnreadNotificationCount(role, npsn, gugusId);
+        if (!cancelled) setUnreadCount(count);
+      } catch (err) {
+        console.error('Error fetching unread count:', err);
+      }
+    };
+
+    refresh();
+    const interval = setInterval(refresh, 30000);
+    window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, refresh);
     return () => {
+      cancelled = true;
       clearInterval(interval);
-      window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, handleUpdate);
+      window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, refresh);
     };
   }, [role, npsn, gugusId]);
 

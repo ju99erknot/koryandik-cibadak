@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCalendarEvents } from '@/lib/db';
 import type { CalendarEvent } from '@/lib/types';
+import { useClientOnce } from '@/hooks/useIsClient';
 
 const MONTH_NAMES = [
   'Januari','Februari','Maret','April','Mei','Juni',
@@ -67,43 +68,52 @@ export default function AcademicCalendar({
   refreshTrigger = 0
 }: AcademicCalendarProps) {
   const [events, setEvents]           = useState<CalendarEvent[]>([]);
-  const [current, setCurrent]         = useState(() => new Date(2026, 6, 10)); // July 10, 2026 static fallback
-  const [selectedDate, setSelected]   = useState('2026-07-10'); // static fallback
+  const [currentOverride, setCurrent]   = useState<Date | null>(null);
+  const [selectedOverride, setSelected] = useState<string | null>(null);
   const [catFilter, setCatFilter]     = useState<string>('all');
   const [query, setQuery]             = useState('');
   const [view, setView]               = useState<'calendar'|'list'>('calendar');
-  const [academicYear, setAcademicYear] = useState(() => {
-    const d = new Date();
-    const y = d.getFullYear();
-    return d.getMonth() >= 6 ? `${y}/${y + 1}` : `${y - 1}/${y}`;
-  });
+  const [academicYearOverride, setAcademicYear] = useState<string | null>(null);
 
-  useEffect(() => {
-    setCurrent(new Date());
-    setSelected(new Date().toISOString().split('T')[0]);
-
-    // Calculate current dynamic academic year
+  // Real "today" is resolved on the client only: reading the clock during
+  // render would desync SSR output, and writing it from an effect body forces a
+  // cascading re-render (react-hooks/set-state-in-effect).
+  const clientToday = useClientOnce(() => new Date(), null as Date | null);
+  const clientYear = useClientOnce(() => {
     const d = new Date();
     const y = d.getFullYear();
     const currentDynamicYear = d.getMonth() >= 6 ? `${y}/${y + 1}` : `${y - 1}/${y}`;
 
     // Load academic year from localStorage with auto-upgrade if outdated
-    const savedYear = localStorage.getItem('koryandik_academic_year');
-    if (savedYear && ACADEMIC_YEARS.includes(savedYear)) {
-      const savedStart = parseInt(savedYear.split('/')[0], 10);
-      const currentStart = parseInt(currentDynamicYear.split('/')[0], 10);
-      
-      if (savedStart < currentStart) {
-        setAcademicYear(currentDynamicYear);
-        localStorage.setItem('koryandik_academic_year', currentDynamicYear);
-      } else {
-        setAcademicYear(savedYear);
+    let resolved = currentDynamicYear;
+    try {
+      const savedYear = localStorage.getItem('koryandik_academic_year');
+      if (savedYear && ACADEMIC_YEARS.includes(savedYear)) {
+        const savedStart = parseInt(savedYear.split('/')[0], 10);
+        const currentStart = parseInt(currentDynamicYear.split('/')[0], 10);
+        if (savedStart >= currentStart) resolved = savedYear;
       }
-    } else {
-      setAcademicYear(currentDynamicYear);
-      localStorage.setItem('koryandik_academic_year', currentDynamicYear);
+    } catch {
+      /* localStorage unavailable — fall back to the computed year */
     }
-  }, []);
+    return resolved;
+  }, null as string | null);
+
+  // Persist the resolved academic year (a side effect, so it stays in an effect).
+  useEffect(() => {
+    if (!clientYear) return;
+    try {
+      localStorage.setItem('koryandik_academic_year', clientYear);
+    } catch {
+      /* ignore write failures (private mode / quota) */
+    }
+  }, [clientYear]);
+
+  // Overrides win once the user interacts; otherwise fall back to the
+  // client-resolved values, then to a deterministic SSR placeholder.
+  const current = currentOverride ?? clientToday ?? new Date(2026, 6, 10);
+  const selectedDate = selectedOverride ?? clientToday?.toISOString().split('T')[0] ?? '2026-07-10';
+  const academicYear = academicYearOverride ?? clientYear ?? ACADEMIC_YEARS[0];
 
   useEffect(() => {
     const loadEvents = async () => {

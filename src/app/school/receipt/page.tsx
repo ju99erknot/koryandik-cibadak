@@ -8,6 +8,7 @@ import type { Submission } from '@/lib/db';
 import CommandPalette from '@/components/CommandPalette';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import { useAuth } from '@/hooks/useAuth';
+import { useClientOnce } from '@/hooks/useIsClient';
 import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { toast } from 'sonner';
@@ -20,8 +21,10 @@ export default function SchoolReceipt() {
   const [school, setSchool] = useState<School | null>(null);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   
-  const receiptId = useMemo(() => Date.now().toString(36).toUpperCase().slice(-4), []);
-  const documentId = useMemo(() => Date.now().toString(36).toUpperCase(), []);
+  // Generated on the client only: Date.now() during render is impure and would
+  // also produce a server/client hydration mismatch (react-hooks/purity).
+  const documentId = useClientOnce(() => Date.now().toString(36).toUpperCase(), '');
+  const receiptId = documentId.slice(-4);
   const [categories, setCategories] = useState<Category[]>([]);
   const [savedSignature, setSavedSignature] = useState<string | null>(null);
   const [stempelColor, setStempelColor] = useState('#2563eb');

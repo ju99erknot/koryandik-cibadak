@@ -60,10 +60,13 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
   }, [currentUser]);
 
   useEffect(() => {
-    loadNotifications();
+    // Kick the first fetch off the effect body so the initial setState lands in
+    // a later task instead of forcing a cascading render.
+    const frame = requestAnimationFrame(() => { loadNotifications(); });
     const interval = setInterval(loadNotifications, 30000);
     window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
     return () => {
+      cancelAnimationFrame(frame);
       clearInterval(interval);
       window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
     };

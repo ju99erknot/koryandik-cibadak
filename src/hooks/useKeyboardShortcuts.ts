@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react';
 
+
 interface Shortcut {
   key: string;
   ctrl?: boolean;
@@ -12,7 +13,12 @@ interface Shortcut {
 
 export function useKeyboardShortcuts(shortcuts: Shortcut[]) {
   const shortcutsRef = useRef(shortcuts);
-  shortcutsRef.current = shortcuts;
+
+  // Keep the ref in sync inside an effect: mutating a ref during render is a
+  // side effect that breaks concurrent rendering (react-hooks/refs).
+  useEffect(() => {
+    shortcutsRef.current = shortcuts;
+  }, [shortcuts]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const shortcut = shortcutsRef.current.find(s => {

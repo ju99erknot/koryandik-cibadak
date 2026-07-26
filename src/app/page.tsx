@@ -330,7 +330,15 @@ export default function LandingPage() {
 
 
 
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  interface Testimonial {
+    name: string;
+    school: string;
+    gugus: string;
+    quote: string;
+    avatar: string;
+  }
+
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {
     if (schools.length === 0) return;
@@ -351,11 +359,20 @@ export default function LandingPage() {
     const avatars = ['👨‍🏫', '👩‍🏫', '👩‍💻', '👨‍💻', '🧑‍💻'];
     const shuffledAvatars = [...avatars].sort(() => 0.5 - Math.random());
     
-    setTestimonials([
-      { name: shuffledSchools[0].operatorName, school: shuffledSchools[0].name, gugus: shuffledSchools[0].gugus, quote: shuffledQuotes[0], avatar: shuffledAvatars[0] },
-      { name: shuffledSchools[1].operatorName, school: shuffledSchools[1].name, gugus: shuffledSchools[1].gugus, quote: shuffledQuotes[1], avatar: shuffledAvatars[1] },
-      { name: shuffledSchools[2].operatorName, school: shuffledSchools[2].name, gugus: shuffledSchools[2].gugus, quote: shuffledQuotes[2], avatar: shuffledAvatars[2] }
-    ]);
+    // Deferred out of the effect body: the shuffle is random, so it must stay
+    // client-only, and writing it synchronously would cascade an extra render.
+    const frame = requestAnimationFrame(() => {
+      setTestimonials(
+        shuffledSchools.slice(0, 3).map((school, i) => ({
+          name: school.operatorName ?? 'Operator Sekolah',
+          school: school.name,
+          gugus: school.gugus,
+          quote: shuffledQuotes[i],
+          avatar: shuffledAvatars[i],
+        }))
+      );
+    });
+    return () => cancelAnimationFrame(frame);
   }, [schools]);
 
   const getOfficialRoleMeta = (role: string) => {

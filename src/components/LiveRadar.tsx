@@ -1,6 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getLogs, getSchools } from '@/lib/db';
+import { useClientOnce } from '@/hooks/useIsClient';
 import type { LogEntry } from '@/lib/db';
 import type { School } from '@/lib/schoolsData';
 
@@ -14,9 +15,14 @@ interface ActivityEvent {
 }
 
 export default function LiveRadar() {
-  const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [schools, setSchools] = useState<School[]>([]);
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  // Clock ticks drive the "x menit lalu" labels; keeping it in state means the
+  // memo below stays pure (no Date.now() call during render). The initial read
+  // happens client-side only so SSR output stays deterministic.
+  const initialNow = useClientOnce(() => Date.now(), 0);
+  const [nowTick, setNowTick] = useState(0);
+  const now = nowTick || initialNow;
 
   useEffect(() => {
     // Load real data
@@ -31,8 +37,10 @@ export default function LiveRadar() {
     loadData();
   }, []);
 
-  useEffect(() => {
-    if (!logs.length || !schools.length) return;
+  // `events` is derived from logs + schools, so compute it during render with
+  // useMemo instead of mirroring it into state from an effect.
+  const events = useMemo<ActivityEvent[]>(() => {
+    if (!logs.length || !schools.length) return [];
 
     // Convert logs to activity events
     const recentLogs = logs.slice(0, 5);
@@ -100,7 +108,7 @@ export default function LiveRadar() {
       }
 
       // Calculate time ago
-      const timeDiff = Date.now() - new Date(log.timestamp).getTime();
+      const timeDiff = now - new Date(log.timestamp).getTime();
       let timeAgo = 'Baru saja';
       if (timeDiff > 60000) timeAgo = `${Math.floor(timeDiff / 60000)} menit lalu`;
       if (timeDiff > 3600000) timeAgo = `${Math.floor(timeDiff / 3600000)} jam lalu`;
@@ -116,12 +124,13 @@ export default function LiveRadar() {
       };
     });
 
-    setEvents(activityEvents);
-  }, [logs, schools]);
+    return activityEvents;
+  }, [logs, schools, now]);
 
-  // Poll for new logs every 10 seconds
+  // Poll for new logs every 10 seconds, and refresh the relative-time clock.
   useEffect(() => {
     const interval = setInterval(async () => {
+      setNowTick(Date.now());
       const logsData = await getLogs();
       setLogs(logsData);
     }, 10000);

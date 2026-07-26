@@ -78,10 +78,6 @@ export default function CommandPalette({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [searchQuery]);
-
   const executeCommand = (cmd: Command) => {
     cmd.action();
     setIsOpen(false);
@@ -112,7 +108,12 @@ export default function CommandPalette({
                   ref={inputRef}
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    // Reset the highlight here rather than in an effect on
+                    // searchQuery, which would trigger a cascading render.
+                    setSelectedIndex(0);
+                  }}
                   placeholder={placeholder}
                   className="command-palette-input"
                 />

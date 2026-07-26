@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const { role, identifier, passcode, sessionData } = body;
 
     let isValid = false;
-    let finalSessionData = sessionData || {};
+    const finalSessionData = sessionData || {};
 
     if (role === 'school') {
       // passcode should match NPSN (identifier)

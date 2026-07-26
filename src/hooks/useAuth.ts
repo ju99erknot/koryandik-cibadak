@@ -21,8 +21,10 @@ export function useAuth(requiredRole?: UserRole | UserRole[]) {
     const token = localStorage.getItem('koryandik_session_token');
     
     if (!stored || !token) {
+      // Redirect first; defer the loading flip so the effect body does not
+      // trigger a synchronous cascading render (react-hooks/set-state-in-effect).
       router.push('/');
-      setLoading(false);
+      queueMicrotask(() => setLoading(false));
       return;
     }
 
@@ -53,7 +55,7 @@ export function useAuth(requiredRole?: UserRole | UserRole[]) {
 
       if (roles && !roles.includes(parsed.role)) {
         router.push('/');
-        setLoading(false);
+        queueMicrotask(() => setLoading(false));
         return;
       }
 
@@ -66,14 +68,19 @@ export function useAuth(requiredRole?: UserRole | UserRole[]) {
         prev.name === parsed.name &&
         prev.avatar === parsed.avatar;
 
-      if (!isSameUser) {
-        userRef.current = parsed;
-        setUser(parsed);
-      }
-      setLoading(false);
+      // Commit the restored session in a microtask so the effect body itself
+      // stays free of synchronous setState calls, which would otherwise force
+      // an immediate cascading re-render on every mount.
+      queueMicrotask(() => {
+        if (!isSameUser) {
+          userRef.current = parsed;
+          setUser(parsed);
+        }
+        setLoading(false);
+      });
     } catch {
       router.push('/');
-      setLoading(false);
+      queueMicrotask(() => setLoading(false));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, roleKey]);

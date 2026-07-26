@@ -15,7 +15,7 @@
  *   "SD NEGERI KEBON KAI GIRANG"  → "sdn-kebon-kai-girang"
  */
 export function generateSchoolSlug(name: string): string {
-  let slug = name
+  const slug = name
     .toLowerCase()
     .trim()
     // Replace "sd negeri" → "sdn"

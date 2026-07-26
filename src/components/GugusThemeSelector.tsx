@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { GUGUS_THEMES, getGugusTheme, applyGugusTheme, saveGugusThemePreference } from '@/lib/gugusThemes';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useClientOnce } from '@/hooks/useIsClient';
 
 interface GugusThemeSelectorProps {
   currentGugusId?: string;
@@ -11,24 +12,28 @@ interface GugusThemeSelectorProps {
 
 export default function GugusThemeSelector({ currentGugusId, onThemeChange }: GugusThemeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState<string>(currentGugusId || 'default');
-
-  useEffect(() => {
-    if (currentGugusId) {
-      const savedTheme = localStorage.getItem(`koryandik_gugus_theme_${currentGugusId}`);
-      if (savedTheme) {
-        setSelectedTheme(savedTheme);
-        applyGugusTheme(GUGUS_THEMES[savedTheme] || GUGUS_THEMES['default']);
-      } else {
-        setSelectedTheme(currentGugusId);
-        applyGugusTheme(GUGUS_THEMES[currentGugusId] || GUGUS_THEMES['default']);
-      }
+  // Resolve the persisted preference on the client without a second render.
+  const storedTheme = useClientOnce(() => {
+    if (!currentGugusId) return null;
+    try {
+      return localStorage.getItem(`koryandik_gugus_theme_${currentGugusId}`);
+    } catch {
+      return null;
     }
-  }, [currentGugusId]);
+  }, null as string | null);
+
+  const [overrideTheme, setOverrideTheme] = useState<string | null>(null);
+  const selectedTheme = overrideTheme ?? storedTheme ?? currentGugusId ?? 'default';
+  const setSelectedTheme = setOverrideTheme;
+
+  // Applying the theme touches document styles, so it belongs in an effect.
+  useEffect(() => {
+    if (!currentGugusId) return;
+    applyGugusTheme(GUGUS_THEMES[selectedTheme] || GUGUS_THEMES['default']);
+  }, [currentGugusId, selectedTheme]);
 
   const handleThemeSelect = (themeId: string) => {
     setSelectedTheme(themeId);
-    applyGugusTheme(GUGUS_THEMES[themeId] || GUGUS_THEMES['default']);
     
     if (currentGugusId) {
       saveGugusThemePreference(currentGugusId, themeId);

@@ -1044,7 +1044,7 @@ export default function UnduhanPage() {
             <div className="dlhub-toolbar">
               <div className="dlhub-results-label">
                 Menampilkan <strong>{filteredDownloads.length}</strong> dari <strong>{downloads.length}</strong> dokumen
-                {searchQuery && <> · Pencarian: <em>"{searchQuery}"</em></>}
+                {searchQuery && <> · Pencarian: <em>&quot;{searchQuery}&quot;</em></>}
               </div>
               <div className="dlhub-sort-wrap">
                 <span>Urutkan:</span>

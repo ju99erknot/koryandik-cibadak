@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { KORYANDIK_ADDRESS, KORYANDIK_CENTER } from '@/lib/mapConstants';
 import type { ProfileSettings } from '@/lib/types';
 import 'leaflet/dist/leaflet.css';
+import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
 
 interface LandingLocationMapProps {
   schoolCount?: number;
@@ -23,7 +24,7 @@ export default function LandingLocationMap({
   const markerRef = useRef<any>(null);
   const tileRef = useRef<any>(null);
   const pulseRef = useRef<any>(null);
-  const [isDark, setIsDark] = useState(true);
+  const isDark = useIsDarkTheme(true);
   const [ready, setReady] = useState(false);
 
   // Ambil data dari profileSettings atau fallback ke konstanta
@@ -33,16 +34,6 @@ export default function LandingLocationMap({
   const email = profileSettings?.email ?? 'koryandik.cibadak@sukabumi.go.id';
   const phone = profileSettings?.phone ?? '-';
   const centerTuple: [number, number] = [centerLat, centerLng];
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    setIsDark(document.documentElement.classList.contains('dark'));
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!mapRef.current || typeof window === 'undefined') return;
