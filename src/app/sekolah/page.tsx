@@ -227,7 +227,7 @@ export default function SekolahDirectoryPage() {
         @media (max-width: 380px) { .skl-grid { grid-template-columns: 1fr; } }
 
         .skl-card {
-          border-radius: 20px; overflow: hidden;
+          border-radius: 20px;
           border: 1.5px solid var(--card-border);
           background: var(--card-glass);
           backdrop-filter: blur(16px);
@@ -239,8 +239,9 @@ export default function SekolahDirectoryPage() {
 
         .skl-card-header {
           position: relative;
-          padding: 20px 20px 44px;
+          padding: 20px 20px 16px;
           overflow: hidden;
+          border-radius: 18px 18px 0 0;
         }
         .skl-card-header::before {
           content: '';
@@ -264,17 +265,17 @@ export default function SekolahDirectoryPage() {
 
         .skl-card-badges {
           display: flex; gap: 6px; flex-wrap: wrap;
-          position: absolute; bottom: -14px; left: 20px; z-index: 3;
+          padding: 0 20px;
+          margin-top: -1px;
         }
         .skl-badge {
           font-size: 9.5px; font-weight: 800; padding: 5px 12px;
           border-radius: 99px; text-transform: uppercase; letter-spacing: 0.04em;
-          backdrop-filter: blur(8px);
           border: 1px solid rgba(255,255,255,0.1);
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .skl-card-body { padding: 26px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+        .skl-card-body { padding: 14px 20px 20px; flex: 1; display: flex; flex-direction: column; }
 
         .skl-card-stats {
           display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
@@ -567,7 +568,7 @@ export default function SekolahDirectoryPage() {
               const cardVars = { '--card-primary': theme.primary, '--card-accent': theme.accent } as React.CSSProperties;
               return (
                 <RevealOnScroll key={school.npsn} delay={(i % 4) * 0.05} duration={0.45}>
-                  <TiltCard intensity={4} glare style={{ borderRadius: 20, height: '100%', border: '1.5px solid var(--card-border)' }}>
+                  <TiltCard intensity={4} glare style={{ borderRadius: 20, height: '100%' }}>
                     <div className="skl-card reveal-on-scroll" style={{ ...cardVars, ['--reveal-delay' as string]: `${(i % 6) * 60}ms` }}>
                       {/* Card Header with gradient bg */}
                       <div className="skl-card-header">
@@ -582,19 +583,20 @@ export default function SekolahDirectoryPage() {
                             <p className="skl-card-npsn">NPSN {school.npsn}</p>
                           </div>
                         </div>
-                        {/* Floating badges */}
-                        <div className="skl-card-badges">
-                          <span className="skl-badge" style={{ background: `${theme.primary}dd`, color: '#fff' }}>
-                            Gugus {school.gugus}
-                          </span>
-                          <span className="skl-badge" style={{
-                            background: school.status === 'Negeri' ? 'rgba(16,185,129,0.85)' : 'rgba(139,92,246,0.85)',
-                            color: '#fff'
-                          }}>
-                            <i className={school.status === 'Negeri' ? 'fa-solid fa-landmark' : 'fa-solid fa-building'} style={{ fontSize: '8px', marginRight: 3 }} />
-                            {school.status || school.level}
-                          </span>
-                        </div>
+                      </div>
+
+                      {/* Badges between header and body */}
+                      <div className="skl-card-badges">
+                        <span className="skl-badge" style={{ background: `${theme.primary}dd`, color: '#fff' }}>
+                          Gugus {school.gugus}
+                        </span>
+                        <span className="skl-badge" style={{
+                          background: school.status === 'Negeri' ? 'rgba(16,185,129,0.85)' : 'rgba(139,92,246,0.85)',
+                          color: '#fff'
+                        }}>
+                          <i className={school.status === 'Negeri' ? 'fa-solid fa-landmark' : 'fa-solid fa-building'} style={{ fontSize: '8px', marginRight: 3 }} />
+                          {school.status || school.level}
+                        </span>
                       </div>
 
                       {/* Card Body */}
