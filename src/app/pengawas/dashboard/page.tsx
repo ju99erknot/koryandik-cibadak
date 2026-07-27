@@ -14,6 +14,7 @@ import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { todayLocal } from '@/lib/dateUtils';
+import VerificationQueue from '@/components/VerificationQueue';
 
 export default function PengawasDashboard() {
   const { user, loading, logout } = useAuth('pengawas');
@@ -175,6 +176,19 @@ export default function PengawasDashboard() {
           </div>
 
           {/* Overall Progress */}
+          {/* Antrean kerja: pengawas kini dapat memverifikasi langsung,
+              tidak lagi hanya membaca statistik. */}
+          <VerificationQueue
+            submissions={submissions}
+            schools={schools}
+            categories={categories}
+            reviewerName={user?.name || 'Pengawas'}
+            title="Antrean Verifikasi Berkas"
+            onUpdated={(updated) =>
+              setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
+            }
+          />
+
           <div className="card animate-fade-in">
             <div className="card-header">
               <h2><i className="fa-solid fa-chart-line"></i> Progress Keseluruhan</h2>

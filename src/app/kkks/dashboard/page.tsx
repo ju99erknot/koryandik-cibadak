@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import VerificationQueue from '@/components/VerificationQueue';
 
 export default function KkksDashboard() {
   const { user, loading, logout } = useAuth('kkks');
@@ -110,6 +111,17 @@ export default function KkksDashboard() {
           </div>
 
           {/* Overall Progress */}
+          <VerificationQueue
+            submissions={submissions}
+            schools={schools}
+            categories={categories}
+            reviewerName={user?.name || 'KKKS'}
+            title="Antrean Verifikasi Berkas"
+            onUpdated={(updated) =>
+              setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
+            }
+          />
+
           <div className="card animate-fade-in">
             <div className="card-header">
               <h2><i className="fa-solid fa-chart-line"></i> Progres Rekapitulasi Wilayah</h2>

@@ -12,12 +12,19 @@ import { DEFAULT_FAQS, DEFAULT_DOWNLOADS, DEFAULT_PROFILE, DEFAULT_CALENDAR_EVEN
 import { archiveSubmissionToDrive } from './driveArchive';
 import { logger } from './logger';
 import { todayLocal } from '@/lib/dateUtils';
+import { currentPeriod, resolvePeriod } from './monthArchive';
 
 export interface Submission {
   id: string;
   schoolNpsn: string;
   categoryId: string;
   status: SubmissionStatus;
+  /**
+   * Periode pelaporan (YYYY-MM). Opsional agar baris lama — yang dibuat
+   * sebelum kolom ini ada — tetap terbaca; gunakan resolvePeriod() yang
+   * jatuh kembali ke submittedAt.
+   */
+  period?: string | null;
   submittedAt: string;
   reviewedAt?: string | null;
   reviewedBy?: string | null;
@@ -255,6 +262,7 @@ function mapSubmissionRow(s: Record<string, unknown>): Submission {
     notes: (s.notes as string | null) ?? null,
     fileName: (s.file_name as string | null) ?? null,
     driveLink: (s.drive_link as string | null) ?? null,
+    period: (s.period as string | null) ?? null,
   };
 }
 
@@ -1014,6 +1022,35 @@ async function triggerDriveArchive(submission: Submission): Promise<void> {
 
 export async function addSubmission(submission: Omit<Submission, 'id' | 'submittedAt'>): Promise<Submission> {
   const newId = generateId();
+  const period = submission.period || currentPeriod();
+
+  /*
+   * Cegah unggahan ganda: satu sekolah hanya boleh punya satu berkas aktif
+   * per kategori per periode. Sebelumnya setiap unggahan selalu membuat baris
+   * baru, sehingga verifikator melihat dua entri untuk kategori yang sama dan
+   * rekapitulasi menghitungnya dua kali. Unggahan ulang kini memperbarui
+   * berkas yang ada dan mengembalikan statusnya ke 'pending'.
+   */
+  const existingAll = await getSubmissions();
+  const duplicate = existingAll.find(
+    (s) =>
+      s.schoolNpsn === submission.schoolNpsn &&
+      s.categoryId === submission.categoryId &&
+      resolvePeriod(s) === period
+  );
+
+  if (duplicate) {
+    const updated = await updateSubmission(duplicate.id, {
+      status: 'pending',
+      driveLink: submission.driveLink,
+      fileName: submission.fileName,
+      notes: null,
+      reviewedAt: null,
+      reviewedBy: null,
+    });
+    if (updated) return updated;
+  }
+
   if (isSupabaseConfigured()) {
     try {
       const dbInsert = {
@@ -1023,6 +1060,7 @@ export async function addSubmission(submission: Omit<Submission, 'id' | 'submitt
         status: submission.status,
         drive_link: submission.driveLink,
         file_name: submission.fileName,
+        period,
         submitted_at: new Date().toISOString()
       };
       
@@ -1065,7 +1103,7 @@ export async function addSubmission(submission: Omit<Submission, 'id' | 'submitt
   }
 
   const subs = await getSubmissions();
-  const newSub: Submission = { ...submission, id: newId, submittedAt: new Date().toISOString() };
+  const newSub: Submission = { ...submission, period, id: newId, submittedAt: new Date().toISOString() };
   subs.push(newSub);
   if (!isSupabaseConfigured()) {
     setStorageItem('koryandik_submissions', subs);
