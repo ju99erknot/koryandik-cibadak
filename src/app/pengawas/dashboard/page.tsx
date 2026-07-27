@@ -13,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { todayLocal } from '@/lib/dateUtils';
 
 export default function PengawasDashboard() {
   const { user, loading, logout } = useAuth('pengawas');
@@ -28,7 +29,7 @@ export default function PengawasDashboard() {
   const [isSupervisionModalOpen, setIsSupervisionModalOpen] = useState(false);
   const [selectedSchoolForNote, setSelectedSchoolForNote] = useState<School | null>(null);
   const [noteForm, setNoteForm] = useState({
-    visitDate: new Date().toISOString().split('T')[0],
+    visitDate: todayLocal(),
     category: 'Akademik' as SupervisionNote['category'],
     score: 5,
     notes: '',
@@ -47,7 +48,7 @@ export default function PengawasDashboard() {
   const handleOpenSupervisionModal = (school: School) => {
     setSelectedSchoolForNote(school);
     setNoteForm({
-      visitDate: new Date().toISOString().split('T')[0],
+      visitDate: todayLocal(),
       category: 'Akademik',
       score: 5,
       notes: '',

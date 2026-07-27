@@ -12,6 +12,7 @@ import AcademicCalendar from '@/components/AcademicCalendar';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { useAuth } from '@/hooks/useAuth';
 import FancySelect from '@/components/FancySelect';
+import { toLocalDateString, todayLocal } from '@/lib/dateUtils';
 
 const TEMPLATES = [
   { category: 'submission' as const, label: 'Tenggat Berkas', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)', icon: 'fa-file-arrow-up' },
@@ -157,7 +158,7 @@ export default function AdminCalendarPage() {
         const newStartDate = targetDate;
         const newEndDateObj = new Date(targetDate);
         newEndDateObj.setDate(newEndDateObj.getDate() + diffDays - 1);
-        const newEndDate = newEndDateObj.toISOString().split('T')[0];
+        const newEndDate = toLocalDateString(newEndDateObj);
         
         const updated = {
           ...targetEvent,
@@ -388,7 +389,7 @@ export default function AdminCalendarPage() {
                   <button 
                     className="btn btn-primary btn-sm"
                     onClick={() => {
-                      const nowStr = new Date().toISOString().split('T')[0];
+                      const nowStr = todayLocal();
                       handleDateSelect(nowStr);
                     }}
                   >

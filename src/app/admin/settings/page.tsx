@@ -28,6 +28,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { toast } from 'sonner';
 import { confirmAction } from '@/components/ConfirmDialog';
+import { todayLocal } from '@/lib/dateUtils';
 
 const INITIAL_SETTINGS = [
   {
@@ -271,7 +272,7 @@ export default function AdminSettingsPage() {
         fileType: editingDownload.fileType as 'PDF' | 'DOCX' | 'XLSX',
         downloadUrl: editingDownload.downloadUrl,
         icon: editingDownload.icon || (editingDownload.fileType === 'XLSX' ? 'fa-table' : editingDownload.fileType === 'PDF' ? 'fa-file-signature' : 'fa-envelope-open-text'),
-        updatedAt: new Date().toISOString().split('T')[0],
+        updatedAt: todayLocal(),
         downloadCount: editingDownload.downloadCount ?? 0,
         version: editingDownload.version || '1.0',
         status: editingDownload.status || 'active',

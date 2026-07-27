@@ -11,6 +11,7 @@ import { emitNotificationsUpdated, maybeNotifyCurrentUser } from './notification
 import { DEFAULT_FAQS, DEFAULT_DOWNLOADS, DEFAULT_PROFILE, DEFAULT_CALENDAR_EVENTS, DEFAULT_GALLERY, DEFAULT_RELATED_LINKS } from './dbSeeds';
 import { archiveSubmissionToDrive } from './driveArchive';
 import { logger } from './logger';
+import { todayLocal } from '@/lib/dateUtils';
 
 export interface Submission {
   id: string;
@@ -1666,7 +1667,7 @@ export async function addDownloadItem(item: Omit<DownloadItem, 'id' | 'updatedAt
   const newItem: DownloadItem = {
     ...item,
     id: 'dl-' + generateId(),
-    updatedAt: new Date().toISOString().split('T')[0],
+    updatedAt: todayLocal(),
     downloadCount: 0
   };
   list.unshift(newItem);
@@ -1676,7 +1677,7 @@ export async function addDownloadItem(item: Omit<DownloadItem, 'id' | 'updatedAt
 
 export async function updateDownloadItem(item: DownloadItem): Promise<void> {
   const list = await getDownloads();
-  const updated = list.map(i => (i.id === item.id ? { ...item, updatedAt: new Date().toISOString().split('T')[0] } : i));
+  const updated = list.map(i => (i.id === item.id ? { ...item, updatedAt: todayLocal() } : i));
   await saveDownloads(updated);
 }
 

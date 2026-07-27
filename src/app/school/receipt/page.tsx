@@ -110,7 +110,12 @@ export default function SchoolReceipt() {
     }
 
     const dataUrl = canvas.toDataURL('image/png');
-    localStorage.setItem('koryandik_signature', dataUrl);
+    try {
+      localStorage.setItem('koryandik_signature', dataUrl);
+    } catch (err) {
+      console.warn('Gagal menyimpan tanda tangan:', err);
+      toast.warning('Tanda tangan tidak dapat disimpan (penyimpanan penuh).');
+    }
     setSavedSignature(dataUrl);
     setIsSigModalOpen(false);
     toast.success('Tanda tangan digital berhasil disimpan!');
@@ -500,7 +505,9 @@ export default function SchoolReceipt() {
                             key={col.hex}
                             onClick={() => {
                               setStempelColor(col.hex);
-                              localStorage.setItem('koryandik_stempel_color', col.hex);
+                              try {
+      localStorage.setItem('koryandik_stempel_color', col.hex);
+    } catch { /* preferensi warna bersifat opsional */ }
                             }}
                             style={{
                               width: '18px',

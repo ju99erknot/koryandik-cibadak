@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getCalendarEvents } from '@/lib/db';
 import type { CalendarEvent } from '@/lib/types';
 import { useClientOnce } from '@/hooks/useIsClient';
+import { toLocalDateString, todayLocal } from '@/lib/dateUtils';
 
 const MONTH_NAMES = [
   'Januari','Februari','Maret','April','Mei','Juni',
@@ -112,7 +113,7 @@ export default function AcademicCalendar({
   // Overrides win once the user interacts; otherwise fall back to the
   // client-resolved values, then to a deterministic SSR placeholder.
   const current = currentOverride ?? clientToday ?? new Date(2026, 6, 10);
-  const selectedDate = selectedOverride ?? clientToday?.toISOString().split('T')[0] ?? '2026-07-10';
+  const selectedDate = selectedOverride ?? (clientToday ? toLocalDateString(clientToday) : null) ?? '2026-07-10';
   const academicYear = academicYearOverride ?? clientYear ?? ACADEMIC_YEARS[0];
 
   useEffect(() => {
@@ -183,7 +184,7 @@ export default function AcademicCalendar({
     return inMonth && matchQ && matchCat && isInAcademicYear;
   }).sort((a,b) => a.startDate.localeCompare(b.startDate));
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = todayLocal();
 
   const CATEGORIES = [
     { id: 'all',        label: 'Semua',         color: '#6366f1' },

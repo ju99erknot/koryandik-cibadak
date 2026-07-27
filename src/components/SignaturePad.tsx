@@ -95,10 +95,17 @@ export default function SignaturePad({ onSave, onClose }: SignaturePadProps) {
       return;
     }
     const signatureUrl = canvas.toDataURL('image/png');
-    
-    // Save to localStorage
-    localStorage.setItem('koryandik_signature', signatureUrl);
-    localStorage.setItem('koryandik_stempel_color', stempelColor);
+
+    // Persisting a full canvas data URL can exceed the ~5 MB localStorage
+    // quota (or throw outright in Safari private mode). A failed write must
+    // not abort the save — the caller still receives the signature.
+    try {
+      localStorage.setItem('koryandik_signature', signatureUrl);
+      localStorage.setItem('koryandik_stempel_color', stempelColor);
+    } catch (err) {
+      console.warn('Gagal menyimpan tanda tangan ke penyimpanan lokal:', err);
+      toast.warning('Tanda tangan dipakai sekarang, tetapi tidak tersimpan untuk sesi berikutnya.');
+    }
     
     onSave?.(signatureUrl);
     playSuccessSound();
