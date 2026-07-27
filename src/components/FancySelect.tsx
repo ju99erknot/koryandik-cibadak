@@ -181,9 +181,11 @@ export default function FancySelect({
           ? {
               position: 'fixed',
               left: menuPos.left,
-              // Fall back to the trigger's live width if the measurement has
-              // not landed yet, so the menu can never paint at zero width.
-              width: menuPos.width || triggerRef.current?.offsetWidth || 260,
+              width: menuPos.width,
+              // Stay invisible until a real measurement exists; otherwise the
+              // open animation can run while the menu is still 0px wide and
+              // the dropdown looks like it never appeared.
+              visibility: menuPos.width ? 'visible' : 'hidden',
               top: menuPos.top,
               bottom: menuPos.bottom,
               zIndex: 10050,
