@@ -178,6 +178,7 @@ export default function PengawasDashboard() {
           {/* Overall Progress */}
           {/* Antrean kerja: pengawas kini dapat memverifikasi langsung,
               tidak lagi hanya membaca statistik. */}
+          <div id="antrean-verifikasi" style={{ scrollMarginTop: 90 }}>
           <VerificationQueue
             submissions={submissions}
             schools={schools}
@@ -188,6 +189,9 @@ export default function PengawasDashboard() {
               setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
             }
           />
+          </div>
+
+          <div id="daftar-sekolah" style={{ scrollMarginTop: 90 }} />
 
           <div className="card animate-fade-in">
             <div className="card-header">

@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { rateLimit, clientKey } from '@/lib/rateLimit';
 
 interface ChatMessage {
   role: 'user' | 'model';
@@ -58,8 +59,25 @@ PEDOMAN FORMAT JAWABAN:
 - Berikan rujukan nomor Permendikbudristek secara akurat bila relevan.
 - Akhiri setiap jawaban dengan salam semangat untuk Pejuang Pendidikan Cibadak!`;
 
+/** Maksimal 12 permintaan per menit per IP — jauh di atas pemakaian wajar. */
+const AI_RATE_LIMIT = 12;
+const AI_RATE_WINDOW_MS = 60_000;
+
 export async function POST(request: NextRequest) {
   try {
+    // Lindungi kuota Gemini: endpoint ini terbuka tanpa login, sehingga tanpa
+    // pembatas satu skrip dapat menghabiskannya untuk semua pengguna.
+    const limit = rateLimit(clientKey(request), AI_RATE_LIMIT, AI_RATE_WINDOW_MS);
+    if (!limit.allowed) {
+      return Response.json(
+        {
+          status: 'error',
+          message: `Terlalu banyak permintaan. Coba lagi dalam ${limit.retryAfter} detik.`,
+        },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } }
+      );
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(

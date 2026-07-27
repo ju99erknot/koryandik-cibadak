@@ -33,9 +33,27 @@ const SCHOOL_NAV: NavItem[] = [
   { href: '/school/links', label: 'Tautan Terkait', icon: 'fa-solid fa-link' },
 ];
 
-const SUPERVISOR_NAV: NavItem[] = [
-  { href: '', label: 'Dashboard', icon: 'fa-solid fa-chart-pie', showBadge: true },
+/**
+ * Menu portal pengawas/KKKS/PGRI.
+ *
+ * Sebelumnya hanya satu entri "Dashboard", sehingga seluruh pekerjaan
+ * menumpuk di satu halaman panjang. `href` diisi relatif terhadap peran
+ * oleh getDashboardNav().
+ */
+const SUPERVISOR_SECTIONS: Array<{ hash: string; label: string; icon: string; badge?: boolean }> = [
+  { hash: '', label: 'Ringkasan', icon: 'fa-solid fa-chart-pie', badge: true },
+  { hash: '#antrean-verifikasi', label: 'Verifikasi Berkas', icon: 'fa-solid fa-list-check' },
+  { hash: '#daftar-sekolah', label: 'Sekolah Binaan', icon: 'fa-solid fa-school' },
 ];
+
+function supervisorNav(base: string): NavItem[] {
+  return SUPERVISOR_SECTIONS.map((s) => ({
+    href: `${base}${s.hash}`,
+    label: s.label,
+    icon: s.icon,
+    ...(s.badge ? { showBadge: true } : {}),
+  }));
+}
 
 export const DASHBOARD_BRANDS: Record<UserRole, DashboardBrand> = {
   admin: { title: 'Admin Portal', subtitle: 'Koryandik Cibadak', icon: 'fa-solid fa-user-shield' },
@@ -53,15 +71,15 @@ export function getDashboardNav(role: UserRole): NavItem[] {
     case 'school':
       return SCHOOL_NAV;
     case 'gugus':
-      return [{ href: '/gugus/dashboard', label: 'Dashboard', icon: 'fa-solid fa-chart-pie', showBadge: true }];
+      return supervisorNav('/gugus/dashboard');
     case 'pengawas':
-      return [{ href: '/pengawas/dashboard', label: 'Dashboard', icon: 'fa-solid fa-chart-pie', showBadge: true }];
+      return supervisorNav('/pengawas/dashboard');
     case 'kkks':
-      return [{ href: '/kkks/dashboard', label: 'Dashboard', icon: 'fa-solid fa-chart-pie', showBadge: true }];
+      return supervisorNav('/kkks/dashboard');
     case 'pgri':
-      return [{ href: '/pgri/dashboard', label: 'Dashboard', icon: 'fa-solid fa-chart-pie', showBadge: true }];
+      return supervisorNav('/pgri/dashboard');
     default:
-      return SUPERVISOR_NAV;
+      return supervisorNav('');
   }
 }
 

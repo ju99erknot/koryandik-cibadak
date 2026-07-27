@@ -111,6 +111,7 @@ export default function KkksDashboard() {
           </div>
 
           {/* Overall Progress */}
+          <div id="antrean-verifikasi" style={{ scrollMarginTop: 90 }}>
           <VerificationQueue
             submissions={submissions}
             schools={schools}
@@ -121,6 +122,9 @@ export default function KkksDashboard() {
               setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
             }
           />
+          </div>
+
+          <div id="daftar-sekolah" style={{ scrollMarginTop: 90 }} />
 
           <div className="card animate-fade-in">
             <div className="card-header">

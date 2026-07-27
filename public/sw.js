@@ -1,16 +1,35 @@
+const CACHE = 'koryandik-v1';
+const OFFLINE_URL = '/offline.html';
+
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Install');
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => cache.addAll([OFFLINE_URL, '/logo.png']))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activate');
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
 });
 
+/*
+ * Hanya navigasi halaman yang ditangani. Permintaan data (Supabase, API) tetap
+ * lewat jaringan apa adanya supaya tidak ada data basi yang tersaji.
+ * Saat perangkat offline, tampilkan halaman penjelasan alih-alih layar galat
+ * bawaan browser.
+ */
 self.addEventListener('fetch', (event) => {
-  // Let the browser do its default thing for now
-  // For offline capabilities, we can add cache logic here later
+  if (event.request.mode !== 'navigate') return;
+  event.respondWith(
+    fetch(event.request).catch(() =>
+      caches.match(OFFLINE_URL).then((r) => r || Response.error())
+    )
+  );
 });
 
 // Push notification handling
@@ -20,8 +39,8 @@ self.addEventListener('push', (event) => {
   let data = {
     title: 'Koryandik',
     body: 'Notifikasi baru',
-    icon: '/icon-192.png',
-    badge: '/badge-72.png',
+    icon: '/logo.png',
+    badge: '/logo.png',
     data: {}
   };
   
@@ -35,21 +54,13 @@ self.addEventListener('push', (event) => {
   
   const options = {
     body: data.body,
-    icon: data.icon || '/icon-192.png',
-    badge: data.badge || '/badge-72.png',
+    icon: data.icon || '/logo.png',
+    badge: data.badge || '/logo.png',
     vibrate: [200, 100, 200],
     data: data.data || {},
     actions: [
-      {
-        action: 'view',
-        title: 'Lihat',
-        icon: '/view-icon.png'
-      },
-      {
-        action: 'dismiss',
-        title: 'Tutup',
-        icon: '/dismiss-icon.png'
-      }
+      { action: 'view', title: 'Lihat' },
+      { action: 'dismiss', title: 'Tutup' }
     ],
     requireInteraction: true,
     tag: 'koryandik-notification'
@@ -66,16 +77,19 @@ self.addEventListener('notificationclick', (event) => {
   
   event.notification.close();
   
-  if (event.action === 'view') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  } else if (event.action === 'dismiss') {
-    // Just close the notification
-  } else {
-    // Default action - open app
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  }
+  if (event.action === 'dismiss') return;
+
+  const target = (event.notification.data && event.notification.data.url) || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      // Fokuskan tab Koryandik yang sudah terbuka daripada menumpuk tab baru.
+      for (const client of list) {
+        if ('focus' in client) {
+          client.navigate(target);
+          return client.focus();
+        }
+      }
+      return clients.openWindow(target);
+    })
+  );
 });
