@@ -5,6 +5,7 @@ import { getNotifications, markNotificationRead, markAllNotificationsRead } from
 import type { Notification } from '@/lib/types';
 import type { SessionUser } from '@/lib/types';
 import { NOTIFICATIONS_UPDATED_EVENT } from '@/lib/notificationEvents';
+import { useVisiblePolling } from '@/hooks/useVisiblePolling';
 
 function timeAgo(timestamp: string): string {
   const now = new Date().getTime();
@@ -63,14 +64,15 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
     // Kick the first fetch off the effect body so the initial setState lands in
     // a later task instead of forcing a cascading render.
     const frame = requestAnimationFrame(() => { loadNotifications(); });
-    const interval = setInterval(loadNotifications, 30000);
     window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
     return () => {
       cancelAnimationFrame(frame);
-      clearInterval(interval);
       window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, loadNotifications);
     };
   }, [loadNotifications]);
+
+  // 30s -> 90s, dijeda saat tab tidak dilihat.
+  useVisiblePolling(loadNotifications, 90_000);
 
   // Close panel on outside click
   useEffect(() => {

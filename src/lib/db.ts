@@ -457,7 +457,7 @@ export async function addSchool(school: School): Promise<School> {
         return mapSchoolRow(data as Record<string, unknown>);
       }
     } catch (err) {
-      reportSyncFailure('updateSchool', 'Menyimpan data sekolah');
+      reportSyncFailure('addSchool', 'Menambah sekolah');
       logger.warn('Fallback add school', { error: err });
     }
   }
@@ -477,7 +477,7 @@ export async function deleteSchool(npsn: string): Promise<void> {
         .eq('npsn', npsn);
       return;
     } catch (err) {
-      reportSyncFailure('addSchool', 'Menambah sekolah');
+      reportSyncFailure('deleteSchool', 'Menghapus sekolah');
       logger.warn('Fallback delete school', { error: err });
     }
   }
@@ -507,7 +507,6 @@ export async function getCategories(): Promise<Category[]> {
         }));
       }
     } catch (err) {
-      reportSyncFailure('deleteSchool', 'Menghapus sekolah');
       logger.warn('Fallback to local categories', { error: err });
     }
   }
@@ -1920,7 +1919,23 @@ export async function removePresence(id: string): Promise<void> {
  * Ambil daftar user yang online (last_seen dalam 2 menit terakhir).
  * Digunakan oleh Admin Dashboard untuk widget "Sekolah Online".
  */
+/*
+ * Cache singkat untuk daftar pengguna daring.
+ *
+ * getOnlineUsers() dipanggil oleh dua komponen berbeda (DistrictMap dan
+ * dashboard admin) yang kerap tampil di halaman yang sama, masing-masing
+ * dengan timer sendiri. Tanpa cache, satu halaman menghasilkan dua kali
+ * lipat permintaan untuk data yang identik.
+ */
+let _presenceCache: { data: OnlinePresence[]; ts: number } | null = null;
+const PRESENCE_CACHE_TTL = 10_000;
+
 export async function getOnlineUsers(): Promise<OnlinePresence[]> {
+  const nowMs = Date.now();
+  if (_presenceCache && nowMs - _presenceCache.ts < PRESENCE_CACHE_TTL) {
+    return _presenceCache.data;
+  }
+
   const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
 
   if (isSupabaseConfigured()) {
@@ -1934,7 +1949,7 @@ export async function getOnlineUsers(): Promise<OnlinePresence[]> {
       if (error) throw new Error(error.message);
 
       if (data) {
-        return (data as Array<Record<string, unknown>>).map(row => ({
+        const mapped = (data as Array<Record<string, unknown>>).map(row => ({
           id: String(row.id),
           role: String(row.role),
           userName: String(row.user_name),
@@ -1943,9 +1958,10 @@ export async function getOnlineUsers(): Promise<OnlinePresence[]> {
           lastSeen: String(row.last_seen),
           page: row.page ? String(row.page) : '/dashboard',
         }));
+        _presenceCache = { data: mapped, ts: nowMs };
+        return mapped;
       }
     } catch (err) {
-      reportSyncFailure('saveProfileSettings', 'Menyimpan profil koryandik');
       logger.warn('[Presence] Get online fallback', { error: err });
     }
   }

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUnreadNotificationCount } from '@/lib/db';
 import { NOTIFICATIONS_UPDATED_EVENT } from '@/lib/notificationEvents';
+import { useVisiblePolling } from '@/hooks/useVisiblePolling';
 
 interface NotificationBadgeProps {
   role?: string;
@@ -28,14 +29,24 @@ export default function NotificationBadge({ role, npsn, gugusId, className, styl
     };
 
     refresh();
-    const interval = setInterval(refresh, 30000);
+    // Polling berkala ditangani useVisiblePolling di bawah; di sini cukup
+    // muat sekali dan dengarkan event pembaruan lokal.
     window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, refresh);
     return () => {
       cancelled = true;
-      clearInterval(interval);
       window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, refresh);
     };
   }, [role, npsn, gugusId]);
+
+  // 30s -> 90s, dijeda saat tab tidak dilihat.
+  useVisiblePolling(async () => {
+    try {
+      const count = await getUnreadNotificationCount(role, npsn, gugusId);
+      setUnreadCount(count);
+    } catch (err) {
+      console.error('Error fetching unread count:', err);
+    }
+  }, 90_000);
 
   if (unreadCount === 0) return null;
 

@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getLogs, getSchools } from '@/lib/db';
 import { useClientOnce } from '@/hooks/useIsClient';
+import { useVisiblePolling } from '@/hooks/useVisiblePolling';
 import type { LogEntry } from '@/lib/db';
 import type { School } from '@/lib/schoolsData';
 
@@ -127,15 +128,16 @@ export default function LiveRadar() {
     return activityEvents;
   }, [logs, schools, now]);
 
-  // Poll for new logs every 10 seconds, and refresh the relative-time clock.
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      setNowTick(Date.now());
-      const logsData = await getLogs();
-      setLogs(logsData);
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  /*
+   * Log aktivitas tidak perlu sesegar itu. Interval dinaikkan dari 10 detik
+   * ke 60 detik dan dijeda saat tab tidak dilihat — sebelumnya polling ini
+   * saja menghabiskan 360 permintaan/jam per pengguna.
+   */
+  useVisiblePolling(async () => {
+    setNowTick(Date.now());
+    const logsData = await getLogs();
+    setLogs(logsData);
+  }, 60_000);
 
   return (
     <div className="live-radar-container">

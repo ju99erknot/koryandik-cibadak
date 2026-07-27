@@ -42,10 +42,29 @@ export function usePresence(user: SessionUser | null, page?: string) {
     // Send first heartbeat immediately
     updatePresence(buildPresenceData());
 
-    // Send heartbeat every 30 seconds
-    intervalRef.current = setInterval(() => {
-      updatePresence(buildPresenceData());
-    }, 30_000);
+    /*
+     * Detak kehadiran: 30 -> 60 detik. Ambang "daring" di getOnlineUsers()
+     * adalah 2 menit, jadi 60 detik masih menyisakan satu detak cadangan
+     * sebelum pengguna dianggap luring.
+     *
+     * Timer juga dihentikan saat tab disembunyikan — presence memang sudah
+     * dihapus pada visibilitychange, sehingga melanjutkan penulisan di latar
+     * belakang hanya membuang kuota.
+     */
+    const startHeartbeat = () => {
+      if (intervalRef.current) return;
+      intervalRef.current = setInterval(() => {
+        updatePresence(buildPresenceData());
+      }, 60_000);
+    };
+
+    const stopHeartbeat = () => {
+      if (!intervalRef.current) return;
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    };
+
+    startHeartbeat();
 
     const handleBeforeUnload = () => {
       removePresence(presenceId);
@@ -53,7 +72,11 @@ export function usePresence(user: SessionUser | null, page?: string) {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
+        stopHeartbeat();
         removePresence(presenceId);
+      } else {
+        updatePresence(buildPresenceData());
+        startHeartbeat();
       }
     };
 
@@ -61,9 +84,7 @@ export function usePresence(user: SessionUser | null, page?: string) {
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      stopHeartbeat();
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       removePresence(presenceId);

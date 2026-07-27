@@ -12,6 +12,7 @@ import { formatPhoneForWhatsApp } from '@/lib/phoneUtils';
 import type * as LeafletNS from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
+import { useVisiblePolling } from '@/hooks/useVisiblePolling';
 
 function escapeHtml(str: string): string {
   const div = document.createElement('div');
@@ -119,17 +120,16 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
     // Kick the first load out of the effect body to avoid a cascading render.
     const frame = requestAnimationFrame(() => { loadData(); });
 
-    // Poll online users list every 15s
-    const timer = setInterval(async () => {
-      const users = await getOnlineUsers();
-      setOnlinePresenceList(users);
-    }, 15000);
-
     return () => {
       cancelAnimationFrame(frame);
-      clearInterval(timer);
     };
   }, []);
+
+  // Daftar pengguna daring: 15s -> 60s, dijeda saat tab tidak dilihat.
+  useVisiblePolling(async () => {
+    const users = await getOnlineUsers();
+    setOnlinePresenceList(users);
+  }, 60_000);
 
   const getCoordinates = (school: School, index: number) => {
     if (customCoordsMap[school.npsn]) {

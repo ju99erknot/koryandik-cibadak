@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { getCurrentMonthIndex, getMonthLabel } from '@/lib/monthArchive';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import OnboardingTour from '@/components/OnboardingTour';
+import { useVisiblePolling } from '@/hooks/useVisiblePolling';
 
 export default function AdminDashboard() {
   const { user, loading, logout } = useAuth('admin');
@@ -57,12 +58,14 @@ export default function AdminDashboard() {
     getOnlineUsers().then(setOnlineUsers);
 
     // Poll online users list every 15s
-    const presenceTimer = setInterval(() => {
-      getOnlineUsers().then(setOnlineUsers);
-    }, 15000);
-
-    return () => clearInterval(presenceTimer);
   }, [loading, user]);
+
+  // Daftar pengguna daring: 15s -> 60s, dijeda saat tab tidak dilihat.
+  // getOnlineUsers() juga di-cache 10 detik di db.ts sehingga pemanggilan
+  // dari DistrictMap pada halaman yang sama tidak menggandakan permintaan.
+  useVisiblePolling(() => {
+    getOnlineUsers().then(setOnlineUsers);
+  }, 60_000);
 
   const handleApprove = async (id: string) => {
     const updated = await updateSubmission(id, {
