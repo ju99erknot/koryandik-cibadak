@@ -122,12 +122,12 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
     return (
       <div style={cardStyle}>
         <div style={titleStyle}>
-          <i className="fa-solid fa-chart-pie" style={{ color: '#3b82f6' }}></i>
+          <i className="fa-solid fa-chart-pie" style={{ color: '#3b82f6' }} aria-hidden="true"></i>
           Status Berkas Anda
         </div>
         {statusData.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 0', gap: '8px' }}>
-            <i className="fa-solid fa-folder-open" style={{ fontSize: '24px', color: 'var(--text-secondary)', opacity: 0.4 }} />
+            <i className="fa-solid fa-folder-open" style={{ fontSize: '24px', color: 'var(--text-secondary)', opacity: 0.4 }}  aria-hidden="true"/>
             <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', textAlign: 'center' }}>
               Belum ada berkas yang diunggah.
             </p>
@@ -165,7 +165,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
       {/* Monthly Trend */}
       <div style={cardStyle} className="animate-fade-in">
         <div style={titleStyle}>
-          <i className="fa-solid fa-chart-area" style={{ color: '#3b82f6' }}></i>
+          <i className="fa-solid fa-chart-area" style={{ color: '#3b82f6' }} aria-hidden="true"></i>
           Tren Pengumpulan Bulanan {new Date().getFullYear()}
         </div>
         <ResponsiveContainer width="100%" height={220}>
@@ -196,7 +196,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
       {/* Status Donut */}
       <div style={cardStyle} className="animate-fade-in">
         <div style={titleStyle}>
-          <i className="fa-solid fa-chart-pie" style={{ color: '#f59e0b' }}></i>
+          <i className="fa-solid fa-chart-pie" style={{ color: '#f59e0b' }} aria-hidden="true"></i>
           Distribusi Status Berkas
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
@@ -225,7 +225,7 @@ export default function AnalyticsCharts({ submissions, categories, schools, vari
       {/* Category Completion Bar */}
       <div style={{ ...cardStyle, gridColumn: 'span 2' }} className="animate-fade-in">
         <div style={titleStyle}>
-          <i className="fa-solid fa-bars-progress" style={{ color: '#8b5cf6' }}></i>
+          <i className="fa-solid fa-bars-progress" style={{ color: '#8b5cf6' }} aria-hidden="true"></i>
           Kelengkapan per Kategori Berkas
         </div>
         <ResponsiveContainer width="100%" height={220}>

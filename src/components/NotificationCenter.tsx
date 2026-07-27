@@ -115,7 +115,7 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
         <i className="fa-solid fa-bell" style={{ 
           transition: 'transform 0.2s ease',
           transform: isOpen ? 'rotate(-15deg)' : 'rotate(0deg)'
-        }}></i>
+        }} aria-hidden="true"></i>
         
         {/* Badge */}
         {unreadCount > 0 && (
@@ -173,7 +173,7 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
           }}>
             <div>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', margin: 0 }}>
-                <i className="fa-solid fa-bell" style={{ marginRight: '8px', color: 'var(--primary)' }}></i>
+                <i className="fa-solid fa-bell" style={{ marginRight: '8px', color: 'var(--primary)' }} aria-hidden="true"></i>
                 Notifikasi
               </h3>
               {unreadCount > 0 && (
@@ -196,7 +196,7 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
                   transition: 'background 0.15s'
                 }}
               >
-                <i className="fa-solid fa-check-double" style={{ marginRight: '4px' }}></i>
+                <i className="fa-solid fa-check-double" style={{ marginRight: '4px' }} aria-hidden="true"></i>
                 Tandai semua dibaca
               </button>
             )}
@@ -210,7 +210,7 @@ export default function NotificationCenter({ currentUser }: { currentUser?: Sess
           }}>
             {notifications.length === 0 ? (
               <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                <i className="fa-solid fa-bell-slash" style={{ fontSize: '28px', display: 'block', marginBottom: '10px', opacity: 0.4 }}></i>
+                <i className="fa-solid fa-bell-slash" style={{ fontSize: '28px', display: 'block', marginBottom: '10px', opacity: 0.4 }} aria-hidden="true"></i>
                 <p style={{ fontSize: '13px' }}>Belum ada notifikasi</p>
               </div>
             ) : (

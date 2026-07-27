@@ -89,7 +89,7 @@ export default function DragDropZone({
             }}
             transition={{ duration: 0.2 }}
           >
-            <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '48px', color: 'var(--primary)', marginBottom: '16px' }} />
+            <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '48px', color: 'var(--primary)', marginBottom: '16px' }}  aria-hidden="true"/>
           </motion.div>
           <p style={{ fontSize: '16px', color: 'var(--text-primary)', marginBottom: '8px' }}>
             Drag & drop files here

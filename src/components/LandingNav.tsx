@@ -146,12 +146,12 @@ export default function LandingNav({
           </div>
           <div className="nav-status-divider" />
           <span className="nav-status-text">
-            <i className="fa-solid fa-school" />
+            <i className="fa-solid fa-school"  aria-hidden="true"/>
             {schoolCount} Sekolah Terdaftar
           </span>
           <div className="nav-status-divider" />
           <span className="nav-status-text">
-            <i className="fa-solid fa-shield-halved" />
+            <i className="fa-solid fa-shield-halved"  aria-hidden="true"/>
             Kec. Cibadak Sukabumi
           </span>
         </div>
@@ -235,7 +235,7 @@ export default function LandingNav({
                       >
                         <i className={`fa-solid ${item.icon} nav-dropdown-item-icon`} />
                         {item.label}
-                        {isActive && <i className="fa-solid fa-check nav-dropdown-item-check" />}
+                        {isActive && <i className="fa-solid fa-check nav-dropdown-item-check"  aria-hidden="true"/>}
                       </button>
                     );
                   })}

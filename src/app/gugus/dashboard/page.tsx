@@ -221,7 +221,7 @@ export default function GugusDashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '10px' }}>
               <div>
                 <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <i className="fa-solid fa-clock-rotate-left" style={{ color: 'var(--accent)' }}></i> Time-Travel Archives (Histori Bulanan)
+                  <i className="fa-solid fa-clock-rotate-left" style={{ color: 'var(--accent)' }} aria-hidden="true"></i> Time-Travel Archives (Histori Bulanan)
                 </h3>
                 <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Geser garis waktu untuk melihat rekam jejak bulan lalu</span>
               </div>
@@ -258,7 +258,7 @@ export default function GugusDashboard() {
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.total}</span>
@@ -267,7 +267,7 @@ export default function GugusDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--success-glow)', color: 'var(--success)' }}>
-                <i className="fa-solid fa-circle-check"></i>
+                <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.approved}</span>
@@ -276,7 +276,7 @@ export default function GugusDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--warning-glow)', color: 'var(--warning)' }}>
-                <i className="fa-solid fa-clock"></i>
+                <i className="fa-solid fa-clock" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.pending}</span>
@@ -285,7 +285,7 @@ export default function GugusDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--revision-glow)', color: 'var(--revision)' }}>
-                <i className="fa-solid fa-arrows-rotate"></i>
+                <i className="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.revision}</span>
@@ -300,7 +300,7 @@ export default function GugusDashboard() {
             {/* Donut Chart */}
             <div className="card animate-fade-in">
               <div className="card-header">
-                <h2><i className="fa-solid fa-chart-pie"></i> Distribusi Status Berkas</h2>
+                <h2><i className="fa-solid fa-chart-pie" aria-hidden="true"></i> Distribusi Status Berkas</h2>
               </div>
               <div className="card-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '32px', flexWrap: 'wrap', minHeight: '200px' }}>
                 {donutData.length > 0 ? (
@@ -356,7 +356,7 @@ export default function GugusDashboard() {
                   </>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '30px' }}>
-                    <i className="fa-solid fa-chart-pie" style={{ fontSize: '32px', color: 'var(--text-muted)', marginBottom: '12px', display: 'block' }}></i>
+                    <i className="fa-solid fa-chart-pie" style={{ fontSize: '32px', color: 'var(--text-muted)', marginBottom: '12px', display: 'block' }} aria-hidden="true"></i>
                     <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Belum ada data berkas di bulan ini.</p>
                   </div>
                 )}
@@ -366,7 +366,7 @@ export default function GugusDashboard() {
             {/* Announcements Widget */}
             <div className="card animate-fade-in">
               <div className="card-header">
-                <h2><i className="fa-solid fa-bullhorn"></i> Pengumuman</h2>
+                <h2><i className="fa-solid fa-bullhorn" aria-hidden="true"></i> Pengumuman</h2>
               </div>
               <div className="card-body">
                 {announcements.length > 0 ? (
@@ -388,7 +388,7 @@ export default function GugusDashboard() {
                   </div>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '30px' }}>
-                    <i className="fa-solid fa-bell-slash" style={{ fontSize: '28px', color: 'var(--text-muted)', marginBottom: '12px', display: 'block' }}></i>
+                    <i className="fa-solid fa-bell-slash" style={{ fontSize: '28px', color: 'var(--text-muted)', marginBottom: '12px', display: 'block' }} aria-hidden="true"></i>
                     <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Belum ada pengumuman terbaru.</p>
                   </div>
                 )}
@@ -407,10 +407,10 @@ export default function GugusDashboard() {
           {/* ===== SCHOOL PROGRESS TABLE ===== */}
           <div className="card animate-fade-in">
             <div className="card-header" style={{ flexWrap: 'wrap', gap: '12px' }}>
-              <h2><i className="fa-solid fa-table-list"></i> Progres Pengumpulan Berkas Sekolah</h2>
+              <h2><i className="fa-solid fa-table-list" aria-hidden="true"></i> Progres Pengumpulan Berkas Sekolah</h2>
               <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto', flexWrap: 'wrap' }}>
                 <div style={{ position: 'relative', minWidth: '200px' }}>
-                  <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '12px' }}></i>
+                  <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '12px' }} aria-hidden="true"></i>
                   <input
                     type="text"
                     className="form-control"
@@ -449,7 +449,7 @@ export default function GugusDashboard() {
                     {displaySchools.length === 0 ? (
                       <tr>
                         <td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-                          <i className="fa-solid fa-magnifying-glass" style={{ fontSize: '24px', marginBottom: '8px', display: 'block' }}></i>
+                          <i className="fa-solid fa-magnifying-glass" style={{ fontSize: '24px', marginBottom: '8px', display: 'block' }} aria-hidden="true"></i>
                           Tidak ada sekolah yang cocok dengan pencarian.
                         </td>
                       </tr>
@@ -479,7 +479,7 @@ export default function GugusDashboard() {
                                   <strong style={{ fontSize: '13px' }}>{school.name}</strong>
                                   <br />
                                   <small style={{ color: 'var(--text-muted)', fontSize: '11px' }}>
-                                    <i className="fa-solid fa-user" style={{ marginRight: '4px' }}></i>
+                                    <i className="fa-solid fa-user" style={{ marginRight: '4px' }} aria-hidden="true"></i>
                                     {school.operatorName || '-'}
                                   </small>
                                 </div>
@@ -525,7 +525,7 @@ export default function GugusDashboard() {
                               <td colSpan={5} style={{ padding: '20px 24px', background: 'var(--bg-space-dark)', borderBottom: '1px solid var(--card-border)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
                                   <h4 style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--text-primary)', margin: 0 }}>
-                                    <i className="fa-solid fa-clipboard-list" style={{ color: 'var(--primary)', marginRight: '6px' }}></i>
+                                    <i className="fa-solid fa-clipboard-list" style={{ color: 'var(--primary)', marginRight: '6px' }} aria-hidden="true"></i>
                                     Detail Dokumen — {school.name}
                                   </h4>
                                   <div style={{ display: 'flex', gap: '6px' }}>
@@ -571,7 +571,7 @@ export default function GugusDashboard() {
                                               {sub?.driveLink ? (
                                                 <a href={sub.driveLink} target="_blank" rel="noopener noreferrer"
                                                   style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                                  <i className="fa-solid fa-external-link-alt" style={{ fontSize: '10px' }}></i> Lihat
+                                                  <i className="fa-solid fa-external-link-alt" style={{ fontSize: '10px' }} aria-hidden="true"></i> Lihat
                                                 </a>
                                               ) : <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>—</span>}
                                             </td>
@@ -579,22 +579,22 @@ export default function GugusDashboard() {
                                               {sub ? (
                                                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                                                   <button type="button" className="btn btn-outline btn-xs" onClick={() => setActiveReviewSubmission(sub)} title="Periksa Berkas">
-                                                    <i className="fa-solid fa-eye"></i>
+                                                    <i className="fa-solid fa-eye" aria-hidden="true"></i>
                                                   </button>
                                                   {sub.status !== 'approved' && (
                                                     <button type="button" className="btn btn-xs" onClick={() => handleApprove(sub.id)} title="Setujui"
                                                       style={{ background: 'var(--success)', borderColor: 'var(--success)', color: '#fff' }}>
-                                                      <i className="fa-solid fa-check"></i>
+                                                      <i className="fa-solid fa-check" aria-hidden="true"></i>
                                                     </button>
                                                   )}
                                                   {sub.status !== 'revision' && (
                                                     <button type="button" className="btn btn-danger btn-xs" onClick={() => { setRevisionSubmissionId(sub.id); setRevisionNotes(''); }} title="Minta Revisi">
-                                                      <i className="fa-solid fa-rotate-left"></i>
+                                                      <i className="fa-solid fa-rotate-left" aria-hidden="true"></i>
                                                     </button>
                                                   )}
                                                   {sub.status !== 'pending' && (
                                                     <button type="button" className="btn btn-outline btn-xs" onClick={() => handleResetStatus(sub, cat.name)} title="Reset Status">
-                                                      <i className="fa-solid fa-arrow-rotate-left"></i>
+                                                      <i className="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i>
                                                     </button>
                                                   )}
                                                 </div>
@@ -611,7 +611,7 @@ export default function GugusDashboard() {
                                 {/* Reviewed by info */}
                                 {schoolSubs.filter(s => s.reviewedBy).length > 0 && (
                                   <div style={{ marginTop: '12px', fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <i className="fa-solid fa-user-check"></i>
+                                    <i className="fa-solid fa-user-check" aria-hidden="true"></i>
                                     Terakhir diverifikasi oleh: <strong style={{ color: 'var(--text-secondary)' }}>{schoolSubs.find(s => s.reviewedBy)?.reviewedBy || '—'}</strong>
                                   </div>
                                 )}
@@ -634,14 +634,14 @@ export default function GugusDashboard() {
         <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'var(--modal-backdrop)', backdropFilter: `blur(var(--modal-blur))`, zIndex: 'var(--z-modal)' as unknown as number, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div className="card modal-card" style={{ width: '440px', maxWidth: '90%', borderRadius: 'var(--modal-radius)' }}>
             <div className="card-header">
-              <h3><i className="fa-solid fa-rotate-left" style={{ color: 'var(--warning)', marginRight: '8px' }}></i>Catatan Pengembalian Revisi</h3>
+              <h3><i className="fa-solid fa-rotate-left" style={{ color: 'var(--warning)', marginRight: '8px' }} aria-hidden="true"></i>Catatan Pengembalian Revisi</h3>
               <button
                 type="button"
                 className="btn btn-outline btn-xs"
                 onClick={() => setRevisionSubmissionId(null)}
                 aria-label="Tutup modal"
               >
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body">
@@ -661,7 +661,7 @@ export default function GugusDashboard() {
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setRevisionSubmissionId(null)}>Batal</button>
                   <button type="submit" className="btn btn-danger" style={{ flex: 1 }} disabled={!revisionNotes.trim()}>
-                    <i className="fa-solid fa-paper-plane" style={{ marginRight: '6px' }}></i>Kirim Catatan
+                    <i className="fa-solid fa-paper-plane" style={{ marginRight: '6px' }} aria-hidden="true"></i>Kirim Catatan
                   </button>
                 </div>
               </form>

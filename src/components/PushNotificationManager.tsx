@@ -70,17 +70,17 @@ export default function PushNotificationManager({ currentUser }: PushNotificatio
 
         {/* Close button */}
         <button className="notif-prompt-close" onClick={handleClose} aria-label="Tutup">
-          <i className="fa-solid fa-xmark" />
+          <i className="fa-solid fa-xmark"  aria-hidden="true"/>
         </button>
 
         {/* Icon */}
         <div className="notif-prompt-icon-wrap">
           {result === 'granted' ? (
-            <i className="fa-solid fa-circle-check notif-prompt-icon success" />
+            <i className="fa-solid fa-circle-check notif-prompt-icon success"  aria-hidden="true"/>
           ) : result === 'denied' ? (
-            <i className="fa-solid fa-circle-xmark notif-prompt-icon denied" />
+            <i className="fa-solid fa-circle-xmark notif-prompt-icon denied"  aria-hidden="true"/>
           ) : (
-            <i className="fa-solid fa-bell notif-prompt-icon" />
+            <i className="fa-solid fa-bell notif-prompt-icon"  aria-hidden="true"/>
           )}
         </div>
 
@@ -108,7 +108,7 @@ export default function PushNotificationManager({ currentUser }: PushNotificatio
         {!result && (
           <div className="notif-prompt-actions">
             <button className="notif-btn-primary" onClick={handleActivate}>
-              <i className="fa-solid fa-bell" style={{ marginRight: '8px' }} />
+              <i className="fa-solid fa-bell" style={{ marginRight: '8px' }}  aria-hidden="true"/>
               Aktifkan
             </button>
             <button className="notif-btn-secondary" onClick={handleNever}>

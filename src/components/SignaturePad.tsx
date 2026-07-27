@@ -141,12 +141,13 @@ export default function SignaturePad({ onSave, onClose }: SignaturePadProps) {
         }}
       >
         <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3><i className="fa-solid fa-signature"></i> Tanda Tangan & Stempel</h3>
+          <h3><i className="fa-solid fa-signature" aria-hidden="true"></i> Tanda Tangan & Stempel</h3>
           <button 
             onClick={onClose}
+            aria-label="Tutup panel tanda tangan"
             style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}
           >
-            <i className="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark" aria-hidden="true"></i>
           </button>
         </div>
 

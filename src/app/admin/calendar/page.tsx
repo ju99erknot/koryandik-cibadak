@@ -332,7 +332,7 @@ export default function AdminCalendarPage() {
           <div className="stats-grid" style={{ marginBottom: '24px' }}>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}>
-                <i className="fa-solid fa-calendar-days"></i>
+                <i className="fa-solid fa-calendar-days" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.total}</span>
@@ -341,7 +341,7 @@ export default function AdminCalendarPage() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--accent-glow)', color: 'var(--accent)' }}>
-                <i className="fa-solid fa-calendar-check"></i>
+                <i className="fa-solid fa-calendar-check" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.monthly}</span>
@@ -350,7 +350,7 @@ export default function AdminCalendarPage() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--warning-glow)', color: 'var(--warning)' }}>
-                <i className="fa-solid fa-file-arrow-up"></i>
+                <i className="fa-solid fa-file-arrow-up" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.submissions}</span>
@@ -359,7 +359,7 @@ export default function AdminCalendarPage() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--success-glow)', color: 'var(--success)' }}>
-                <i className="fa-solid fa-handshake"></i>
+                <i className="fa-solid fa-handshake" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{stats.meetings}</span>
@@ -385,7 +385,7 @@ export default function AdminCalendarPage() {
               {/* Draggable templates toolbox */}
               <div className="card animate-fade-in">
                 <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h2><i className="fa-solid fa-toolbox" style={{ color: 'var(--accent)' }}></i> Alat Seret Agenda</h2>
+                  <h2><i className="fa-solid fa-toolbox" style={{ color: 'var(--accent)' }} aria-hidden="true"></i> Alat Seret Agenda</h2>
                   <button 
                     className="btn btn-primary btn-sm"
                     onClick={() => {
@@ -393,7 +393,7 @@ export default function AdminCalendarPage() {
                       handleDateSelect(nowStr);
                     }}
                   >
-                    <i className="fa-solid fa-plus" style={{ marginRight: '6px' }}></i> Agenda Baru
+                    <i className="fa-solid fa-plus" style={{ marginRight: '6px' }} aria-hidden="true"></i> Agenda Baru
                   </button>
                 </div>
                 <div className="card-body">
@@ -422,12 +422,12 @@ export default function AdminCalendarPage() {
               {/* Event search & List */}
               <div className="card animate-fade-in" style={{ flex: 1 }}>
                 <div className="card-header">
-                  <h2><i className="fa-solid fa-magnifying-glass"></i> Daftar &amp; Pencarian Agenda</h2>
+                  <h2><i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Daftar &amp; Pencarian Agenda</h2>
                 </div>
                 <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px' }}>
                   <div className="admin-cal-search-row">
                     <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
-                      <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '11px', pointerEvents: 'none' }}></i>
+                      <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '11px', pointerEvents: 'none' }} aria-hidden="true"></i>
                       <input
                         type="text"
                         className="form-control"
@@ -462,8 +462,8 @@ export default function AdminCalendarPage() {
                           <div className="admin-cal-evt-details">
                             <div className="admin-cal-evt-title" title={evt.title}>{evt.title}</div>
                             <div className="admin-cal-evt-meta" title={`${evt.startDate === evt.endDate ? evt.startDate : evt.startDate + ' s.d ' + evt.endDate} · ${targetMeta}`}>
-                              <span><i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }}></i>{evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} — ${evt.endDate}`}</span>
-                              <span style={{ marginLeft: '8px' }}><i className="fa-solid fa-users" style={{ marginRight: '4px' }}></i>{targetMeta}</span>
+                              <span><i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }} aria-hidden="true"></i>{evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} — ${evt.endDate}`}</span>
+                              <span style={{ marginLeft: '8px' }}><i className="fa-solid fa-users" style={{ marginRight: '4px' }} aria-hidden="true"></i>{targetMeta}</span>
                             </div>
                           </div>
                           <div className="admin-cal-evt-actions">
@@ -472,21 +472,21 @@ export default function AdminCalendarPage() {
                               onClick={() => handleEventSelect(evt)}
                               title="Sunting Agenda"
                             >
-                              <i className="fa-solid fa-pen"></i>
+                              <i className="fa-solid fa-pen" aria-hidden="true"></i>
                             </button>
                             <button
                               className="btn btn-danger btn-xs"
                               onClick={() => handleDelete(evt.id)}
                               title="Hapus Agenda"
                             >
-                              <i className="fa-solid fa-trash-can"></i>
+                              <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
                             </button>
                           </div>
                         </div>
                       );
                     }) : (
                       <div style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-secondary)', fontSize: '12px' }}>
-                        <i className="fa-solid fa-box-open" style={{ display: 'block', fontSize: '24px', opacity: 0.3, marginBottom: '8px' }}></i>
+                        <i className="fa-solid fa-box-open" style={{ display: 'block', fontSize: '24px', opacity: 0.3, marginBottom: '8px' }} aria-hidden="true"></i>
                         Tidak ada agenda yang cocok
                       </div>
                     )}
@@ -508,7 +508,7 @@ export default function AdminCalendarPage() {
                 style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '18px' }}
                 onClick={() => setIsModalOpen(false)}
               >
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body">
@@ -606,7 +606,7 @@ export default function AdminCalendarPage() {
                       style={{ padding: '8px 16px' }}
                       onClick={() => selectedEventId && handleDelete(selectedEventId)}
                     >
-                      <i className="fa-solid fa-trash-can" style={{ marginRight: '6px' }}></i> Hapus
+                      <i className="fa-solid fa-trash-can" style={{ marginRight: '6px' }} aria-hidden="true"></i> Hapus
                     </button>
                   )}
                   <button

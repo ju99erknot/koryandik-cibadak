@@ -123,7 +123,7 @@ export default function AdminGugus() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '24px' }}>
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6', fontSize: '20px' }}>
-                <i className="fa-solid fa-sitemap"></i>
+                <i className="fa-solid fa-sitemap" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Total Gugus</h4>
@@ -132,7 +132,7 @@ export default function AdminGugus() {
             </div>
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '20px' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Total Sekolah</h4>
@@ -141,7 +141,7 @@ export default function AdminGugus() {
             </div>
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b', fontSize: '20px' }}>
-                <i className="fa-solid fa-star"></i>
+                <i className="fa-solid fa-star" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Sekolah Koordinator</h4>
@@ -178,13 +178,13 @@ export default function AdminGugus() {
                       <div>
                         <h3 style={{ margin: 0, fontSize: '16px' }}>{g.name}</h3>
                         <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                          <i className="fa-solid fa-star" style={{ color: '#f59e0b', marginRight: '4px' }}></i>
+                          <i className="fa-solid fa-star" style={{ color: '#f59e0b', marginRight: '4px' }} aria-hidden="true"></i>
                           Koordinator: <strong>{intiSchool?.name || '—'}</strong>
                           <span style={{ margin: '0 8px' }}>•</span>
-                          <i className="fa-solid fa-school" style={{ marginRight: '4px' }}></i>
+                          <i className="fa-solid fa-school" style={{ marginRight: '4px' }} aria-hidden="true"></i>
                           {memberSchools.length} sekolah
                           <span style={{ margin: '0 8px' }}>•</span>
-                          <i className="fa-solid fa-key" style={{ marginRight: '4px' }}></i>
+                          <i className="fa-solid fa-key" style={{ marginRight: '4px' }} aria-hidden="true"></i>
                           Passcode: <code>{g.passcode}</code>
                         </div>
                       </div>
@@ -195,7 +195,7 @@ export default function AdminGugus() {
                         style={{ fontSize: '12px', padding: '6px 14px', background: color, borderColor: color }}
                         onClick={(e) => { e.stopPropagation(); openKoordinatorModal(g); }}
                       >
-                        <i className="fa-solid fa-pen-to-square" style={{ marginRight: '6px' }}></i> Edit Gugus
+                        <i className="fa-solid fa-pen-to-square" style={{ marginRight: '6px' }} aria-hidden="true"></i> Edit Gugus
                       </button>
                       <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: 'var(--text-muted)', fontSize: '14px' }}></i>
                     </div>
@@ -221,7 +221,7 @@ export default function AdminGugus() {
                             {memberSchools.length === 0 ? (
                               <tr>
                                 <td colSpan={7} style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
-                                  <i className="fa-solid fa-folder-open" style={{ fontSize: '24px', marginBottom: '8px', display: 'block' }}></i>
+                                  <i className="fa-solid fa-folder-open" style={{ fontSize: '24px', marginBottom: '8px', display: 'block' }} aria-hidden="true"></i>
                                   Belum ada sekolah di gugus ini.
                                 </td>
                               </tr>
@@ -232,7 +232,7 @@ export default function AdminGugus() {
                                   <td>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                       {s.npsn === g.sekolahInti && (
-                                        <i className="fa-solid fa-crown" style={{ color: '#f59e0b', fontSize: '14px' }} title="Sekolah Koordinator"></i>
+                                        <i className="fa-solid fa-crown" style={{ color: '#f59e0b', fontSize: '14px' }} title="Sekolah Koordinator" aria-hidden="true"></i>
                                       )}
                                       <strong>{s.name}</strong>
                                     </div>
@@ -247,7 +247,7 @@ export default function AdminGugus() {
                                         rel="noopener noreferrer"
                                         style={{ fontSize: '11px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontWeight: 600 }}
                                       >
-                                        <i className="fa-brands fa-whatsapp" /> {s.ksPhone}
+                                        <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> {s.ksPhone}
                                       </a>
                                     )}
                                   </td>
@@ -260,14 +260,14 @@ export default function AdminGugus() {
                                         rel="noopener noreferrer"
                                         style={{ fontSize: '11px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontWeight: 600 }}
                                       >
-                                        <i className="fa-brands fa-whatsapp" /> {s.operatorPhone}
+                                        <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> {s.operatorPhone}
                                       </a>
                                     )}
                                   </td>
                                   <td>
                                     {s.npsn === g.sekolahInti ? (
                                       <span className="badge badge-approved" style={{ fontSize: '10px' }}>
-                                        <i className="fa-solid fa-crown" style={{ marginRight: '4px' }}></i> Koordinator
+                                        <i className="fa-solid fa-crown" style={{ marginRight: '4px' }} aria-hidden="true"></i> Koordinator
                                       </span>
                                     ) : (
                                       <span className="badge badge-pending" style={{ fontSize: '10px' }}>Anggota</span>
@@ -279,7 +279,7 @@ export default function AdminGugus() {
                                       onClick={() => openMoveModal(s)}
                                       title="Pindahkan ke gugus lain"
                                     >
-                                      <i className="fa-solid fa-arrows-turn-right"></i> Pindah
+                                      <i className="fa-solid fa-arrows-turn-right" aria-hidden="true"></i> Pindah
                                     </button>
                                   </td>
                                 </tr>
@@ -320,9 +320,9 @@ export default function AdminGugus() {
             style={{ maxWidth: '520px', width: '90%' }}
           >
             <div className="card-header">
-              <h3><i className="fa-solid fa-pen-to-square" style={{ color: 'var(--primary)', marginRight: '8px' }}></i>Edit Data Gugus</h3>
+              <h3><i className="fa-solid fa-pen-to-square" style={{ color: 'var(--primary)', marginRight: '8px' }} aria-hidden="true"></i>Edit Data Gugus</h3>
               <button className="modal-close-btn" onClick={() => setKoordinatorModal(null)}>
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -381,7 +381,7 @@ export default function AdminGugus() {
                     marginBottom: '20px'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                      <i className="fa-solid fa-crown" style={{ color: '#f59e0b', fontSize: '16px' }}></i>
+                      <i className="fa-solid fa-crown" style={{ color: '#f59e0b', fontSize: '16px' }} aria-hidden="true"></i>
                       <strong style={{ fontSize: '14px' }}>{s.name}</strong>
                     </div>
                     <div style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'grid', gap: '6px' }}>
@@ -419,7 +419,7 @@ export default function AdminGugus() {
                   disabled={!selectedKoordinator || !gugusName || !gugusPasscode}
                   style={{ padding: '10px 20px', minWidth: '80px' }}
                 >
-                  <i className="fa-solid fa-check" style={{ marginRight: '6px' }}></i> Simpan
+                  <i className="fa-solid fa-check" style={{ marginRight: '6px' }} aria-hidden="true"></i> Simpan
                 </button>
               </div>
             </div>
@@ -450,9 +450,9 @@ export default function AdminGugus() {
             style={{ maxWidth: '460px', width: '90%' }}
           >
             <div className="card-header">
-              <h3><i className="fa-solid fa-arrows-turn-right" style={{ color: 'var(--primary)', marginRight: '8px' }}></i>Pindah Sekolah</h3>
+              <h3><i className="fa-solid fa-arrows-turn-right" style={{ color: 'var(--primary)', marginRight: '8px' }} aria-hidden="true"></i>Pindah Sekolah</h3>
               <button className="modal-close-btn" onClick={() => setMoveModal(null)}>
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body" style={{ padding: '24px' }}>
@@ -480,7 +480,7 @@ export default function AdminGugus() {
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
                 <button className="btn btn-outline" onClick={() => setMoveModal(null)}>Batal</button>
                 <button className="btn btn-primary" onClick={handleMoveSchool} disabled={targetGugus === moveModal.gugus}>
-                  <i className="fa-solid fa-check" style={{ marginRight: '6px' }}></i> Pindahkan
+                  <i className="fa-solid fa-check" style={{ marginRight: '6px' }} aria-hidden="true"></i> Pindahkan
                 </button>
               </div>
             </div>

@@ -302,7 +302,7 @@ export default function SchoolDashboard() {
                 gap: '10px'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <i className="fa-solid fa-tower-broadcast" style={{ color: '#ffffff', fontSize: '12px', animation: 'pulse 1s infinite' }}></i>
+                  <i className="fa-solid fa-tower-broadcast" style={{ color: '#ffffff', fontSize: '12px', animation: 'pulse 1s infinite' }} aria-hidden="true"></i>
                   <span style={{ color: '#ffffff', fontSize: '11px', fontWeight: 'bold', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                     🚨 Siaran Darurat dari Admin Koryandik
                   </span>
@@ -324,7 +324,7 @@ export default function SchoolDashboard() {
                   }}
                   title="Tutup pengumuman ini"
                 >
-                  <i className="fa-solid fa-xmark"></i>
+                  <i className="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
               </div>
               {/* Content body */}
@@ -342,7 +342,7 @@ export default function SchoolDashboard() {
                   flexShrink: 0,
                   animation: 'pulse 1.5s infinite'
                 }}>
-                  <i className="fa-solid fa-bullhorn"></i>
+                  <i className="fa-solid fa-bullhorn" aria-hidden="true"></i>
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontSize: '15px', fontWeight: 'bold', margin: '0 0 4px', color: '#ef4444' }}>
@@ -352,7 +352,7 @@ export default function SchoolDashboard() {
                     {urgentAnn.content}
                   </p>
                   <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', color: 'var(--text-muted)' }}>
-                    <i className="fa-solid fa-clock"></i>
+                    <i className="fa-solid fa-clock" aria-hidden="true"></i>
                     <span>Diterbitkan {new Date(urgentAnn.createdAt).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                     <span style={{ margin: '0 4px' }}>•</span>
                     <span>Oleh: {urgentAnn.createdBy}</span>
@@ -376,7 +376,7 @@ export default function SchoolDashboard() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <i className="fa-solid fa-triangle-exclamation" style={{ color: '#f59e0b', fontSize: '20px', animation: 'pulse 1.5s infinite' }}></i>
+                  <i className="fa-solid fa-triangle-exclamation" style={{ color: '#f59e0b', fontSize: '20px', animation: 'pulse 1.5s infinite' }} aria-hidden="true"></i>
                   <div>
                     <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                       Pemberitahuan Revisi &amp; Catatan Pengawas
@@ -402,7 +402,7 @@ export default function SchoolDashboard() {
                       </div>
                       {sub.notes && (
                         <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.03)', padding: '8px', borderRadius: '6px', borderLeft: '3px solid #f59e0b' }}>
-                          <i className="fa-solid fa-comment-dots" style={{ marginRight: '6px', color: '#f59e0b' }}></i>
+                          <i className="fa-solid fa-comment-dots" style={{ marginRight: '6px', color: '#f59e0b' }} aria-hidden="true"></i>
                           {sub.notes}
                         </div>
                       )}
@@ -416,7 +416,7 @@ export default function SchoolDashboard() {
                           setDriveLinkInput(sub.driveLink || '');
                         }}
                       >
-                        <i className="fa-solid fa-cloud-arrow-up"></i> Perbaiki &amp; Upload Ulang
+                        <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Perbaiki &amp; Upload Ulang
                       </button>
                     </div>
                   );
@@ -451,7 +451,7 @@ export default function SchoolDashboard() {
                 fontSize: '18px',
                 animation: 'pulse 1.5s infinite'
               }}>
-                <i className="fa-solid fa-triangle-exclamation"></i>
+                <i className="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
               </div>
               <div>
                 <h3 style={{ fontSize: '15px', fontWeight: 'bold', margin: 0 }}>Pengingat Batas Akhir Unggah Berkas</h3>
@@ -496,7 +496,7 @@ export default function SchoolDashboard() {
           <div className="stats-grid bento-grid-asymmetric">
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--success-glow)', color: 'var(--success)' }}>
-                <i className="fa-solid fa-circle-check"></i>
+                <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{approvedCount}</span>
@@ -505,7 +505,7 @@ export default function SchoolDashboard() {
             </div>
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}>
-                <i className="fa-solid fa-clock"></i>
+                <i className="fa-solid fa-clock" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{pendingCount}</span>
@@ -514,7 +514,7 @@ export default function SchoolDashboard() {
             </div>
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--revision-glow)', color: 'var(--revision)' }}>
-                <i className="fa-solid fa-arrows-rotate"></i>
+                <i className="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{revisionCount}</span>
@@ -523,7 +523,7 @@ export default function SchoolDashboard() {
             </div>
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--danger-glow)', color: 'var(--danger)' }}>
-                <i className="fa-solid fa-circle-xmark"></i>
+                <i className="fa-solid fa-circle-xmark" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{rejectedCount}</span>
@@ -535,7 +535,7 @@ export default function SchoolDashboard() {
           {/* Progress Section with Donut Chart */}
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-chart-pie"></i> Progres Kelengkapan Berkas</h2>
+              <h2><i className="fa-solid fa-chart-pie" aria-hidden="true"></i> Progres Kelengkapan Berkas</h2>
               <span className="badge badge-success" style={{ fontSize: '12px' }}>{progressPercent}% Selesai</span>
             </div>
             <div className="card-body">
@@ -623,14 +623,14 @@ export default function SchoolDashboard() {
             {/* Form */}
             <div className="card animate-fade-in">
               <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ margin: 0 }}><i className="fa-solid fa-cloud-arrow-up"></i> Kirim Berkas Baru</h2>
+                <h2 style={{ margin: 0 }}><i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Kirim Berkas Baru</h2>
                 <button
                   type="button"
                   className="btn btn-outline btn-sm"
                   onClick={() => setIsBulkUploadOpen(true)}
                   style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  <i className="fa-solid fa-cloud-arrow-up"></i> Bulk Upload
+                  <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Bulk Upload
                 </button>
               </div>
               <div className="card-body">
@@ -696,7 +696,7 @@ export default function SchoolDashboard() {
 
                       {uploadProgress === null && (
                         <>
-                          <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '28px', color: 'var(--primary)', opacity: 0.8 }} />
+                          <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '28px', color: 'var(--primary)', opacity: 0.8 }}  aria-hidden="true"/>
                           <div>
                             <span style={{ fontSize: '13px', fontWeight: 600, display: 'block', color: 'var(--text-primary)' }}>
                               Seret &amp; lepas berkas PDF di sini
@@ -750,7 +750,7 @@ export default function SchoolDashboard() {
                       {uploadProgress === 100 && (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                           <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '20px' }}>
-                            <i className="fa-solid fa-circle-check" />
+                            <i className="fa-solid fa-circle-check"  aria-hidden="true"/>
                           </div>
                           <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981' }}>Selesai Diunggah!</span>
                           <span style={{ fontSize: '11px', color: 'var(--text-muted)', wordBreak: 'break-all', maxWidth: '250px' }}>
@@ -764,7 +764,7 @@ export default function SchoolDashboard() {
                   <div className="form-group">
                     <label>Link Google Drive (Terisi Otomatis / Manual)</label>
                     <div className="input-with-icon">
-                      <i className="fa-brands fa-google-drive"></i>
+                      <i className="fa-brands fa-google-drive" aria-hidden="true"></i>
                       <input
                         type="url"
                         className="form-control"
@@ -776,7 +776,7 @@ export default function SchoolDashboard() {
                     </div>
                   </div>
                   <button type="submit" className="btn btn-primary btn-block">
-                    Kirim Berkas <i className="fa-solid fa-paper-plane" style={{ marginLeft: '6px' }}></i>
+                    Kirim Berkas <i className="fa-solid fa-paper-plane" style={{ marginLeft: '6px' }} aria-hidden="true"></i>
                   </button>
                 </form>
               </div>
@@ -786,7 +786,7 @@ export default function SchoolDashboard() {
             <div className="card animate-fade-in" style={{ marginTop: '0px' }}>
               <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2 style={{ fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <i className="fa-solid fa-clock-rotate-left" style={{ color: 'var(--primary)' }}></i>
+                  <i className="fa-solid fa-clock-rotate-left" style={{ color: 'var(--primary)' }} aria-hidden="true"></i>
                   Agenda &amp; Countdown
                 </h2>
                 <span style={{ fontSize: '10px', fontWeight: 'bold', color: 'var(--primary)', background: 'var(--primary-glow)', padding: '2px 8px', borderRadius: '6px' }}>Live</span>
@@ -825,7 +825,7 @@ export default function SchoolDashboard() {
                       <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '4px' }}>
                         {isToday ? (
                           <div style={{ width: '100%', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid #ef444430', borderRadius: '8px', padding: '6px 12px', fontSize: '11px', fontWeight: 'bold', textAlign: 'center' }}>
-                            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '6px' }} /> Agenda Berlangsung Hari Ini!
+                            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '6px' }}  aria-hidden="true"/> Agenda Berlangsung Hari Ini!
                           </div>
                         ) : (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', width: '100%' }}>
@@ -895,7 +895,7 @@ export default function SchoolDashboard() {
                   className="btn btn-outline btn-block"
                   style={{ fontSize: '12px', height: '36px', borderRadius: '10px', marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}
                 >
-                  <i className="fa-solid fa-calendar-days" style={{ marginRight: '6px' }} /> Buka Kalender Publik
+                  <i className="fa-solid fa-calendar-days" style={{ marginRight: '6px' }}  aria-hidden="true"/> Buka Kalender Publik
                 </a>
               </div>
             </div>
@@ -906,7 +906,7 @@ export default function SchoolDashboard() {
             {/* Supervision Notes Widget */}
             <div className="card animate-fade-in" style={{ gridColumn: 'span 3' }}>
               <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2><i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }}></i> Catatan Supervisi &amp; Kunjungan Pengawas</h2>
+                <h2><i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }} aria-hidden="true"></i> Catatan Supervisi &amp; Kunjungan Pengawas</h2>
                 <span className="badge badge-info">{supervisionNotes.length} Catatan</span>
               </div>
               <div className="card-body">
@@ -917,7 +917,7 @@ export default function SchoolDashboard() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span className="badge badge-primary" style={{ fontSize: '10px' }}>Bidang: {note.category}</span>
                           <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }}></i>
+                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }} aria-hidden="true"></i>
                             {new Date(note.visitDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                           </span>
                         </div>
@@ -943,7 +943,7 @@ export default function SchoolDashboard() {
                   </div>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
-                    <i className="fa-solid fa-user-check" style={{ fontSize: '28px', marginBottom: '8px' }}></i>
+                    <i className="fa-solid fa-user-check" style={{ fontSize: '28px', marginBottom: '8px' }} aria-hidden="true"></i>
                     <p style={{ margin: 0, fontSize: '13px' }}>Belum ada catatan kunjungan supervisi dari Pengawas Pembina.</p>
                   </div>
                 )}
@@ -953,7 +953,7 @@ export default function SchoolDashboard() {
             {/* List */}
             <div className="card animate-fade-in" style={{ gridColumn: 'span 3' }}>
               <div className="card-header">
-                <h2><i className="fa-solid fa-folder-open"></i> Daftar Status Berkas</h2>
+                <h2><i className="fa-solid fa-folder-open" aria-hidden="true"></i> Daftar Status Berkas</h2>
               </div>
               <div className="card-body" style={{ padding: 0 }}>
                 <div className="table-responsive">
@@ -983,11 +983,11 @@ export default function SchoolDashboard() {
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: sub ? '#22c55e' : 'var(--text-muted)' }}>
                                   <i className={`fa-solid ${sub ? 'fa-circle-check' : 'fa-circle-dot'}`}></i> Diunggah
                                 </span>
-                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '8px', opacity: 0.4 }}></i>
+                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '8px', opacity: 0.4 }} aria-hidden="true"></i>
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: sub && sub.status !== 'pending' ? '#22c55e' : sub?.status === 'pending' ? '#f59e0b' : 'var(--text-muted)' }}>
                                   <i className={`fa-solid ${sub && sub.status !== 'pending' ? 'fa-circle-check' : sub?.status === 'pending' ? 'fa-clock' : 'fa-circle-dot'}`}></i> Verifikasi
                                 </span>
-                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '8px', opacity: 0.4 }}></i>
+                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '8px', opacity: 0.4 }} aria-hidden="true"></i>
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: sub?.status === 'approved' ? '#22c55e' : sub?.status === 'revision' ? '#f59e0b' : sub?.status === 'rejected' ? '#ef4444' : 'var(--text-muted)' }}>
                                   <i className={`fa-solid ${sub?.status === 'approved' ? 'fa-circle-check' : sub?.status === 'revision' ? 'fa-arrows-rotate' : sub?.status === 'rejected' ? 'fa-circle-xmark' : 'fa-circle-dot'}`}></i>
                                   {sub?.status === 'approved' ? 'Disetujui' : sub?.status === 'revision' ? 'Revisi' : sub?.status === 'rejected' ? 'Ditolak' : 'Hasil'}
@@ -1007,7 +1007,7 @@ export default function SchoolDashboard() {
                                       style={{ borderColor: 'var(--revision)', color: 'var(--revision)' }}
                                       onClick={() => setSelectedSubmissionForModal(sub)}
                                     >
-                                      Catatan <i className="fa-solid fa-comment-dots"></i>
+                                      Catatan <i className="fa-solid fa-comment-dots" aria-hidden="true"></i>
                                     </button>
                                   )}
                                 </div>
@@ -1035,11 +1035,11 @@ export default function SchoolDashboard() {
                                          setDriveLinkInput(sub.driveLink || '');
                                        }}
                                      >
-                                       Upload Ulang <i className="fa-solid fa-cloud-arrow-up"></i>
+                                       Upload Ulang <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
                                      </button>
                                    ) : null}
                                    <a href={sub.driveLink ?? '#'} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-xs">
-                                     Buka <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                     Buka <i className="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                                    </a>
                                  </div>
                                ) : (
@@ -1077,7 +1077,7 @@ export default function SchoolDashboard() {
                 style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '18px' }}
                 onClick={() => setSelectedSubmissionForModal(null)}
               >
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body">

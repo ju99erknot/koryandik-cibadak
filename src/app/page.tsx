@@ -514,25 +514,25 @@ export default function LandingPage() {
           </p>
           <div className="hero-actions animate-slide-up">
             <MagneticButton className="btn btn-primary" onClick={() => setIsDrawerOpen(true)}>
-              Masuk Portal <i className="fa-solid fa-right-to-bracket"></i>
+              Masuk Portal <i className="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
             </MagneticButton>
             <MagneticButton className="btn btn-outline" onClick={() => scrollToSection('tracker')}>
-              Cek Status Berkas <i className="fa-solid fa-magnifying-glass"></i>
+              Cek Status Berkas <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             </MagneticButton>
           </div>
           <div className="hero-trust-bar animate-fade-in">
             <div className="trust-item">
-              <i className="fa-solid fa-satellite-dish" style={{ animation: 'pulse 1.5s infinite' }}></i>
+              <i className="fa-solid fa-satellite-dish" style={{ animation: 'pulse 1.5s infinite' }} aria-hidden="true"></i>
               <span><strong>{animatedSchools || 0}</strong> Sekolah Binaan</span>
             </div>
             <div className="trust-divider"></div>
             <div className="trust-item">
-              <i className="fa-solid fa-users-viewfinder"></i>
+              <i className="fa-solid fa-users-viewfinder" aria-hidden="true"></i>
               <span><strong>{(animatedStudents || 0).toLocaleString('id-ID')}</strong> Siswa Terdata</span>
             </div>
             <div className="trust-divider"></div>
             <div className="trust-item">
-              <i className="fa-solid fa-network-wired"></i>
+              <i className="fa-solid fa-network-wired" aria-hidden="true"></i>
               <span><strong>{animatedTeachers || 0}</strong> Guru Terverifikasi</span>
             </div>
           </div>
@@ -542,7 +542,7 @@ export default function LandingPage() {
           <div className="hero-dashboard-card">
             <div className="hero-card-header">
               <div className="hero-card-icon">
-                <i className="fa-brands fa-google-drive"></i>
+                <i className="fa-brands fa-google-drive" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ fontSize: '13px' }}>Monitoring Transparan</h4>
@@ -619,17 +619,17 @@ export default function LandingPage() {
               ))}
             </div>
             <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)' }}>
-              <i className="fa-solid fa-circle-info"></i>
+              <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
               <span>Diperbarui otomatis oleh Koordinator Gugus</span>
             </div>
           </div>
           
           <div className="hero-float-badge hero-float-badge-1">
-            <i className="fa-solid fa-circle-check" style={{ color: 'var(--success)' }}></i>
+            <i className="fa-solid fa-circle-check" style={{ color: 'var(--success)' }} aria-hidden="true"></i>
             <span>Verifikasi Cepat</span>
           </div>
           <div className="hero-float-badge hero-float-badge-2">
-            <i className="fa-solid fa-shield-halved" style={{ color: 'var(--primary)' }}></i>
+            <i className="fa-solid fa-shield-halved" style={{ color: 'var(--primary)' }} aria-hidden="true"></i>
             <span>Aman & Terstruktur</span>
           </div>
         </div>
@@ -676,12 +676,12 @@ export default function LandingPage() {
                   {/* Top section with badge and icon */}
                   <div className="gugus-ctrl-top">
                     <div className="gugus-ctrl-icon-wrapper">
-                      <i className="fa-solid fa-layer-group" />
+                      <i className="fa-solid fa-layer-group"  aria-hidden="true"/>
                     </div>
                     <div className="gugus-ctrl-meta">
                       <h3>Gugus {gugusId}</h3>
                       <p className="gugus-ctrl-school-name">
-                        <i className="fa-solid fa-school-flag" />
+                        <i className="fa-solid fa-school-flag"  aria-hidden="true"/>
                         {schoolIntiObj ? schoolIntiObj.name : 'Sekolah Inti tidak ditemukan'}
                       </p>
                     </div>
@@ -734,7 +734,7 @@ export default function LandingPage() {
 
                     <div className="gugus-ctrl-footer">
                       <div className="gugus-ctrl-school-count">
-                        <i className="fa-solid fa-school" />
+                        <i className="fa-solid fa-school"  aria-hidden="true"/>
                         {totalGugusSchools} Sekolah Binaan
                       </div>
                       <div className={`gugus-ctrl-status ${isDone ? 'done' : 'ongoing'}`}>
@@ -904,7 +904,7 @@ export default function LandingPage() {
                             <td>
                               {sub ? (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--success)', fontWeight: 'bold' }}>
-                                  <i className="fa-solid fa-shield-halved"></i> Terproteksi
+                                  <i className="fa-solid fa-shield-halved" aria-hidden="true"></i> Terproteksi
                                 </span>
                               ) : (
                                 <span style={{ color: 'var(--text-muted)' }}>-</span>
@@ -1231,7 +1231,7 @@ export default function LandingPage() {
           {/* Top 3 Podium Card */}
           <div className="card animate-fade-in" style={{ padding: '24px', background: 'var(--card-glass)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '20px', textAlign: 'center' }}>
-              <i className="fa-solid fa-medal" style={{ color: '#d97706', marginRight: '6px' }}></i> Top 3 Sekolah Tercepat &amp; Lengkap
+              <i className="fa-solid fa-medal" style={{ color: '#d97706', marginRight: '6px' }} aria-hidden="true"></i> Top 3 Sekolah Tercepat &amp; Lengkap
             </h3>
             
             <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'flex-end', height: '180px', paddingTop: '20px' }}>
@@ -1307,7 +1307,7 @@ export default function LandingPage() {
           {/* List Table Card */}
           <div className="card animate-fade-in" style={{ padding: '24px', background: 'var(--card-glass)' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '16px' }}>
-              <i className="fa-solid fa-list-ol" style={{ color: 'var(--primary)', marginRight: '6px' }}></i> Peringkat Kepatuhan Sekolah
+              <i className="fa-solid fa-list-ol" style={{ color: 'var(--primary)', marginRight: '6px' }} aria-hidden="true"></i> Peringkat Kepatuhan Sekolah
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -1581,7 +1581,7 @@ export default function LandingPage() {
 
         {testimonials.length === 0 ? (
           <div className="card" style={{ maxWidth: 480, margin: '0 auto', textAlign: 'center', padding: '40px' }}>
-            <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, color: 'var(--primary)', marginBottom: 12 }} />
+            <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 24, color: 'var(--primary)', marginBottom: 12 }}  aria-hidden="true"/>
             <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Memuat testimoni operator sekolah…</p>
           </div>
         ) : (
@@ -1751,7 +1751,7 @@ export default function LandingPage() {
                   color: '#ffffff',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                 }}>
-                  <i className="fa-solid fa-robot"></i>
+                  <i className="fa-solid fa-robot" aria-hidden="true"></i>
                 </div>
                 <div>
                   <h4 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#ffffff', letterSpacing: '-0.2px' }}>
@@ -1816,7 +1816,7 @@ export default function LandingPage() {
                     transition: 'all 0.2s'
                   }}
                 >
-                  <i className="fa-solid fa-xmark"></i>
+                  <i className="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -1923,7 +1923,7 @@ export default function LandingPage() {
                           fontWeight: 500
                         }}
                       >
-                        <i className="fa-solid fa-volume-low" style={{ color: 'var(--primary)' }}></i> Dengarkan
+                        <i className="fa-solid fa-volume-low" style={{ color: 'var(--primary)' }} aria-hidden="true"></i> Dengarkan
                       </button>
                       <button
                         onClick={() => {
@@ -1943,7 +1943,7 @@ export default function LandingPage() {
                           fontWeight: 500
                         }}
                       >
-                        <i className="fa-regular fa-copy" style={{ color: 'var(--accent)' }}></i> Salin
+                        <i className="fa-regular fa-copy" style={{ color: 'var(--accent)' }} aria-hidden="true"></i> Salin
                       </button>
                       <button
                         onClick={() => toast.success('Terima kasih atas ulasannya!')}
@@ -1960,7 +1960,7 @@ export default function LandingPage() {
                           fontWeight: 500
                         }}
                       >
-                        <i className="fa-regular fa-thumbs-up" style={{ color: '#22c55e' }}></i> Bermanfaat
+                        <i className="fa-regular fa-thumbs-up" style={{ color: '#22c55e' }} aria-hidden="true"></i> Bermanfaat
                       </button>
                     </div>
                   )}
@@ -1979,7 +1979,7 @@ export default function LandingPage() {
                   gap: '10px',
                   border: '1px solid var(--card-border)'
                 }}>
-                  <i className="fa-solid fa-spinner fa-spin" style={{ color: 'var(--primary)', fontSize: '15px' }}></i>
+                  <i className="fa-solid fa-spinner fa-spin" style={{ color: 'var(--primary)', fontSize: '15px' }} aria-hidden="true"></i>
                   <span style={{ fontWeight: 500 }}>Pak Kory sedang menganalisis Juknis & Regulasi...</span>
                 </div>
               )}
@@ -2020,6 +2020,7 @@ export default function LandingPage() {
               />
               <button
                 type="submit"
+                aria-label="Kirim pesan ke asisten AI"
                 disabled={chatTyping || !chatInput.trim()}
                 style={{
                   width: '38px',
@@ -2039,7 +2040,7 @@ export default function LandingPage() {
                   boxShadow: chatInput.trim() && !chatTyping ? '0 4px 14px rgba(37, 99, 235, 0.3)' : 'none'
                 }}
               >
-                <i className="fa-solid fa-paper-plane"></i>
+                <i className="fa-solid fa-paper-plane" aria-hidden="true"></i>
               </button>
             </form>
           </div>
@@ -2054,7 +2055,7 @@ export default function LandingPage() {
               onClick={() => setChatOpen(true)}
               title="Chat Asisten"
             >
-              <i className="fa-solid fa-comments"></i>
+              <i className="fa-solid fa-comments" aria-hidden="true"></i>
             </button>
           </>
         )}

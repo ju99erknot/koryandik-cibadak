@@ -384,7 +384,7 @@ export default function GaleriPage() {
         {/* Hero */}
         <section className="pub-hero animate-fade-in" style={{ paddingBottom: '36px' }}>
           <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <i className="fa-solid fa-images" />
+            <i className="fa-solid fa-images"  aria-hidden="true"/>
             <span>Dokumentasi Resmi Koryandik</span>
           </div>
           <h1 className="pub-hero-title">Galeri Kegiatan</h1>
@@ -410,7 +410,7 @@ export default function GaleriPage() {
         {/* Search + Filter */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', padding: '0 20px 36px' }}>
           <div className="galeri-search-wrap">
-            <i className="fa-solid fa-magnifying-glass" />
+            <i className="fa-solid fa-magnifying-glass"  aria-hidden="true"/>
             <input
               className="galeri-search-input"
               type="text"
@@ -424,7 +424,7 @@ export default function GaleriPage() {
               className={`galeri-filter-btn${activeCategory === 'Semua' ? ' active' : ''}`}
               onClick={() => setActiveCategory('Semua')}
             >
-              <i className="fa-solid fa-layer-group" style={{ fontSize: '11px' }} />
+              <i className="fa-solid fa-layer-group" style={{ fontSize: '11px' }}  aria-hidden="true"/>
               Semua
               <span className="count-badge">{gallery.length}</span>
             </button>
@@ -446,7 +446,7 @@ export default function GaleriPage() {
         {/* Masonry Grid */}
         {filteredGallery.length === 0 ? (
           <div className="galeri-empty animate-fade-in">
-            <i className="fa-solid fa-images" style={{ fontSize: '52px', opacity: 0.2, display: 'block', marginBottom: '16px' }} />
+            <i className="fa-solid fa-images" style={{ fontSize: '52px', opacity: 0.2, display: 'block', marginBottom: '16px' }}  aria-hidden="true"/>
             <p style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>Belum Ada Dokumentasi</p>
             <p style={{ fontSize: '13px', marginTop: '6px' }}>Tidak ditemukan foto untuk kategori &ldquo;{activeCategory}&rdquo;.</p>
           </div>
@@ -479,7 +479,7 @@ export default function GaleriPage() {
                     <div className="galeri-card-overlay">
                       <p style={{ color: '#fff', fontSize: '13px', fontWeight: 700, margin: '0 0 4px', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>{item.title}</p>
                       <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <i className="fa-solid fa-calendar-day" />
+                        <i className="fa-solid fa-calendar-day"  aria-hidden="true"/>
                         {new Date(item.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </span>
                     </div>
@@ -512,10 +512,10 @@ export default function GaleriPage() {
             <div className="galeri-lightbox-img-area">
               {/* Prev/Next arrows */}
               <button className="galeri-lb-arrow prev" onClick={() => navigatePhoto(-1)} title="Sebelumnya">
-                <i className="fa-solid fa-chevron-left" />
+                <i className="fa-solid fa-chevron-left"  aria-hidden="true"/>
               </button>
               <button className="galeri-lb-arrow next" onClick={() => navigatePhoto(1)} title="Berikutnya">
-                <i className="fa-solid fa-chevron-right" />
+                <i className="fa-solid fa-chevron-right"  aria-hidden="true"/>
               </button>
 
               {/* Top badges */}
@@ -525,7 +525,7 @@ export default function GaleriPage() {
                   {activePhoto.category}
                 </span>
                 <span style={{ background: 'rgba(5,10,25,0.75)', color: '#e2e8f0', backdropFilter: 'blur(8px)', padding: '5px 12px', borderRadius: '99px', fontSize: '10px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <i className="fa-solid fa-calendar-day" />
+                  <i className="fa-solid fa-calendar-day"  aria-hidden="true"/>
                   {new Date(activePhoto.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </span>
               </div>
@@ -547,13 +547,13 @@ export default function GaleriPage() {
               {/* Floating controls */}
               <div className="galeri-lb-controls">
                 <button className="galeri-lb-btn" onClick={() => navigatePhoto(-1)} title="Sebelumnya (←)">
-                  <i className="fa-solid fa-chevron-left" />
+                  <i className="fa-solid fa-chevron-left"  aria-hidden="true"/>
                 </button>
                 <button className={`galeri-lb-btn${slideshowMode ? ' active' : ''}`} onClick={() => setSlideshowMode(p => !p)} title="Slideshow (Space)">
                   <i className={`fa-solid ${slideshowMode ? 'fa-pause' : 'fa-play'}`} />
                 </button>
                 <button className="galeri-lb-btn" onClick={() => navigatePhoto(1)} title="Berikutnya (→)">
-                  <i className="fa-solid fa-chevron-right" />
+                  <i className="fa-solid fa-chevron-right"  aria-hidden="true"/>
                 </button>
                 <div className="galeri-lb-divider" />
                 <span style={{ fontSize: '11px', color: '#fff', fontFamily: 'monospace', fontWeight: 700 }}>
@@ -561,7 +561,7 @@ export default function GaleriPage() {
                 </span>
                 <div className="galeri-lb-divider" />
                 <button className="galeri-lb-btn close" onClick={() => { setActivePhoto(null); setSlideshowMode(false); }} title="Tutup (Esc)">
-                  <i className="fa-solid fa-xmark" />
+                  <i className="fa-solid fa-xmark"  aria-hidden="true"/>
                 </button>
               </div>
             </div>

@@ -35,7 +35,7 @@ export default function BiometricAuthOverlay({ active, roleName }: { active: boo
     <div className="biometric-overlay">
       <div className="scanner-container">
         <div className="fingerprint-icon">
-          <i className="fa-solid fa-fingerprint"></i>
+          <i className="fa-solid fa-fingerprint" aria-hidden="true"></i>
           <div className="scanner-line"></div>
         </div>
         <h3 className="auth-status">

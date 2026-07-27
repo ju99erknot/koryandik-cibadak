@@ -538,7 +538,7 @@ export default function AcademicCalendar({
           <div className="acal-header-inner">
             <div className="acal-title-group">
               <h2>
-                <i className="fa-solid fa-calendar-days" style={{ marginRight: 10 }} />
+                <i className="fa-solid fa-calendar-days" style={{ marginRight: 10 }}  aria-hidden="true"/>
                 Kalender &amp; Agenda Akademik
               </h2>
               <p>Koryandik Wilayah Kecamatan Cibadak — Tahun Pelajaran {academicYear}</p>
@@ -568,21 +568,21 @@ export default function AcademicCalendar({
               {/* View Toggle */}
               <div className="acal-view-tabs">
                 <button className={`acal-view-tab${view==='calendar'?' active':''}`} onClick={()=>setView('calendar')}>
-                  <i className="fa-solid fa-table-cells-large" style={{ marginRight: 5 }} />Kalender
+                  <i className="fa-solid fa-table-cells-large" style={{ marginRight: 5 }}  aria-hidden="true"/>Kalender
                 </button>
                 <button className={`acal-view-tab${view==='list'?' active':''}`} onClick={()=>setView('list')}>
-                  <i className="fa-solid fa-list" style={{ marginRight: 5 }} />Daftar
+                  <i className="fa-solid fa-list" style={{ marginRight: 5 }}  aria-hidden="true"/>Daftar
                 </button>
               </div>
 
               {/* Month Nav */}
               <div className="acal-month-nav">
                 <button className="acal-nav-btn" onClick={()=>setCurrent(new Date(year,month-1,1))} aria-label="Sebelumnya">
-                  <i className="fa-solid fa-chevron-left" />
+                  <i className="fa-solid fa-chevron-left"  aria-hidden="true"/>
                 </button>
                 <span className="acal-month-label">{MONTH_NAMES[month]} {year}</span>
                 <button className="acal-nav-btn" onClick={()=>setCurrent(new Date(year,month+1,1))} aria-label="Berikutnya">
-                  <i className="fa-solid fa-chevron-right" />
+                  <i className="fa-solid fa-chevron-right"  aria-hidden="true"/>
                 </button>
               </div>
             </div>
@@ -744,7 +744,7 @@ export default function AcademicCalendar({
                           )}
                           {evt.location && (
                             <div style={{ marginTop:6, fontSize:'11px', color:'var(--text-secondary)' }}>
-                              <i className="fa-solid fa-location-dot" style={{ marginRight:4, color:'#ef4444' }} />
+                              <i className="fa-solid fa-location-dot" style={{ marginRight:4, color:'#ef4444' }}  aria-hidden="true"/>
                               {evt.location}
                             </div>
                           )}
@@ -762,7 +762,7 @@ export default function AcademicCalendar({
                               justifyContent:'center', flexShrink:0, fontSize:13
                             }}
                           >
-                            <i className="fa-solid fa-pen" />
+                            <i className="fa-solid fa-pen"  aria-hidden="true"/>
                           </button>
                         ) : (
                           <button
@@ -774,7 +774,7 @@ export default function AcademicCalendar({
                               justifyContent:'center', flexShrink:0, fontSize:13
                             }}
                           >
-                            <i className="fa-solid fa-calendar-plus" />
+                            <i className="fa-solid fa-calendar-plus"  aria-hidden="true"/>
                           </button>
                         )}
                       </div>
@@ -790,7 +790,7 @@ export default function AcademicCalendar({
                     color:'var(--text-secondary)',
                     fontSize:12
                   }}>
-                    <i className="fa-regular fa-calendar-xmark" style={{ display:'block', fontSize:24, marginBottom:8, opacity:0.4 }} />
+                    <i className="fa-regular fa-calendar-xmark" style={{ display:'block', fontSize:24, marginBottom:8, opacity:0.4 }}  aria-hidden="true"/>
                     Tidak ada agenda pada tanggal ini
                   </div>
                 )}
@@ -803,7 +803,7 @@ export default function AcademicCalendar({
                 </div>
 
                 <div className="acal-search">
-                  <i className="fa-solid fa-magnifying-glass" style={{ color:'var(--text-secondary)', fontSize:11 }} />
+                  <i className="fa-solid fa-magnifying-glass" style={{ color:'var(--text-secondary)', fontSize:11 }}  aria-hidden="true"/>
                   <input
                     placeholder="Cari agenda bulan ini..."
                     value={query}
@@ -846,7 +846,7 @@ export default function AcademicCalendar({
                     );
                   }) : (
                     <div style={{ textAlign:'center', padding:'24px 0', color:'var(--text-secondary)', fontSize:12 }}>
-                      <i className="fa-solid fa-box-open" style={{ display:'block', opacity:0.3, fontSize:20, marginBottom:8 }} />
+                      <i className="fa-solid fa-box-open" style={{ display:'block', opacity:0.3, fontSize:20, marginBottom:8 }}  aria-hidden="true"/>
                       Tidak ada agenda yang cocok
                     </div>
                   )}
@@ -862,7 +862,7 @@ export default function AcademicCalendar({
             {/* Search + filter */}
             <div style={{ display:'flex', gap:12, marginBottom:20, flexWrap:'wrap', alignItems:'center' }}>
               <div className="acal-search" style={{ flex:1, minWidth:200 }}>
-                <i className="fa-solid fa-magnifying-glass" style={{ color:'var(--text-secondary)', fontSize:11 }} />
+                <i className="fa-solid fa-magnifying-glass" style={{ color:'var(--text-secondary)', fontSize:11 }}  aria-hidden="true"/>
                 <input placeholder="Cari agenda..." value={query} onChange={e=>setQuery(e.target.value)} />
               </div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -929,7 +929,7 @@ export default function AcademicCalendar({
                     )}
                     {evt.location && (
                       <div style={{ marginTop:6, fontSize:'11px', color:'var(--text-secondary)' }}>
-                        <i className="fa-solid fa-location-dot" style={{ marginRight:4, color:'#ef4444' }} />
+                        <i className="fa-solid fa-location-dot" style={{ marginRight:4, color:'#ef4444' }}  aria-hidden="true"/>
                         {evt.location}
                       </div>
                     )}
@@ -947,7 +947,7 @@ export default function AcademicCalendar({
                         justifyContent:'center', flexShrink:0, alignSelf:'center', fontSize:14
                       }}
                     >
-                      <i className="fa-solid fa-pen" />
+                      <i className="fa-solid fa-pen"  aria-hidden="true"/>
                     </button>
                   ) : (
                     <button
@@ -959,14 +959,14 @@ export default function AcademicCalendar({
                         justifyContent:'center', flexShrink:0, alignSelf:'center', fontSize:14
                       }}
                     >
-                      <i className="fa-solid fa-calendar-plus" />
+                      <i className="fa-solid fa-calendar-plus"  aria-hidden="true"/>
                     </button>
                   )}
                 </div>
               );
             }) : (
               <div style={{ textAlign:'center', padding:'48px 0', color:'var(--text-secondary)' }}>
-                <i className="fa-solid fa-box-open" style={{ display:'block', fontSize:32, opacity:0.3, marginBottom:12 }} />
+                <i className="fa-solid fa-box-open" style={{ display:'block', fontSize:32, opacity:0.3, marginBottom:12 }}  aria-hidden="true"/>
                 <div style={{ fontSize:14, fontWeight:600 }}>Tidak ada agenda di bulan {MONTH_NAMES[month]}</div>
                 <div style={{ fontSize:12, marginTop:4 }}>Coba navigasi ke bulan lain atau ubah filter</div>
               </div>

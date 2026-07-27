@@ -60,7 +60,7 @@ export default function AdminLogs() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '24px' }}>
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6', fontSize: '20px' }}>
-                <i className="fa-solid fa-database"></i>
+                <i className="fa-solid fa-database" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Total Log</h4>
@@ -70,7 +70,7 @@ export default function AdminLogs() {
             
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontSize: '20px' }}>
-                <i className="fa-solid fa-user-shield"></i>
+                <i className="fa-solid fa-user-shield" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Aksi Admin</h4>
@@ -80,7 +80,7 @@ export default function AdminLogs() {
 
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b', fontSize: '20px' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Aksi Sekolah</h4>
@@ -90,7 +90,7 @@ export default function AdminLogs() {
             
             <div className="card animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(139, 92, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6', fontSize: '20px' }}>
-                <i className="fa-solid fa-users"></i>
+                <i className="fa-solid fa-users" aria-hidden="true"></i>
               </div>
               <div>
                 <h4 style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--text-muted)' }}>Aksi Lainnya</h4>
@@ -102,7 +102,7 @@ export default function AdminLogs() {
           {/* Logs Card */}
           <div className="card animate-fade-in">
             <div className="card-header flex-col md:flex-row gap-4" style={{ alignItems: 'stretch' }}>
-              <h2 style={{ display: 'flex', alignItems: 'center' }}><i className="fa-solid fa-clock-rotate-left" style={{ marginRight: '8px', color: 'var(--primary)' }}></i> Timeline Aktivitas</h2>
+              <h2 style={{ display: 'flex', alignItems: 'center' }}><i className="fa-solid fa-clock-rotate-left" style={{ marginRight: '8px', color: 'var(--primary)' }} aria-hidden="true"></i> Timeline Aktivitas</h2>
               
               <div style={{ display: 'flex', gap: '12px', flex: 1, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
                 <select 
@@ -119,7 +119,7 @@ export default function AdminLogs() {
                 </select>
                 
                 <div className="input-with-icon" style={{ maxWidth: '300px', flex: 1 }}>
-                  <i className="fa-solid fa-magnifying-glass"></i>
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                   <input
                     type="text"
                     className="form-control"
@@ -134,7 +134,7 @@ export default function AdminLogs() {
             <div className="card-body" style={{ padding: '30px', position: 'relative' }}>
               {filteredLogs.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
-                  <i className="fa-solid fa-clipboard-list" style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.5 }}></i>
+                  <i className="fa-solid fa-clipboard-list" style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.5 }} aria-hidden="true"></i>
                   <p>Tidak ada log aktivitas yang ditemukan.</p>
                 </div>
               ) : (
@@ -179,7 +179,7 @@ export default function AdminLogs() {
                               </span>
                             </div>
                             <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <i className="fa-regular fa-clock"></i>
+                              <i className="fa-regular fa-clock" aria-hidden="true"></i>
                               {new Date(log.timestamp).toLocaleString('id-ID', {
                                 day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                               })}

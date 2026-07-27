@@ -174,13 +174,13 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
       {/* Login Drawer */}
       <div className={`login-drawer ${isOpen ? 'active' : ''}`}>
         <BiometricAuthOverlay active={authOverlayActive} roleName={authRoleName} />
-        <button className="drawer-close-btn" onClick={onClose}>
-          <i className="fa-solid fa-xmark"></i>
+        <button className="drawer-close-btn" onClick={onClose} aria-label="Tutup panel masuk">
+          <i className="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
 
         <div className="login-header">
           <div className="logo-icon">
-            <i className="fa-solid fa-shield-halved"></i>
+            <i className="fa-solid fa-shield-halved" aria-hidden="true"></i>
           </div>
           <h2>Portal Koryandik</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '6px' }}>
@@ -191,22 +191,22 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
         {/* 6 Tabs Grid */}
         <div className="login-tabs">
           <button className={`tab-btn ${loginTab === 'school' ? 'active' : ''}`} onClick={() => setLoginTab('school')}>
-            <i className="fa-solid fa-school"></i> Sekolah
+            <i className="fa-solid fa-school" aria-hidden="true"></i> Sekolah
           </button>
           <button className={`tab-btn ${loginTab === 'gugus' ? 'active' : ''}`} onClick={() => setLoginTab('gugus')}>
-            <i className="fa-solid fa-sitemap"></i> Gugus
+            <i className="fa-solid fa-sitemap" aria-hidden="true"></i> Gugus
           </button>
           <button className={`tab-btn ${loginTab === 'pengawas' ? 'active' : ''}`} onClick={() => setLoginTab('pengawas')}>
-            <i className="fa-solid fa-user-tie"></i> Pengawas
+            <i className="fa-solid fa-user-tie" aria-hidden="true"></i> Pengawas
           </button>
           <button className={`tab-btn ${loginTab === 'kkks' ? 'active' : ''}`} onClick={() => setLoginTab('kkks')}>
-            <i className="fa-solid fa-users-gear"></i> KKKS
+            <i className="fa-solid fa-users-gear" aria-hidden="true"></i> KKKS
           </button>
           <button className={`tab-btn ${loginTab === 'pgri' ? 'active' : ''}`} onClick={() => setLoginTab('pgri')}>
-            <i className="fa-solid fa-id-card"></i> PGRI
+            <i className="fa-solid fa-id-card" aria-hidden="true"></i> PGRI
           </button>
           <button className={`tab-btn ${loginTab === 'admin' ? 'active' : ''}`} onClick={() => setLoginTab('admin')}>
-            <i className="fa-solid fa-user-shield"></i> Admin
+            <i className="fa-solid fa-user-shield" aria-hidden="true"></i> Admin
           </button>
         </div>
 
@@ -234,7 +234,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-school-passcode">Passcode Sekolah (NPSN)</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
                 <input
                   id="login-school-passcode"
                   type="password"
@@ -272,7 +272,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-gugus-passcode">Passcode Koordinator (NPSN Sekolah Inti)</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
                 <input
                   id="login-gugus-passcode"
                   type="password"
@@ -294,7 +294,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-pengawas-passcode">Passcode Pengawas</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
                 <input
                   id="login-pengawas-passcode"
                   type="password"
@@ -316,7 +316,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-kkks-passcode">Passcode Ketua KKKS</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
                 <input
                   id="login-kkks-passcode"
                   type="password"
@@ -338,7 +338,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-pgri-passcode">Passcode Ketua PGRI</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
                 <input
                   id="login-pgri-passcode"
                   type="password"
@@ -360,7 +360,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-admin-username">Username Administrator</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-user"></i>
+                <i className="fa-solid fa-user" aria-hidden="true"></i>
                 <input
                   id="login-admin-username"
                   type="text"
@@ -375,7 +375,7 @@ export default function LoginDrawer({ isOpen, onClose, schools, guguses, supervi
             <div className="form-group">
               <label htmlFor="login-admin-password">Password Administrator</label>
               <div className="input-with-icon">
-                <i className="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock" aria-hidden="true"></i>
                 <input
                   id="login-admin-password"
                   type="password"

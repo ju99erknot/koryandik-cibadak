@@ -299,11 +299,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
       <div className="landing-page static-page mesh-gradient-bg">
         <LandingNav activePage="sekolah" />
         <div style={{ textAlign: 'center', padding: '200px 24px 120px', minHeight: '70vh' }}>
-          <i className="fa-solid fa-school-circle-xmark" style={{ fontSize: 72, color: 'var(--text-muted)', opacity: 0.4, marginBottom: 24 }} />
+          <i className="fa-solid fa-school-circle-xmark" style={{ fontSize: 72, color: 'var(--text-muted)', opacity: 0.4, marginBottom: 24 }}  aria-hidden="true"/>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>Sekolah Tidak Ditemukan</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 16, marginBottom: 32 }}>Halaman profil untuk slug &quot;{slug}&quot; tidak tersedia.</p>
           <button onClick={() => router.push('/sekolah')} style={{ padding: '14px 32px', borderRadius: 14, background: 'linear-gradient(135deg, var(--primary), var(--accent))', color: '#fff', border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-            <i className="fa-solid fa-arrow-left" style={{ marginRight: 8 }} /> Kembali ke Direktori
+            <i className="fa-solid fa-arrow-left" style={{ marginRight: 8 }}  aria-hidden="true"/> Kembali ke Direktori
           </button>
         </div>
         <LandingFooter schoolCount={49} />
@@ -760,15 +760,15 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                   {school.logoUrl ? (
                     <img src={school.logoUrl} alt={school.name} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16 }} />
                   ) : (
-                    <i className="fa-solid fa-graduation-cap" style={{ display: 'block', margin: 'auto' }} />
+                    <i className="fa-solid fa-graduation-cap" style={{ display: 'block', margin: 'auto' }}  aria-hidden="true"/>
                   )}
                 </div>
                 <div>
                   <div className="breadcrumb-neo" style={{ marginBottom: 12 }}>
                     <Link href="/">Beranda</Link>
-                    <i className="fa-solid fa-chevron-right" style={{ fontSize: 9 }} />
+                    <i className="fa-solid fa-chevron-right" style={{ fontSize: 9 }}  aria-hidden="true"/>
                     <Link href="/sekolah">Sekolah Binaan</Link>
-                    <i className="fa-solid fa-chevron-right" style={{ fontSize: 9 }} />
+                    <i className="fa-solid fa-chevron-right" style={{ fontSize: 9 }}  aria-hidden="true"/>
                     <span style={{ color: theme.primary }}>{school.name}</span>
                   </div>
                   <h1 className="profile-main-title" style={{ margin: 0, fontSize: 'clamp(24px, 4.5vw, 36px)' }}>{school.name}</h1>
@@ -776,11 +776,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               </div>
 
               <div className="badges-stack">
-                <span className="badge-neo"><i className="fa-solid fa-fingerprint" style={{ color: theme.primary }} /> NPSN {school.npsn}</span>
-                <span className="badge-neo"><i className="fa-solid fa-award" style={{ color: theme.primary }} /> {school.level}</span>
-                <span className="badge-neo"><i className="fa-solid fa-layer-group" style={{ color: theme.accent }} /> Gugus {school.gugus}</span>
-                {school.accreditation && <span className="badge-neo"><i className="fa-solid fa-certificate" style={{ color: '#f59e0b' }} /> Akreditasi {school.accreditation}</span>}
-                {school.status && <span className="badge-neo"><i className="fa-solid fa-building-user" style={{ color: '#10b981' }} /> {school.status}</span>}
+                <span className="badge-neo"><i className="fa-solid fa-fingerprint" style={{ color: theme.primary }}  aria-hidden="true"/> NPSN {school.npsn}</span>
+                <span className="badge-neo"><i className="fa-solid fa-award" style={{ color: theme.primary }}  aria-hidden="true"/> {school.level}</span>
+                <span className="badge-neo"><i className="fa-solid fa-layer-group" style={{ color: theme.accent }}  aria-hidden="true"/> Gugus {school.gugus}</span>
+                {school.accreditation && <span className="badge-neo"><i className="fa-solid fa-certificate" style={{ color: '#f59e0b' }}  aria-hidden="true"/> Akreditasi {school.accreditation}</span>}
+                {school.status && <span className="badge-neo"><i className="fa-solid fa-building-user" style={{ color: '#10b981' }}  aria-hidden="true"/> {school.status}</span>}
               </div>
 
               {/* Live Info Banner */}
@@ -793,23 +793,23 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                 <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 13, color: 'var(--text-primary)' }}>{clock}</span>
                 <div style={{ width: 1, height: 12, background: 'var(--card-border)' }} />
                 <span style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <i className="fa-solid fa-cloud-sun" style={{ color: '#f59e0b' }} /> Cibadak · 28°C
+                  <i className="fa-solid fa-cloud-sun" style={{ color: '#f59e0b' }}  aria-hidden="true"/> Cibadak · 28°C
                 </span>
               </div>
 
               {school.address && (
-                <div className="address-left"><i className="fa-solid fa-location-dot" /><span>{school.address}</span></div>
+                <div className="address-left"><i className="fa-solid fa-location-dot"  aria-hidden="true"/><span>{school.address}</span></div>
               )}
 
               <div className="action-row">
                 {school.whatsapp ? (
                   <a href={`https://wa.me/${school.whatsapp.replace(/\D/g, '')}?text=Halo%20Admin%20PPDB%20${encodeURIComponent(school.name)}%2C%20saya%20ingin%20bertanya%20mengenai%20syarat%20pendaftaran%20siswa%20baru.`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                    <MagneticButton className="btn-grad"><i className="fa-brands fa-whatsapp" /> Hubungi PPDB</MagneticButton>
+                    <MagneticButton className="btn-grad"><i className="fa-brands fa-whatsapp"  aria-hidden="true"/> Hubungi PPDB</MagneticButton>
                   </a>
                 ) : null}
                 {school.website ? (
                   <a href={school.website.startsWith('http') ? school.website : `https://${school.website}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                    <MagneticButton className="btn-outline"><i className="fa-solid fa-globe" /> Kunjungi Website</MagneticButton>
+                    <MagneticButton className="btn-outline"><i className="fa-solid fa-globe"  aria-hidden="true"/> Kunjungi Website</MagneticButton>
                   </a>
                 ) : null}
               </div>
@@ -820,7 +820,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               <RevealOnScroll direction="left" delay={0.05} duration={0.6}>
                 <SpotlightCard className="stat-card-mini" style={{ borderRadius: 20 }}>
                   <div className="stat-card-mini-icon" style={{ background: `${theme.primary}12`, color: theme.primary }}>
-                    <i className="fa-solid fa-users" />
+                    <i className="fa-solid fa-users"  aria-hidden="true"/>
                   </div>
                   <div>
                     <div className="stat-card-mini-val">{cStudents}</div>
@@ -832,7 +832,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               <RevealOnScroll direction="left" delay={0.1} duration={0.6}>
                 <SpotlightCard className="stat-card-mini" style={{ borderRadius: 20 }}>
                   <div className="stat-card-mini-icon" style={{ background: `${theme.accent}12`, color: theme.accent }}>
-                    <i className="fa-solid fa-chalkboard-user" />
+                    <i className="fa-solid fa-chalkboard-user"  aria-hidden="true"/>
                   </div>
                   <div>
                     <div className="stat-card-mini-val">{cTeachers}</div>
@@ -844,7 +844,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               <RevealOnScroll direction="left" delay={0.15} duration={0.6}>
                 <SpotlightCard className="stat-card-mini" style={{ borderRadius: 20 }}>
                   <div className="stat-card-mini-icon" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
-                    <i className="fa-solid fa-scale-balanced" />
+                    <i className="fa-solid fa-scale-balanced"  aria-hidden="true"/>
                   </div>
                   <div>
                     <div className="stat-card-mini-val">{ratio}:1</div>
@@ -856,7 +856,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               <RevealOnScroll direction="left" delay={0.2} duration={0.6}>
                 <SpotlightCard className="stat-card-mini" style={{ borderRadius: 20 }}>
                   <div className="stat-card-mini-icon" style={{ background: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b' }}>
-                    <i className="fa-solid fa-certificate" />
+                    <i className="fa-solid fa-certificate"  aria-hidden="true"/>
                   </div>
                   <div>
                     <div className="stat-card-mini-val">{school.accreditation || 'B'}</div>
@@ -872,7 +872,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               ══════════════════════════════════ */}
           <section className="sec-block">
             <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-user-tie" /> Pimpinan & Staf</h2><span className="sec-sub">Penanggung jawab administrasi dan kepemimpinan</span></div>
+              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-user-tie"  aria-hidden="true"/> Pimpinan & Staf</h2><span className="sec-sub">Penanggung jawab administrasi dan kepemimpinan</span></div>
             </RevealOnScroll>
             <div className="staff-grid">
               {[{ name: school.principalName, role: 'Kepala Sekolah', icon: 'fa-user-tie', phone: school.ksPhone }, { name: school.operatorName, role: 'Operator Sekolah', icon: 'fa-gears', phone: school.operatorPhone }].map((s, i) => (
@@ -883,7 +883,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                       <div>
                         <span className="staff-role-tag">{s.role}</span>
                         <h3 className="staff-name">{s.name || `${s.role} belum diset`}</h3>
-                        {s.phone && <div className="staff-phone"><i className="fa-solid fa-phone" style={{ color: theme.primary }} /> {s.phone}</div>}
+                        {s.phone && <div className="staff-phone"><i className="fa-solid fa-phone" style={{ color: theme.primary }}  aria-hidden="true"/> {s.phone}</div>}
                       </div>
                     </div>
                   </SpotlightCard>
@@ -902,7 +902,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                 <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
                   <div className="sec-head">
                     <h2 className="sec-title">
-                      <i className="fa-solid fa-bullseye" style={{ color: theme.primary, marginRight: '10px' }} /> Visi & Misi
+                      <i className="fa-solid fa-bullseye" style={{ color: theme.primary, marginRight: '10px' }}  aria-hidden="true"/> Visi & Misi
                     </h2>
                     <span className="sec-sub">Fokus utama dan tujuan luhur sekolah dalam pendidikan</span>
                   </div>
@@ -913,7 +913,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                       <SpotlightCard className="visi-misi-card" style={{ borderRadius: 20, padding: '30px', height: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                           <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${theme.primary}15`, color: theme.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
-                            <i className="fa-solid fa-eye" />
+                            <i className="fa-solid fa-eye"  aria-hidden="true"/>
                           </div>
                           <h3 style={{ fontSize: '18px', fontWeight: 800, margin: 0 }}>Visi Sekolah</h3>
                         </div>
@@ -928,7 +928,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                       <SpotlightCard className="visi-misi-card" style={{ borderRadius: 20, padding: '30px', height: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                           <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${theme.accent}15`, color: theme.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
-                            <i className="fa-solid fa-list-check" />
+                            <i className="fa-solid fa-list-check"  aria-hidden="true"/>
                           </div>
                           <h3 style={{ fontSize: '18px', fontWeight: 800, margin: 0 }}>Misi Sekolah</h3>
                         </div>
@@ -950,7 +950,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               ══════════════════════════════════ */}
           <section className="sec-block">
             <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-chart-pie" /> Dashboard Analitik</h2><span className="sec-sub">Visualisasi data statistik sekolah dalam format interaktif</span></div>
+              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-chart-pie"  aria-hidden="true"/> Dashboard Analitik</h2><span className="sec-sub">Visualisasi data statistik sekolah dalam format interaktif</span></div>
             </RevealOnScroll>
             <div className="infograph-grid">
               <RevealOnScroll delay={0.05}><SpotlightCard className="infograph-card" style={{ borderRadius: 20 }}>
@@ -970,14 +970,14 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
             <RevealOnScroll delay={0.1}>
               <SpotlightCard className="infograph-bar-wrap" style={{ borderRadius: 20, marginTop: 20 }}>
                 <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
-                  <i className="fa-solid fa-scale-balanced" style={{ color: theme.primary, marginRight: 8 }} />
+                  <i className="fa-solid fa-scale-balanced" style={{ color: theme.primary, marginRight: 8 }}  aria-hidden="true"/>
                   Perbandingan Jumlah Siswa vs Rata-Rata Gugus {school.gugus}
                 </div>
                 <div className="infograph-bar-track">
                   <div className="infograph-bar-fill" style={{ width: `${Math.min((school.studentCount / Math.max(gugusAvgStudents, 1)) * 50, 100)}%` }} />
                 </div>
                 <div className="infograph-bar-labels">
-                  <span><i className="fa-solid fa-school" style={{ marginRight: 4, color: theme.primary }} /> {school.name.split(' ').slice(0, 3).join(' ')}: <strong>{school.studentCount}</strong></span>
+                  <span><i className="fa-solid fa-school" style={{ marginRight: 4, color: theme.primary }}  aria-hidden="true"/> {school.name.split(' ').slice(0, 3).join(' ')}: <strong>{school.studentCount}</strong></span>
                   <span>Rata-rata Gugus: <strong>{gugusAvgStudents}</strong></span>
                 </div>
               </SpotlightCard>
@@ -991,7 +991,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               ══════════════════════════════════ */}
           <section className="sec-block">
             <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-timeline" /> Tonggak Sejarah</h2><span className="sec-sub">Perjalanan dan pencapaian penting sekolah</span></div>
+              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-timeline"  aria-hidden="true"/> Tonggak Sejarah</h2><span className="sec-sub">Perjalanan dan pencapaian penting sekolah</span></div>
             </RevealOnScroll>
             <div className="timeline-wrap">
               <div className="timeline-line" />
@@ -1018,7 +1018,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
           <section className="sec-block split-grid">
             <div>
               <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-                <div className="sec-head" style={{ marginBottom: 24 }}><h2 className="sec-title"><i className="fa-solid fa-building-circle-check" /> Sarana & Prasarana</h2><span className="sec-sub">Fasilitas penunjang pembelajaran</span></div>
+                <div className="sec-head" style={{ marginBottom: 24 }}><h2 className="sec-title"><i className="fa-solid fa-building-circle-check"  aria-hidden="true"/> Sarana & Prasarana</h2><span className="sec-sub">Fasilitas penunjang pembelajaran</span></div>
               </RevealOnScroll>
               <div className="facility-bento-grid">
                 {facilities.length > 0 ? facilities.map((fac, i) => (
@@ -1028,12 +1028,12 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                       <span className="facility-bento-name">{fac.name}</span>
                     </div>
                   </RevealOnScroll>
-                )) : <div className="empty-box" style={{ gridColumn: '1 / -1' }}><i className="fa-solid fa-building-circle-xmark" /><p style={{ fontSize: 13, margin: 0 }}>Data fasilitas belum tersedia.</p></div>}
+                )) : <div className="empty-box" style={{ gridColumn: '1 / -1' }}><i className="fa-solid fa-building-circle-xmark"  aria-hidden="true"/><p style={{ fontSize: 13, margin: 0 }}>Data fasilitas belum tersedia.</p></div>}
               </div>
             </div>
             <div>
               <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-                <div className="sec-head" style={{ marginBottom: 24 }}><h2 className="sec-title"><i className="fa-solid fa-trophy" /> Galeri Prestasi</h2><span className="sec-sub">Penghargaan dan capaian resmi</span></div>
+                <div className="sec-head" style={{ marginBottom: 24 }}><h2 className="sec-title"><i className="fa-solid fa-trophy"  aria-hidden="true"/> Galeri Prestasi</h2><span className="sec-sub">Penghargaan dan capaian resmi</span></div>
               </RevealOnScroll>
               <div className="split-col">
                 {achievements.length > 0 ? achievements.map((ach, i) => {
@@ -1048,7 +1048,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                       </div></SpotlightCard>
                     </RevealOnScroll>
                   );
-                }) : <div className="empty-box"><i className="fa-solid fa-award" /><p style={{ fontSize: 13, margin: 0 }}>Data prestasi belum tercatat.</p></div>}
+                }) : <div className="empty-box"><i className="fa-solid fa-award"  aria-hidden="true"/><p style={{ fontSize: 13, margin: 0 }}>Data prestasi belum tercatat.</p></div>}
               </div>
             </div>
           </section>
@@ -1060,7 +1060,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               ══════════════════════════════════ */}
           <section className="sec-block">
             <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-images" /> Dokumentasi Kegiatan</h2><span className="sec-sub">Galeri foto kegiatan dan suasana sekolah</span></div>
+              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-images"  aria-hidden="true"/> Dokumentasi Kegiatan</h2><span className="sec-sub">Galeri foto kegiatan dan suasana sekolah</span></div>
             </RevealOnScroll>
             {gallery.length > 0 ? (
               <div className="gallery-grid">
@@ -1073,7 +1073,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                   </RevealOnScroll>
                 ))}
               </div>
-            ) : <div className="empty-box" style={{ padding: '48px 20px' }}><i className="fa-solid fa-panorama" /><p style={{ fontSize: 13, margin: 0 }}>Belum ada galeri dokumentasi kegiatan.</p></div>}
+            ) : <div className="empty-box" style={{ padding: '48px 20px' }}><i className="fa-solid fa-panorama"  aria-hidden="true"/><p style={{ fontSize: 13, margin: 0 }}>Belum ada galeri dokumentasi kegiatan.</p></div>}
           </section>
 
           <LiquidDivider color={theme.primary} />
@@ -1083,7 +1083,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               ══════════════════════════════════ */}
           <section className="sec-block">
             <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-quote-left" /> Suara Komunitas</h2><span className="sec-sub">Testimoni dari orang tua, siswa, dan komunitas sekolah</span></div>
+              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-quote-left"  aria-hidden="true"/> Suara Komunitas</h2><span className="sec-sub">Testimoni dari orang tua, siswa, dan komunitas sekolah</span></div>
             </RevealOnScroll>
             <RevealOnScroll delay={0.1}>
               <SpotlightCard className="carousel-wrap" style={{ borderRadius: 24 }}>
@@ -1114,7 +1114,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
             <div className="map-grid">
               <div>
                 <RevealOnScroll direction="right" delay={0.05} duration={0.6}>
-                  <div className="sec-head" style={{ marginBottom: 24 }}><h2 className="sec-title"><i className="fa-solid fa-map-location-dot" /> Lokasi Geografis</h2><span className="sec-sub">Titik koordinat fisik sekolah binaan</span></div>
+                  <div className="sec-head" style={{ marginBottom: 24 }}><h2 className="sec-title"><i className="fa-solid fa-map-location-dot"  aria-hidden="true"/> Lokasi Geografis</h2><span className="sec-sub">Titik koordinat fisik sekolah binaan</span></div>
                 </RevealOnScroll>
                 <RevealOnScroll direction="right" delay={0.1} duration={0.6}>
                   <SpotlightCard style={{ borderRadius: 20 }}>
@@ -1123,7 +1123,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                       <p className="map-addr-val">{school.address || 'Alamat belum terdaftar.'}</p>
                       {school.lat && school.lng && (
                         <MagneticButton className="btn-outline" onClick={() => window.open(`https://www.google.com/maps?q=${school.lat},${school.lng}`, '_blank')} style={{ padding: '10px 20px', fontSize: 13 }}>
-                          <i className="fa-solid fa-compass" /> Petunjuk Google Maps
+                          <i className="fa-solid fa-compass"  aria-hidden="true"/> Petunjuk Google Maps
                         </MagneticButton>
                       )}
                     </div>
@@ -1135,13 +1135,13 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                   <div className="map-frame-wrap">
                     <div className="map-frame" ref={mapRef} />
                     <div className="map-gps-overlay">
-                      <span className="map-gps-label"><i className="fa-solid fa-satellite" style={{ marginRight: 6 }} />Live Coordinates</span>
+                      <span className="map-gps-label"><i className="fa-solid fa-satellite" style={{ marginRight: 6 }}  aria-hidden="true"/>Live Coordinates</span>
                       <span className="map-gps-coords">{school.lat!.toFixed(6)}°S, {school.lng!.toFixed(6)}°E</span>
                     </div>
                   </div>
                 ) : (
                   <div className="empty-box" style={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div><i className="fa-solid fa-satellite-dish" style={{ fontSize: 36, marginBottom: 12, opacity: 0.25 }} /><p style={{ fontSize: 13, margin: 0, color: 'var(--text-muted)' }}>Koordinat peta belum terdaftar.</p></div>
+                    <div><i className="fa-solid fa-satellite-dish" style={{ fontSize: 36, marginBottom: 12, opacity: 0.25 }}  aria-hidden="true"/><p style={{ fontSize: 13, margin: 0, color: 'var(--text-muted)' }}>Koordinat peta belum terdaftar.</p></div>
                   </div>
                 )}
               </RevealOnScroll>
@@ -1155,7 +1155,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
               ══════════════════════════════════ */}
           <section className="sec-block">
             <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-share-nodes" /> Hubungan Masyarakat</h2><span className="sec-sub">Saluran komunikasi dan sosial media resmi</span></div>
+              <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-share-nodes"  aria-hidden="true"/> Hubungan Masyarakat</h2><span className="sec-sub">Saluran komunikasi dan sosial media resmi</span></div>
             </RevealOnScroll>
 
             {socialLinks.length > 0 && (
@@ -1182,7 +1182,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                     <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : encodeURIComponent(`https://koryandik.vercel.app/sekolah/${slug}`)}`} alt="QR Code" />
                   </div>
                   <div className="qr-info">
-                    <h4><i className="fa-solid fa-qrcode" style={{ color: theme.primary, marginRight: 8 }} />Bagikan Profil Sekolah</h4>
+                    <h4><i className="fa-solid fa-qrcode" style={{ color: theme.primary, marginRight: 8 }}  aria-hidden="true"/>Bagikan Profil Sekolah</h4>
                     <p>Scan kode QR ini untuk membagikan halaman profil {school.name} ke orang tua siswa, kolega, atau pihak terkait.</p>
                     <MagneticButton className="btn-outline" onClick={handleShare} style={{ padding: '10px 20px', fontSize: 13 }}>
                       <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'}`} /> {copied ? 'Link Tersalin!' : 'Salin Link Profil'}
@@ -1206,10 +1206,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                 <div className="ppdb-btn-box">
                   {school.whatsapp ? (
                     <a href={`https://wa.me/${school.whatsapp.replace(/\D/g, '')}?text=Halo%20Admin%20PPDB%20${encodeURIComponent(school.name)}%2C%20saya%20ingin%20bertanya%20mengenai%20syarat%20pendaftaran%20siswa%20baru.`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                      <MagneticButton className="ppdb-wa-btn"><i className="fa-brands fa-whatsapp" /> Hubungi Operator PPDB</MagneticButton>
+                      <MagneticButton className="ppdb-wa-btn"><i className="fa-brands fa-whatsapp"  aria-hidden="true"/> Hubungi Operator PPDB</MagneticButton>
                     </a>
                   ) : (
-                    <MagneticButton className="ppdb-wa-btn" onClick={() => router.push('/sekolah')}><i className="fa-solid fa-school" /> Cari Sekolah Lain</MagneticButton>
+                    <MagneticButton className="ppdb-wa-btn" onClick={() => router.push('/sekolah')}><i className="fa-solid fa-school"  aria-hidden="true"/> Cari Sekolah Lain</MagneticButton>
                   )}
                 </div>
               </div>
@@ -1222,7 +1222,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
           {sameGugusSchools.length > 0 && (
             <section className="sec-block">
               <RevealOnScroll direction="up" delay={0.05} duration={0.6}>
-                <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-network-wired" /> Klaster Sekolah Gugus {school.gugus}</h2><span className="sec-sub">Sekolah binaan terdekat di klaster yang sama</span></div>
+                <div className="sec-head"><h2 className="sec-title"><i className="fa-solid fa-network-wired"  aria-hidden="true"/> Klaster Sekolah Gugus {school.gugus}</h2><span className="sec-sub">Sekolah binaan terdekat di klaster yang sama</span></div>
               </RevealOnScroll>
               <div className="related-grid">
                 {sameGugusSchools.map((s, i) => (
@@ -1230,10 +1230,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
                     <TiltCard intensity={5} glare style={{ borderRadius: 16, height: '100%', border: '1px solid var(--card-border)' }}>
                       <div className="related-inner" onClick={() => router.push(`/sekolah/${generateSchoolSlug(s.name)}`)}>
                         <h4 className="related-title">{s.name}</h4>
-                        <div className="related-addr"><i className="fa-solid fa-map-marker-alt" /> {s.address || 'Alamat tidak tersedia'}</div>
+                        <div className="related-addr"><i className="fa-solid fa-map-marker-alt"  aria-hidden="true"/> {s.address || 'Alamat tidak tersedia'}</div>
                         <div className="related-stats">
-                          <span><i className="fa-solid fa-users" style={{ color: theme.primary }} /> {s.studentCount} Siswa</span>
-                          <span><i className="fa-solid fa-chalkboard-user" style={{ color: theme.accent }} /> {s.teacherCount} Guru</span>
+                          <span><i className="fa-solid fa-users" style={{ color: theme.primary }}  aria-hidden="true"/> {s.studentCount} Siswa</span>
+                          <span><i className="fa-solid fa-chalkboard-user" style={{ color: theme.accent }}  aria-hidden="true"/> {s.teacherCount} Guru</span>
                         </div>
                       </div>
                     </TiltCard>
@@ -1250,23 +1250,23 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
           ══════════════════════════════════ */}
       <div className="fab-container">
         <button className={`fab-main ${fabOpen ? 'open' : ''}`} onClick={() => setFabOpen(!fabOpen)} aria-label="Menu Aksi Cepat">
-          <i className="fa-solid fa-plus" />
+          <i className="fa-solid fa-plus"  aria-hidden="true"/>
         </button>
 
         <button className={`fab-sub ${fabOpen ? 'show' : ''}`} style={{ background: '#25d366', transitionDelay: fabOpen ? '0.05s' : '0s' }} onClick={() => { if (school.whatsapp) window.open(`https://wa.me/${school.whatsapp.replace(/\D/g, '')}`, '_blank'); setFabOpen(false); }}>
-          <i className="fa-brands fa-whatsapp" /><span className="fab-tooltip">WhatsApp</span>
+          <i className="fa-brands fa-whatsapp"  aria-hidden="true"/><span className="fab-tooltip">WhatsApp</span>
         </button>
 
         <button className={`fab-sub ${fabOpen ? 'show' : ''}`} style={{ background: '#3b82f6', transitionDelay: fabOpen ? '0.1s' : '0s' }} onClick={() => { if (school.lat && school.lng) window.open(`https://www.google.com/maps?q=${school.lat},${school.lng}`, '_blank'); setFabOpen(false); }}>
-          <i className="fa-solid fa-location-dot" /><span className="fab-tooltip">Google Maps</span>
+          <i className="fa-solid fa-location-dot"  aria-hidden="true"/><span className="fab-tooltip">Google Maps</span>
         </button>
 
         <button className={`fab-sub ${fabOpen ? 'show' : ''}`} style={{ background: '#8b5cf6', transitionDelay: fabOpen ? '0.15s' : '0s' }} onClick={() => { handleShare(); setFabOpen(false); }}>
-          <i className="fa-solid fa-share-nodes" /><span className="fab-tooltip">{copied ? 'Tersalin!' : 'Bagikan'}</span>
+          <i className="fa-solid fa-share-nodes"  aria-hidden="true"/><span className="fab-tooltip">{copied ? 'Tersalin!' : 'Bagikan'}</span>
         </button>
 
         <button className={`fab-sub ${fabOpen ? 'show' : ''}`} style={{ background: '#f59e0b', transitionDelay: fabOpen ? '0.2s' : '0s' }} onClick={() => { window.print(); setFabOpen(false); }}>
-          <i className="fa-solid fa-print" /><span className="fab-tooltip">Cetak</span>
+          <i className="fa-solid fa-print"  aria-hidden="true"/><span className="fab-tooltip">Cetak</span>
         </button>
       </div>
 
@@ -1276,10 +1276,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
       {lightbox && (
         <div className="lightbox-screen" onClick={() => setLightbox(null)}>
           <div className="lightbox-wrap" onClick={(e) => e.stopPropagation()}>
-            <button className="lightbox-close" onClick={() => setLightbox(null)}><i className="fa-solid fa-xmark" /></button>
-            <button className="lightbox-arrow" style={{ left: -80 }} onClick={() => { const idx = gallery.findIndex(g => g.id === lightbox.id); if (idx > 0) setLightbox(gallery[idx - 1]); }}><i className="fa-solid fa-chevron-left" /></button>
+            <button className="lightbox-close" onClick={() => setLightbox(null)}><i className="fa-solid fa-xmark"  aria-hidden="true"/></button>
+            <button className="lightbox-arrow" style={{ left: -80 }} onClick={() => { const idx = gallery.findIndex(g => g.id === lightbox.id); if (idx > 0) setLightbox(gallery[idx - 1]); }}><i className="fa-solid fa-chevron-left"  aria-hidden="true"/></button>
             <img src={lightbox.imageUrl} alt={lightbox.title} />
-            <button className="lightbox-arrow" style={{ right: -80 }} onClick={() => { const idx = gallery.findIndex(g => g.id === lightbox.id); if (idx < gallery.length - 1) setLightbox(gallery[idx + 1]); }}><i className="fa-solid fa-chevron-right" /></button>
+            <button className="lightbox-arrow" style={{ right: -80 }} onClick={() => { const idx = gallery.findIndex(g => g.id === lightbox.id); if (idx < gallery.length - 1) setLightbox(gallery[idx + 1]); }}><i className="fa-solid fa-chevron-right"  aria-hidden="true"/></button>
             <div style={{ color: '#fff', textAlign: 'center', marginTop: 16 }}><div style={{ fontSize: 16, fontWeight: 800 }}>{lightbox.title}</div><div style={{ fontSize: 12, opacity: 0.6, marginTop: 4 }}>Dokumentasi · {lightbox.date}</div></div>
           </div>
         </div>

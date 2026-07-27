@@ -215,7 +215,7 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
             className="dir-close-button"
             aria-label="Tutup Pratinjau"
           >
-            <i className="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -255,12 +255,12 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
                 gap: '8px'
               }}
             >
-              <i className="fa-solid fa-external-link-alt" />
+              <i className="fa-solid fa-external-link-alt"  aria-hidden="true"/>
               Buka File di Google Drive
             </button>
             
             <div className="prv-stamp-badge" style={{ marginTop: '32px' }}>
-              <i className="fa-solid fa-circle-check" style={{ marginRight: '6px' }} /> Koryandik Cibadak
+              <i className="fa-solid fa-circle-check" style={{ marginRight: '6px' }}  aria-hidden="true"/> Koryandik Cibadak
             </div>
           </div>
 
@@ -291,7 +291,7 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
               </div>
               <div className="prv-info-row" style={{ borderBottom: 'none' }}>
                 <span>Total Diunduh</span>
-                <strong><i className="fa-solid fa-download" style={{ marginRight: '4px', fontSize: '10px' }} /> {doc.downloadCount || 0} Kali</strong>
+                <strong><i className="fa-solid fa-download" style={{ marginRight: '4px', fontSize: '10px' }}  aria-hidden="true"/> {doc.downloadCount || 0} Kali</strong>
               </div>
             </div>
 
@@ -302,14 +302,14 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
                 onClick={handleDownload}
                 style={{ width: '100%', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
               >
-                <i className="fa-solid fa-download" /> Unduh Berkas Resmi
+                <i className="fa-solid fa-download"  aria-hidden="true"/> Unduh Berkas Resmi
               </button>
               <button
                 className="btn btn-outline"
                 onClick={handlePrint}
                 style={{ width: '100%', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
               >
-                <i className="fa-solid fa-print" /> Cetak/Print Template
+                <i className="fa-solid fa-print"  aria-hidden="true"/> Cetak/Print Template
               </button>
               <button
                 className="btn btn-outline"

@@ -322,7 +322,7 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
                   borderBottom: '1px solid var(--card-border)'
                 }}
               >
-                <i className="fa-solid fa-magnifying-glass" style={{ color: 'var(--text-muted)', fontSize: '18px', marginRight: '14px' }}></i>
+                <i className="fa-solid fa-magnifying-glass" style={{ color: 'var(--text-muted)', fontSize: '18px', marginRight: '14px' }} aria-hidden="true"></i>
                 <input
                   ref={inputRef}
                   type="text"
@@ -497,7 +497,7 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
                             <span style={{ fontSize: '14px', fontWeight: isActive ? 600 : 500 }}>{item.name}</span>
                             {isActive && (
                               <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--primary)', fontWeight: 700 }}>
-                                ENTER <i className="fa-solid fa-arrow-turn-down" style={{ fontSize: '9px', marginLeft: '4px' }}></i>
+                                ENTER <i className="fa-solid fa-arrow-turn-down" style={{ fontSize: '9px', marginLeft: '4px' }} aria-hidden="true"></i>
                               </span>
                             )}
                           </div>
@@ -507,7 +507,7 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
                   })()
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 0', gap: '8px' }}>
-                    <i className="fa-solid fa-magnifying-glass" style={{ fontSize: '24px', color: 'var(--text-secondary)', opacity: 0.4 }}></i>
+                    <i className="fa-solid fa-magnifying-glass" style={{ fontSize: '24px', color: 'var(--text-secondary)', opacity: 0.4 }} aria-hidden="true"></i>
                     <p style={{ margin: 0, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
                       Tidak ada hasil pencarian.
                     </p>

@@ -178,7 +178,7 @@ export default function SchoolReceipt() {
         <div className="content-area">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }} className="no-print">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}><i className="fa-solid fa-palette"></i> Tema Tanda Terima:</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}><i className="fa-solid fa-palette" aria-hidden="true"></i> Tema Tanda Terima:</span>
               <div style={{ display: 'flex', gap: '4px', background: 'var(--card-glass)', border: '1px solid var(--card-border)', padding: '4px', borderRadius: '8px' }}>
                 <button 
                   className={`btn btn-sm ${receiptTheme === 'classic' ? 'btn-primary' : 'btn-outline'}`} 
@@ -209,10 +209,10 @@ export default function SchoolReceipt() {
                 onClick={() => setIsSigModalOpen(true)}
                 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
               >
-                <i className="fa-solid fa-signature"></i> Tanda Tangan
+                <i className="fa-solid fa-signature" aria-hidden="true"></i> Tanda Tangan
               </button>
               <button className="btn btn-primary" onClick={handlePrint}>
-                Cetak Dokumen <i className="fa-solid fa-print" style={{ marginLeft: '8px' }}></i>
+                Cetak Dokumen <i className="fa-solid fa-print" style={{ marginLeft: '8px' }} aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function SchoolReceipt() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 {receiptTheme === 'classic' ? (
                   <div style={{ width: '60px', height: '60px', border: '2px solid #000000', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#000000', fontSize: '28px' }}>
-                    <i className="fa-solid fa-graduation-cap"></i>
+                    <i className="fa-solid fa-graduation-cap" aria-hidden="true"></i>
                   </div>
                 ) : (
                   <div style={{ 
@@ -252,7 +252,7 @@ export default function SchoolReceipt() {
                     fontSize: '28px',
                     boxShadow: receiptTheme === 'executive' ? '0 4px 20px rgba(217, 119, 6, 0.2)' : '0 4px 20px rgba(59, 130, 246, 0.2)'
                   }}>
-                    <i className="fa-solid fa-graduation-cap"></i>
+                    <i className="fa-solid fa-graduation-cap" aria-hidden="true"></i>
                   </div>
                 )}
                 <div>
@@ -401,7 +401,7 @@ export default function SchoolReceipt() {
                     fontWeight: 'bold',
                     padding: '6px'
                   }}>
-                    <i className="fa-solid fa-qrcode" style={{ fontSize: '32px', marginBottom: '4px' }}></i>
+                    <i className="fa-solid fa-qrcode" style={{ fontSize: '32px', marginBottom: '4px' }} aria-hidden="true"></i>
                     <span>KRY-{school.npsn}</span>
                   </div>
                   <p style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Pindai QR untuk memverifikasi keaslian dokumen ini</p>
@@ -442,14 +442,14 @@ export default function SchoolReceipt() {
                   alignItems: 'center'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <i className="fa-solid fa-signature" style={{ color: 'var(--primary)', fontSize: '18px' }}></i>
+                    <i className="fa-solid fa-signature" style={{ color: 'var(--primary)', fontSize: '18px' }} aria-hidden="true"></i>
                     <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0 }}>Atur Tanda Tangan Digital</h3>
                   </div>
                   <button 
                     onClick={() => setIsSigModalOpen(false)}
                     style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '16px' }}
                   >
-                    <i className="fa-solid fa-xmark"></i>
+                    <i className="fa-solid fa-xmark" aria-hidden="true"></i>
                   </button>
                 </div>
 
@@ -538,7 +538,7 @@ export default function SchoolReceipt() {
                           padding: 0
                         }}
                       >
-                        <i className="fa-solid fa-trash-can"></i> Hapus yang Tersimpan
+                        <i className="fa-solid fa-trash-can" aria-hidden="true"></i> Hapus yang Tersimpan
                       </button>
                     )}
                   </div>
@@ -558,14 +558,14 @@ export default function SchoolReceipt() {
                     onClick={clearCanvas}
                     style={{ padding: '8px 16px', fontSize: '12px' }}
                   >
-                    <i className="fa-solid fa-eraser" style={{ marginRight: '6px' }}></i> Bersihkan
+                    <i className="fa-solid fa-eraser" style={{ marginRight: '6px' }} aria-hidden="true"></i> Bersihkan
                   </button>
                   <button 
                     className="btn btn-primary" 
                     onClick={saveCanvas}
                     style={{ padding: '8px 20px', fontSize: '12px' }}
                   >
-                    <i className="fa-solid fa-circle-check" style={{ marginRight: '6px' }}></i> Simpan & Pasang
+                    <i className="fa-solid fa-circle-check" style={{ marginRight: '6px' }} aria-hidden="true"></i> Simpan & Pasang
                   </button>
                 </div>
               </div>

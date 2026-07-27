@@ -253,7 +253,7 @@ export default function AdminGallery() {
             }}>
               {/* Search */}
               <div style={{ flex: '1 1 220px', position: 'relative' }}>
-                <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '13px' }} />
+                <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '13px' }}  aria-hidden="true"/>
                 <input
                   type="text"
                   className="form-input"
@@ -288,7 +288,7 @@ export default function AdminGallery() {
                   }}
                   title="Tampilan Grid"
                 >
-                  <i className="fa-solid fa-table-cells" />
+                  <i className="fa-solid fa-table-cells"  aria-hidden="true"/>
                 </button>
                 <button
                   type="button"
@@ -301,13 +301,13 @@ export default function AdminGallery() {
                   }}
                   title="Tampilan List"
                 >
-                  <i className="fa-solid fa-list" />
+                  <i className="fa-solid fa-list"  aria-hidden="true"/>
                 </button>
               </div>
 
               {/* Add button */}
               <button className="btn btn-primary btn-sm" onClick={() => setEditModal({ category: 'Rapat Ops', date: new Date().toISOString().slice(0, 10) })}>
-                <i className="fa-solid fa-plus" /> Tambah Foto
+                <i className="fa-solid fa-plus"  aria-hidden="true"/> Tambah Foto
               </button>
             </div>
 
@@ -327,7 +327,7 @@ export default function AdminGallery() {
                   <strong style={{ color: 'var(--danger)' }}>{selected.size}</strong> foto terpilih
                 </span>
                 <button className="btn btn-danger btn-xs" onClick={handleBulkDelete}>
-                  <i className="fa-solid fa-trash" /> Hapus Terpilih
+                  <i className="fa-solid fa-trash"  aria-hidden="true"/> Hapus Terpilih
                 </button>
               </div>
             )}
@@ -341,7 +341,7 @@ export default function AdminGallery() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="card animate-fade-in" style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-              <i className="fa-solid fa-images" style={{ fontSize: '48px', opacity: 0.2, display: 'block', marginBottom: '16px' }} />
+              <i className="fa-solid fa-images" style={{ fontSize: '48px', opacity: 0.2, display: 'block', marginBottom: '16px' }}  aria-hidden="true"/>
               <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-primary)' }}>
                 {searchQuery || filterCat !== 'Semua' ? 'Tidak ada foto yang sesuai filter.' : 'Belum ada dokumentasi foto.'}
               </div>
@@ -350,7 +350,7 @@ export default function AdminGallery() {
               </div>
               {!searchQuery && filterCat === 'Semua' && (
                 <button className="btn btn-primary btn-sm" onClick={() => setEditModal({ category: 'Rapat Ops', date: new Date().toISOString().slice(0, 10) })}>
-                  <i className="fa-solid fa-plus" /> Tambah Foto Pertama
+                  <i className="fa-solid fa-plus"  aria-hidden="true"/> Tambah Foto Pertama
                 </button>
               )}
             </div>
@@ -386,7 +386,7 @@ export default function AdminGallery() {
                         backdropFilter: 'blur(4px)',
                       }}
                     >
-                      {isSelected && <i className="fa-solid fa-check" />}
+                      {isSelected && <i className="fa-solid fa-check"  aria-hidden="true"/>}
                     </button>
 
                     {/* Image container */}
@@ -407,7 +407,7 @@ export default function AdminGallery() {
                           onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       ) : (
-                        <i className="fa-solid fa-image" style={{ fontSize: '32px', color: 'var(--text-secondary)', opacity: 0.25 }} />
+                        <i className="fa-solid fa-image" style={{ fontSize: '32px', color: 'var(--text-secondary)', opacity: 0.25 }}  aria-hidden="true"/>
                       )}
                       {/* Hover overlay */}
                       <div style={{
@@ -426,7 +426,7 @@ export default function AdminGallery() {
                             style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}
                             onClick={(e) => { e.stopPropagation(); setPreviewItem(item); }}
                           >
-                            <i className="fa-solid fa-eye" />
+                            <i className="fa-solid fa-eye"  aria-hidden="true"/>
                           </button>
                           <button
                             type="button"
@@ -434,7 +434,7 @@ export default function AdminGallery() {
                             style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}
                             onClick={(e) => { e.stopPropagation(); setEditModal(item); }}
                           >
-                            <i className="fa-solid fa-pen" />
+                            <i className="fa-solid fa-pen"  aria-hidden="true"/>
                           </button>
                           <button
                             type="button"
@@ -442,7 +442,7 @@ export default function AdminGallery() {
                             style={{ background: 'rgba(239,68,68,0.6)', backdropFilter: 'blur(8px)', color: '#fff', border: '1px solid rgba(239,68,68,0.4)' }}
                             onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
                           >
-                            <i className="fa-solid fa-trash" />
+                            <i className="fa-solid fa-trash"  aria-hidden="true"/>
                           </button>
                         </div>
                       </div>
@@ -461,7 +461,7 @@ export default function AdminGallery() {
                           {item.category}
                         </span>
                         <span style={{ color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                          <i className="fa-solid fa-calendar-day" />
+                          <i className="fa-solid fa-calendar-day"  aria-hidden="true"/>
                           {new Date(item.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </span>
                       </div>
@@ -507,7 +507,7 @@ export default function AdminGallery() {
                               {item.imageUrl ? (
                                 <img src={toDirectImageUrl(item.imageUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               ) : (
-                                <i className="fa-solid fa-image" style={{ fontSize: '16px', opacity: 0.3 }} />
+                                <i className="fa-solid fa-image" style={{ fontSize: '16px', opacity: 0.3 }}  aria-hidden="true"/>
                               )}
                             </div>
                           </td>
@@ -529,9 +529,9 @@ export default function AdminGallery() {
                           </td>
                           <td>
                             <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                              <button className="btn btn-outline btn-xs" onClick={() => setPreviewItem(item)} title="Lihat"><i className="fa-solid fa-eye" /></button>
-                              <button className="btn btn-outline btn-xs" onClick={() => setEditModal(item)} title="Edit"><i className="fa-solid fa-pen" /></button>
-                              <button className="btn btn-danger btn-xs" onClick={() => handleDelete(item.id)} title="Hapus"><i className="fa-solid fa-trash" /></button>
+                              <button className="btn btn-outline btn-xs" onClick={() => setPreviewItem(item)} title="Lihat"><i className="fa-solid fa-eye"  aria-hidden="true"/></button>
+                              <button className="btn btn-outline btn-xs" onClick={() => setEditModal(item)} title="Edit"><i className="fa-solid fa-pen"  aria-hidden="true"/></button>
+                              <button className="btn btn-danger btn-xs" onClick={() => handleDelete(item.id)} title="Hapus"><i className="fa-solid fa-trash"  aria-hidden="true"/></button>
                             </div>
                           </td>
                         </tr>
@@ -554,7 +554,7 @@ export default function AdminGallery() {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => p - 1)}
               >
-                <i className="fa-solid fa-chevron-left" />
+                <i className="fa-solid fa-chevron-left"  aria-hidden="true"/>
               </button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <button
@@ -578,7 +578,7 @@ export default function AdminGallery() {
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(p => p + 1)}
               >
-                <i className="fa-solid fa-chevron-right" />
+                <i className="fa-solid fa-chevron-right"  aria-hidden="true"/>
               </button>
               <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginLeft: '8px' }}>
                 {filtered.length} foto
@@ -621,7 +621,7 @@ export default function AdminGallery() {
               </div>
             ) : (
               <div style={{ width: '100%', height: '200px', background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="fa-solid fa-image" style={{ fontSize: '48px', opacity: 0.2, color: 'var(--text-secondary)' }} />
+                <i className="fa-solid fa-image" style={{ fontSize: '48px', opacity: 0.2, color: 'var(--text-secondary)' }}  aria-hidden="true"/>
               </div>
             )}
             {/* Info */}
@@ -642,15 +642,15 @@ export default function AdminGallery() {
                 </p>
               )}
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '12px', color: 'var(--text-secondary)', borderTop: '1px solid var(--card-border)', paddingTop: '12px' }}>
-                <span><i className="fa-solid fa-calendar-day" /> {new Date(previewItem.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                <span><i className="fa-solid fa-clock" /> {new Date(previewItem.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                <span><i className="fa-solid fa-calendar-day"  aria-hidden="true"/> {new Date(previewItem.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                <span><i className="fa-solid fa-clock"  aria-hidden="true"/> {new Date(previewItem.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
               </div>
               <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                 <button className="btn btn-primary btn-sm" onClick={() => { setEditModal(previewItem); setPreviewItem(null); }}>
-                  <i className="fa-solid fa-pen" /> Edit
+                  <i className="fa-solid fa-pen"  aria-hidden="true"/> Edit
                 </button>
                 <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(previewItem.id); setPreviewItem(null); }}>
-                  <i className="fa-solid fa-trash" /> Hapus
+                  <i className="fa-solid fa-trash"  aria-hidden="true"/> Hapus
                 </button>
                 <button className="btn btn-outline btn-sm" style={{ marginLeft: 'auto' }} onClick={() => setPreviewItem(null)}>
                   Tutup
@@ -703,7 +703,7 @@ export default function AdminGallery() {
                   transition: 'background 0.2s',
                 }}
               >
-                <i className="fa-solid fa-xmark" />
+                <i className="fa-solid fa-xmark"  aria-hidden="true"/>
               </button>
             </div>
 
@@ -772,7 +772,7 @@ export default function AdminGallery() {
               {/* Actions */}
               <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
                 <button className="btn btn-primary" type="submit" style={{ flex: 1 }} disabled={saving}>
-                  {saving ? (<><i className="fa-solid fa-spinner fa-spin" /> Menyimpan...</>) : (<><i className="fa-solid fa-check" /> {editModal.id ? 'Simpan Perubahan' : 'Tambahkan Foto'}</>)}
+                  {saving ? (<><i className="fa-solid fa-spinner fa-spin"  aria-hidden="true"/> Menyimpan...</>) : (<><i className="fa-solid fa-check"  aria-hidden="true"/> {editModal.id ? 'Simpan Perubahan' : 'Tambahkan Foto'}</>)}
                 </button>
                 <button className="btn btn-outline" type="button" onClick={() => setEditModal(null)}>Batal</button>
               </div>

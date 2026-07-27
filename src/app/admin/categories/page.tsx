@@ -126,9 +126,9 @@ export default function AdminCategories() {
           {/* Categories card */}
           <div className="card animate-fade-in">
             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2><i className="fa-solid fa-folder-open"></i> Daftar Kategori Wajib</h2>
+              <h2><i className="fa-solid fa-folder-open" aria-hidden="true"></i> Daftar Kategori Wajib</h2>
               <button className="btn btn-primary" onClick={handleOpenAdd}>
-                <i className="fa-solid fa-plus"></i> Tambah Kategori
+                <i className="fa-solid fa-plus" aria-hidden="true"></i> Tambah Kategori
               </button>
             </div>
             
@@ -171,13 +171,13 @@ export default function AdminCategories() {
                               className="btn btn-outline btn-xs" 
                               onClick={() => handleOpenEdit(cat)}
                             >
-                              <i className="fa-solid fa-pen-to-square"></i> Edit
+                              <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                             </button>
                             <button 
                               className="btn btn-danger btn-xs" 
                               onClick={() => handleDelete(cat.id, cat.name)}
                             >
-                              <i className="fa-solid fa-trash"></i> Hapus
+                              <i className="fa-solid fa-trash" aria-hidden="true"></i> Hapus
                             </button>
                           </div>
                         </td>
@@ -215,7 +215,7 @@ export default function AdminCategories() {
                 onClick={() => { setEditingCategory(null); setIsAddModalOpen(false); }}
                 style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}
               >
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body">

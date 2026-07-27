@@ -912,7 +912,7 @@ export default function UnduhanPage() {
         {/* ─── HERO ─── */}
         <section className="dlhub-hero animate-fade-in">
           <div className="dlhub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <i className="fa-solid fa-vault" />
+            <i className="fa-solid fa-vault"  aria-hidden="true"/>
             Perpustakaan Digital Resmi Koryandik
           </div>
           <h1 className="pub-hero-title">Pusat Unduhan Administrasi</h1>
@@ -942,7 +942,7 @@ export default function UnduhanPage() {
 
           {/* Search */}
           <div className="dlhub-search-wrap">
-            <i className="fa-solid fa-magnifying-glass dlhub-search-icon" />
+            <i className="fa-solid fa-magnifying-glass dlhub-search-icon"  aria-hidden="true"/>
             <input
               type="text"
               className="dlhub-search-input"
@@ -958,7 +958,7 @@ export default function UnduhanPage() {
                 onClick={() => setSearchQuery('')}
                 aria-label="Hapus pencarian"
               >
-                <i className="fa-solid fa-xmark" />
+                <i className="fa-solid fa-xmark"  aria-hidden="true"/>
               </button>
             )}
           </div>
@@ -1029,7 +1029,7 @@ export default function UnduhanPage() {
             {/* Info */}
             <div className="dlhub-sidebar-section" style={{ background: 'linear-gradient(135deg, var(--primary-glow), var(--accent-glow))', border: '1px solid rgba(59,130,246,0.2)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                <i className="fa-solid fa-circle-info" style={{ color: 'var(--primary)', fontSize: '16px' }} />
+                <i className="fa-solid fa-circle-info" style={{ color: 'var(--primary)', fontSize: '16px' }}  aria-hidden="true"/>
                 <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Butuh Format Baru?</span>
               </div>
               <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
@@ -1078,7 +1078,7 @@ export default function UnduhanPage() {
               ) : filteredDownloads.length === 0 ? (
                 <div className="dlhub-empty">
                   <div className="dlhub-empty-icon">
-                    <i className="fa-solid fa-folder-magnifying-glass" />
+                    <i className="fa-solid fa-folder-magnifying-glass"  aria-hidden="true"/>
                   </div>
                   <h3 style={{ fontSize: '18px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                     Dokumen tidak ditemukan
@@ -1091,7 +1091,7 @@ export default function UnduhanPage() {
                     className="btn btn-outline btn-sm"
                     onClick={() => { setSearchQuery(''); setActiveCategory('all'); setActiveFileType('all'); }}
                   >
-                    <i className="fa-solid fa-rotate-left" /> Reset Filter
+                    <i className="fa-solid fa-rotate-left"  aria-hidden="true"/> Reset Filter
                   </button>
                 </div>
               ) : (
@@ -1143,7 +1143,7 @@ export default function UnduhanPage() {
                           </span>
                           {isHot && (
                             <span className="dlhub-hot-badge">
-                              <i className="fa-solid fa-fire" />
+                              <i className="fa-solid fa-fire"  aria-hidden="true"/>
                               POPULER
                             </span>
                           )}
@@ -1167,11 +1167,11 @@ export default function UnduhanPage() {
 
                         <div className="dlhub-card-meta">
                           <span className="dlhub-card-meta-item">
-                            <i className="fa-solid fa-weight-hanging" style={{ color: 'var(--text-muted)' }} />
+                            <i className="fa-solid fa-weight-hanging" style={{ color: 'var(--text-muted)' }}  aria-hidden="true"/>
                             {item.fileSize}
                           </span>
                           <span className="dlhub-card-meta-item" style={{ color: 'var(--success)', fontWeight: 700 }}>
-                            <i className="fa-solid fa-download" />
+                            <i className="fa-solid fa-download"  aria-hidden="true"/>
                             {(item.downloadCount || 0).toLocaleString('id-ID')}×
                           </span>
                         </div>
@@ -1192,7 +1192,7 @@ export default function UnduhanPage() {
                               setIsPreviewOpen(true);
                             }}
                           >
-                            <i className="fa-solid fa-eye" />
+                            <i className="fa-solid fa-eye"  aria-hidden="true"/>
                             Preview
                           </button>
                           <button
@@ -1204,12 +1204,12 @@ export default function UnduhanPage() {
                           >
                             {isDownloading ? (
                               <>
-                                <i className="fa-solid fa-circle-notch" style={{ animation: 'spin 0.8s linear infinite' }} />
+                                <i className="fa-solid fa-circle-notch" style={{ animation: 'spin 0.8s linear infinite' }}  aria-hidden="true"/>
                                 Mengunduh...
                               </>
                             ) : (
                               <>
-                                <i className="fa-solid fa-download" />
+                                <i className="fa-solid fa-download"  aria-hidden="true"/>
                                 Unduh
                               </>
                             )}
@@ -1225,7 +1225,7 @@ export default function UnduhanPage() {
             {/* Info Banner */}
             <div className="dlhub-info-banner animate-fade-in">
               <div className="dlhub-info-banner-icon">
-                <i className="fa-solid fa-shield-halved" />
+                <i className="fa-solid fa-shield-halved"  aria-hidden="true"/>
               </div>
               <div className="dlhub-info-banner-text">
                 <h3>Dokumen Resmi & Terverifikasi</h3>
@@ -1240,7 +1240,7 @@ export default function UnduhanPage() {
                 onClick={() => router.push('/?login=1')}
                 style={{ flexShrink: 0 }}
               >
-                <i className="fa-solid fa-right-to-bracket" />
+                <i className="fa-solid fa-right-to-bracket"  aria-hidden="true"/>
                 Login Portal
               </button>
             </div>
@@ -1281,7 +1281,7 @@ export default function UnduhanPage() {
                   onClick={() => setIsDetailOpen(false)}
                   aria-label="Tutup panel"
                 >
-                  <i className="fa-solid fa-xmark" />
+                  <i className="fa-solid fa-xmark"  aria-hidden="true"/>
                 </button>
                 <i className={`fa-solid ${selectedDoc.icon} dlhub-detail-thumb-icon`} />
               </div>
@@ -1315,7 +1315,7 @@ export default function UnduhanPage() {
                         padding: '4px 10px', borderRadius: '100px', fontSize: '10px', fontWeight: 800,
                         background: 'rgba(245,158,11,0.15)', color: '#f59e0b',
                       }}>
-                        <i className="fa-solid fa-fire" /> POPULER
+                        <i className="fa-solid fa-fire"  aria-hidden="true"/> POPULER
                       </span>
                     )}
                   </div>
@@ -1384,7 +1384,7 @@ export default function UnduhanPage() {
                   style={{ height: '46px', borderRadius: '14px', width: '100%', fontWeight: 700 }}
                   onClick={() => { setIsDetailOpen(false); setIsPreviewOpen(true); }}
                 >
-                  <i className="fa-solid fa-eye" /> Pratinjau Dokumen
+                  <i className="fa-solid fa-eye"  aria-hidden="true"/> Pratinjau Dokumen
                 </button>
                 <button
                   type="button"
@@ -1402,9 +1402,9 @@ export default function UnduhanPage() {
                   disabled={isDownloading}
                 >
                   {isDownloading ? (
-                    <><i className="fa-solid fa-circle-notch" style={{ animation: 'spin 0.8s linear infinite' }} /> Mengunduh...</>
+                    <><i className="fa-solid fa-circle-notch" style={{ animation: 'spin 0.8s linear infinite' }}  aria-hidden="true"/> Mengunduh...</>
                   ) : (
-                    <><i className="fa-solid fa-download" /> Unduh Sekarang</>
+                    <><i className="fa-solid fa-download"  aria-hidden="true"/> Unduh Sekarang</>
                   )}
                 </button>
               </div>

@@ -47,11 +47,11 @@ export default function AdminRecap() {
           {/* Matrix Card */}
           <div className="card animate-fade-in">
             <div className="card-header flex-col md:flex-row gap-4" style={{ alignItems: 'stretch' }}>
-              <h2 style={{ display: 'flex', alignItems: 'center' }}><i className="fa-solid fa-table-cells" style={{ marginRight: '8px' }}></i> Matriks Pengumpulan</h2>
+              <h2 style={{ display: 'flex', alignItems: 'center' }}><i className="fa-solid fa-table-cells" style={{ marginRight: '8px' }} aria-hidden="true"></i> Matriks Pengumpulan</h2>
               
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 <div className="input-with-icon" style={{ flex: 1, minWidth: '200px' }}>
-                  <i className="fa-solid fa-magnifying-glass"></i>
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                   <input
                     type="text"
                     className="form-control"
@@ -107,17 +107,17 @@ export default function AdminRecap() {
                           </td>
                           {categories.map(cat => {
                             const sub = schoolSubs.find(s => s.categoryId === cat.id);
-                            let content = <i className="fa-solid fa-minus" style={{ color: 'var(--text-muted)' }}></i>;
+                            let content = <i className="fa-solid fa-minus" style={{ color: 'var(--text-muted)' }} aria-hidden="true"></i>;
                             
                             if (sub) {
                               if (sub.status === 'approved') {
-                                content = <i className="fa-solid fa-circle-check" style={{ color: 'var(--success)', fontSize: '16px' }} title="Disetujui"></i>;
+                                content = <i className="fa-solid fa-circle-check" style={{ color: 'var(--success)', fontSize: '16px' }} title="Disetujui" aria-hidden="true"></i>;
                               } else if (sub.status === 'pending') {
-                                content = <i className="fa-solid fa-circle-notch fa-spin" style={{ color: 'var(--primary)', fontSize: '16px' }} title="Proses Verifikasi"></i>;
+                                content = <i className="fa-solid fa-circle-notch fa-spin" style={{ color: 'var(--primary)', fontSize: '16px' }} title="Proses Verifikasi" aria-hidden="true"></i>;
                               } else if (sub.status === 'revision') {
-                                content = <i className="fa-solid fa-circle-exclamation" style={{ color: 'var(--revision)', fontSize: '16px' }} title="Revisi"></i>;
+                                content = <i className="fa-solid fa-circle-exclamation" style={{ color: 'var(--revision)', fontSize: '16px' }} title="Revisi" aria-hidden="true"></i>;
                               } else {
-                                content = <i className="fa-solid fa-circle-xmark" style={{ color: 'var(--danger)', fontSize: '16px' }} title="Ditolak"></i>;
+                                content = <i className="fa-solid fa-circle-xmark" style={{ color: 'var(--danger)', fontSize: '16px' }} title="Ditolak" aria-hidden="true"></i>;
                               }
                             }
                             
@@ -141,19 +141,19 @@ export default function AdminRecap() {
               {/* Legend bar */}
               <div style={{ padding: '16px 24px', borderTop: '1px solid var(--card-border)', display: 'flex', gap: '20px', flexWrap: 'wrap', fontSize: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <i className="fa-solid fa-circle-check" style={{ color: 'var(--success)' }}></i>
+                  <i className="fa-solid fa-circle-check" style={{ color: 'var(--success)' }} aria-hidden="true"></i>
                   <span>Disetujui</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <i className="fa-solid fa-circle-notch fa-spin" style={{ color: 'var(--primary)' }}></i>
+                  <i className="fa-solid fa-circle-notch fa-spin" style={{ color: 'var(--primary)' }} aria-hidden="true"></i>
                   <span>Menunggu Review</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <i className="fa-solid fa-circle-exclamation" style={{ color: 'var(--revision)' }}></i>
+                  <i className="fa-solid fa-circle-exclamation" style={{ color: 'var(--revision)' }} aria-hidden="true"></i>
                   <span>Perlu Revisi</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <i className="fa-solid fa-minus" style={{ color: 'var(--text-muted)' }}></i>
+                  <i className="fa-solid fa-minus" style={{ color: 'var(--text-muted)' }} aria-hidden="true"></i>
                   <span>Belum Dikirim</span>
                 </div>
               </div>

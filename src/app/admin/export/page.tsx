@@ -95,10 +95,10 @@ export default function AdminExport() {
 
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button className="btn btn-outline" onClick={handleDownloadCSV}>
-                  Download CSV <i className="fa-solid fa-file-csv" style={{ marginLeft: '8px' }}></i>
+                  Download CSV <i className="fa-solid fa-file-csv" style={{ marginLeft: '8px' }} aria-hidden="true"></i>
                 </button>
                 <button className="btn btn-primary" onClick={handlePrint}>
-                  Cetak Rekap <i className="fa-solid fa-print" style={{ marginLeft: '8px' }}></i>
+                  Cetak Rekap <i className="fa-solid fa-print" style={{ marginLeft: '8px' }} aria-hidden="true"></i>
                 </button>
               </div>
             </div>

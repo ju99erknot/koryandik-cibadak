@@ -72,7 +72,7 @@ export default function GugusThemeSelector({ currentGugusId, onThemeChange }: Gu
           boxShadow: `0 0 10px ${currentTheme.primary}`
         }}></div>
         <span>Theme</span>
-        <i className="fa-solid fa-chevron-down" style={{ fontSize: '10px' }}></i>
+        <i className="fa-solid fa-chevron-down" style={{ fontSize: '10px' }} aria-hidden="true"></i>
       </motion.button>
 
       <AnimatePresence>
@@ -132,7 +132,7 @@ export default function GugusThemeSelector({ currentGugusId, onThemeChange }: Gu
                     </div>
                   </div>
                   {selectedTheme === id && (
-                    <i className="fa-solid fa-check" style={{ color: theme.primary, marginLeft: 'auto' }}></i>
+                    <i className="fa-solid fa-check" style={{ color: theme.primary, marginLeft: 'auto' }} aria-hidden="true"></i>
                   )}
                 </motion.button>
               ))}

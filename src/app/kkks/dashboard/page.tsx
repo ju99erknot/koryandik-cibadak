@@ -74,7 +74,7 @@ export default function KkksDashboard() {
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{schools.length}</span>
@@ -83,7 +83,7 @@ export default function KkksDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981' }}>
-                <i className="fa-solid fa-circle-check"></i>
+                <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalApproved}</span>
@@ -92,7 +92,7 @@ export default function KkksDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>
-                <i className="fa-solid fa-clock"></i>
+                <i className="fa-solid fa-clock" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalPending}</span>
@@ -101,7 +101,7 @@ export default function KkksDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(239,68,68,0.15)', color: '#ef4444' }}>
-                <i className="fa-solid fa-circle-xmark"></i>
+                <i className="fa-solid fa-circle-xmark" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalRejected}</span>
@@ -128,7 +128,7 @@ export default function KkksDashboard() {
 
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-chart-line"></i> Progres Rekapitulasi Wilayah</h2>
+              <h2><i className="fa-solid fa-chart-line" aria-hidden="true"></i> Progres Rekapitulasi Wilayah</h2>
               <span className="badge badge-success">{overallProgress}%</span>
             </div>
             <div className="card-body">
@@ -144,7 +144,7 @@ export default function KkksDashboard() {
           {/* Recharts Bar Chart - Gugus Comparison */}
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-chart-bar"></i> Perbandingan Progres per Gugus</h2>
+              <h2><i className="fa-solid fa-chart-bar" aria-hidden="true"></i> Perbandingan Progres per Gugus</h2>
             </div>
             <div className="card-body" style={{ height: '300px' }}>
               <ResponsiveContainer width="100%" height="100%">
@@ -180,12 +180,12 @@ export default function KkksDashboard() {
           {/* Filter & Search */}
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-school"></i> Status Pengumpulan Berkas Sekolah</h2>
+              <h2><i className="fa-solid fa-school" aria-hidden="true"></i> Status Pengumpulan Berkas Sekolah</h2>
             </div>
             <div className="card-body">
               <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
                 <div className="input-with-icon" style={{ flex: 1, minWidth: '200px' }}>
-                  <i className="fa-solid fa-magnifying-glass"></i>
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                   <input
                     type="text"
                     className="form-control"

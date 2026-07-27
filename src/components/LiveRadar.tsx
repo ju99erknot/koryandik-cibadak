@@ -159,7 +159,7 @@ export default function LiveRadar() {
         <div className="events-list">
           {events.length === 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', textAlign: 'center', gap: '8px' }}>
-              <i className="fa-solid fa-satellite-dish" style={{ fontSize: '28px', color: 'var(--text-secondary)', opacity: 0.4 }}></i>
+              <i className="fa-solid fa-satellite-dish" style={{ fontSize: '28px', color: 'var(--text-secondary)', opacity: 0.4 }} aria-hidden="true"></i>
               <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500 }}>Belum ada aktivitas terdeteksi</p>
             </div>
           ) : (

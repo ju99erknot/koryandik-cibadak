@@ -158,7 +158,7 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '10px' }}>
               <div>
                 <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <i className="fa-solid fa-clock-rotate-left" style={{ color: 'var(--accent)' }}></i> Time-Travel Archives (Histori Bulanan)
+                  <i className="fa-solid fa-clock-rotate-left" style={{ color: 'var(--accent)' }} aria-hidden="true"></i> Time-Travel Archives (Histori Bulanan)
                 </h3>
                 <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Geser garis waktu untuk melihat rekapitulasi bulan lalu</span>
               </div>
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
           <div className="stats-grid bento-grid-asymmetric">
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{schools.length}</span>
@@ -204,7 +204,7 @@ export default function AdminDashboard() {
             </div>
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--success-glow)', color: 'var(--success)' }}>
-                <i className="fa-solid fa-check-double"></i>
+                <i className="fa-solid fa-check-double" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{approvedCount}</span>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
             </div>
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--warning-glow)', color: 'var(--warning)' }}>
-                <i className="fa-solid fa-clock"></i>
+                <i className="fa-solid fa-clock" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{pendingCount}</span>
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
             </div>
             <div className="stat-card glass-panel">
               <div className="stat-icon" style={{ background: 'var(--revision-glow)', color: 'var(--revision)' }}>
-                <i className="fa-solid fa-arrows-spin"></i>
+                <i className="fa-solid fa-arrows-spin" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{revisionCount}</span>
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
           {/* Recharts Bar Chart - Gugus Progress Overview */}
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-chart-bar"></i> Progres Berkas per Gugus</h2>
+              <h2><i className="fa-solid fa-chart-bar" aria-hidden="true"></i> Progres Berkas per Gugus</h2>
             </div>
             <div className="card-body" style={{ height: '280px' }}>
               <ResponsiveContainer width="100%" height="100%">
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
             {/* Recent Submissions */}
             <div className="card animate-fade-in" style={{ gridColumn: 'span 2' }}>
               <div className="card-header">
-                <h2><i className="fa-solid fa-file-circle-check"></i> Pengiriman Berkas Terbaru</h2>
+                <h2><i className="fa-solid fa-file-circle-check" aria-hidden="true"></i> Pengiriman Berkas Terbaru</h2>
               </div>
               <div className="card-body" style={{ padding: 0 }}>
                 {/* Filter Panel */}
@@ -283,7 +283,7 @@ export default function AdminDashboard() {
                 }}>
                   {/* Search input */}
                   <div style={{ position: 'relative', gridColumn: 'span 2', minWidth: '180px' }}>
-                    <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '12px' }}></i>
+                    <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '12px' }} aria-hidden="true"></i>
                     <input 
                       type="text" 
                       className="form-control" 
@@ -357,15 +357,15 @@ export default function AdminDashboard() {
                           <td>
                              <div style={{ display: 'flex', gap: '4px' }}>
                                <a href={sub.driveLink ?? '#'} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-xs" aria-disabled={!sub.driveLink} title="Lihat Berkas">
-                                 <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                 <i className="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                                </a>
                                {sub.status === 'pending' && (
                                  <>
                                    <button className="btn btn-accent btn-xs" onClick={() => setActiveReviewSubmission(sub)} title="Pemeriksaan Berkas (AI Split-Screen)">
-                                     <i className="fa-solid fa-magnifying-glass"></i>
+                                     <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                                    </button>
                                    <button className="btn btn-primary btn-xs" onClick={() => handleApprove(sub.id)} title="Setujui Berkas">
-                                     <i className="fa-solid fa-check"></i>
+                                     <i className="fa-solid fa-check" aria-hidden="true"></i>
                                    </button>
                                  </>
                                )}
@@ -384,7 +384,7 @@ export default function AdminDashboard() {
               {/* Announcements widget */}
               <div className="card animate-fade-in">
                 <div className="card-header">
-                  <h2><i className="fa-solid fa-bullhorn"></i> Pengumuman</h2>
+                  <h2><i className="fa-solid fa-bullhorn" aria-hidden="true"></i> Pengumuman</h2>
                 </div>
                 <div className="card-body">
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -403,7 +403,7 @@ export default function AdminDashboard() {
               {/* 🟢 Online Presence Monitor Widget */}
               <div className="card animate-fade-in">
                 <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h2><i className="fa-solid fa-signal" style={{ color: 'var(--success)' }}></i> Status Online</h2>
+                  <h2><i className="fa-solid fa-signal" style={{ color: 'var(--success)' }} aria-hidden="true"></i> Status Online</h2>
                   <span className="badge badge-success" style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--success-glow)', color: 'var(--success)' }}>
                     <span className="live-dot" style={{ margin: 0 }}></span> {(() => {
                       const activeCount = onlineUsers.filter(ou => ou.page !== 'Offline' && (new Date().getTime() - new Date(ou.lastSeen).getTime() < 120000)).length;
@@ -460,7 +460,7 @@ export default function AdminDashboard() {
               {/* Activity Logs widget */}
               <div className="card animate-fade-in">
                 <div className="card-header">
-                  <h2><i className="fa-solid fa-clock-rotate-left"></i> Aktivitas Terkini</h2>
+                  <h2><i className="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Aktivitas Terkini</h2>
                 </div>
                 <div className="card-body">
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -491,7 +491,7 @@ export default function AdminDashboard() {
                 style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '18px' }}
                 onClick={() => setActiveSubmissionId(null)}
               >
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body">

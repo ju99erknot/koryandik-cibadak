@@ -174,11 +174,11 @@ export default function BulkUploadModal({ isOpen, onClose, categories, schoolNps
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h3 id="bulk-upload-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
-            <i className="fa-solid fa-cloud-arrow-up" style={{ color: '#3b82f6' }}></i>
+            <i className="fa-solid fa-cloud-arrow-up" style={{ color: '#3b82f6' }} aria-hidden="true"></i>
             Bulk Upload Berkas (PDF Only)
           </h3>
           <button type="button" onClick={onClose} aria-label="Tutup dialog unggah massal" style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer' }}>
-            <i className="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -207,7 +207,7 @@ export default function BulkUploadModal({ isOpen, onClose, categories, schoolNps
             accept=".pdf"
             onChange={(e) => e.target.files && handleFilesAdded(e.target.files)}
           />
-          <i className="fa-solid fa-file-pdf" style={{ fontSize: '48px', color: '#ef4444', marginBottom: '12px', display: 'block' }}></i>
+          <i className="fa-solid fa-file-pdf" style={{ fontSize: '48px', color: '#ef4444', marginBottom: '12px', display: 'block' }} aria-hidden="true"></i>
           <span style={{ fontSize: '14px', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>
             Seret & Lepas file PDF di sini
           </span>
@@ -259,17 +259,17 @@ export default function BulkUploadModal({ isOpen, onClose, categories, schoolNps
                       </select>
                       {f.status === 'matched' && (
                         <span style={{ fontSize: '10px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                          <i className="fa-solid fa-circle-check"></i> Auto-Match
+                          <i className="fa-solid fa-circle-check" aria-hidden="true"></i> Auto-Match
                         </span>
                       )}
                       {f.status === 'unmatched' && (
                         <span style={{ fontSize: '10px', color: '#f59e0b', display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                          <i className="fa-solid fa-circle-question"></i> Pilih Kategori
+                          <i className="fa-solid fa-circle-question" aria-hidden="true"></i> Pilih Kategori
                         </span>
                       )}
                       {f.status === 'uploading' && (
                         <span style={{ fontSize: '10px', color: '#3b82f6' }}>
-                          <i className="fa-solid fa-spinner fa-spin"></i> Mengunggah...
+                          <i className="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Mengunggah...
                         </span>
                       )}
                       {f.status === 'error' && (
@@ -291,7 +291,7 @@ export default function BulkUploadModal({ isOpen, onClose, categories, schoolNps
                       padding: '4px'
                     }}
                   >
-                    <i className="fa-solid fa-trash-can"></i>
+                    <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
                   </button>
                 </div>
               ))}
@@ -317,11 +317,11 @@ export default function BulkUploadModal({ isOpen, onClose, categories, schoolNps
           >
             {isUploading ? (
               <>
-                <i className="fa-solid fa-spinner fa-spin"></i> Mengunggah...
+                <i className="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Mengunggah...
               </>
             ) : (
               <>
-                Unggah Semua <i className="fa-solid fa-cloud-arrow-up"></i>
+                Unggah Semua <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
               </>
             )}
           </button>

@@ -485,7 +485,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
       {showHeader && (
         <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <h2 style={{ fontSize: '16px' }}><i className="fa-solid fa-map-location-dot"></i> Peta Interaktif Leaflet (GPS Real)</h2>
+            <h2 style={{ fontSize: '16px' }}><i className="fa-solid fa-map-location-dot" aria-hidden="true"></i> Peta Interaktif Leaflet (GPS Real)</h2>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Pemetaan geografis lokasi sekolah berdasarkan koordinat Lintang & Bujur Kecamatan Cibadak</p>
           </div>
           
@@ -496,7 +496,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
               style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
               title="Refresh data sekolah"
             >
-              <i className="fa-solid fa-rotate"></i> Refresh
+              <i className="fa-solid fa-rotate" aria-hidden="true"></i> Refresh
             </button>
 
             <button
@@ -507,7 +507,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
               }}
               style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
             >
-              <i className="fa-solid fa-fire"></i> Heatmap Gugus
+              <i className="fa-solid fa-fire" aria-hidden="true"></i> Heatmap Gugus
             </button>
 
             {isAdminMode && (
@@ -516,7 +516,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                 onClick={() => setIsEditMode(!isEditMode)}
                 style={{ fontSize: '11px', padding: '5px 12px' }}
               >
-                <i className="fa-solid fa-location-dot"></i> {isEditMode ? 'Selesai Edit' : 'Edit Koordinat GPS'}
+                <i className="fa-solid fa-location-dot" aria-hidden="true"></i> {isEditMode ? 'Selesai Edit' : 'Edit Koordinat GPS'}
               </button>
             )}
 
@@ -538,7 +538,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
       {isAdminMode && isEditMode && (
         <div style={{ background: 'var(--card-glass)', padding: '12px 20px', borderBottom: '1px solid var(--card-border)', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', fontSize: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <strong style={{ color: 'var(--accent)' }}><i className="fa-solid fa-crosshairs"></i> Mode Edit GPS Aktif:</strong>
+            <strong style={{ color: 'var(--accent)' }}><i className="fa-solid fa-crosshairs" aria-hidden="true"></i> Mode Edit GPS Aktif:</strong>
             <span>Pilih sekolah & klik lokasi baru pada peta Leaflet</span>
           </div>
 
@@ -579,7 +579,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
           </div>
 
           <button className="btn btn-danger btn-sm" onClick={handleResetCoords} style={{ padding: '4px 8px', fontSize: '11px', marginLeft: 'auto' }}>
-            <i className="fa-solid fa-rotate-left"></i> Reset Default
+            <i className="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset Default
           </button>
         </div>
       )}
@@ -599,7 +599,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
             flexDirection: 'column',
             gap: '10px'
           }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '32px' }}></i>
+            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '32px' }} aria-hidden="true"></i>
             <div>Error loading map: {mapError}</div>
             <button 
               className="btn btn-sm btn-outline" 
@@ -639,7 +639,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                 style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', cursor: 'pointer', zIndex: 10 }}
                 aria-label="Tutup drawer"
               >
-                <i className="fa-solid fa-xmark" style={{ fontSize: '14px' }}></i>
+                <i className="fa-solid fa-xmark" style={{ fontSize: '14px' }} aria-hidden="true"></i>
               </button>              {/* Header */}
               <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--card-border)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
@@ -647,7 +647,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                     <img src={drawerSchool.logoUrl} alt={drawerSchool.name} style={{ width: '56px', height: '56px', borderRadius: '14px', objectFit: 'cover', border: '2px solid var(--card-border)' }} />
                   ) : (
                     <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: 'linear-gradient(135deg, var(--primary-glow), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--primary)' }}>
-                      <i className="fa-solid fa-school" style={{ fontSize: '24px', color: 'var(--primary)' }}></i>
+                      <i className="fa-solid fa-school" style={{ fontSize: '24px', color: 'var(--primary)' }} aria-hidden="true"></i>
                     </div>
                   )}
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -662,37 +662,37 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         {drawerCustom.website && (
                           <a href={drawerCustom.website.startsWith('http') ? drawerCustom.website : `https://${drawerCustom.website}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', fontSize: '13px', transition: 'all 0.2s' }} title="Website">
-                            <i className="fa-solid fa-globe"></i>
+                            <i className="fa-solid fa-globe" aria-hidden="true"></i>
                           </a>
                         )}
                         {drawerCustom.instagram && (
                           <a href={`https://instagram.com/${drawerCustom.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer" style={{ color: '#E1306C', fontSize: '13px', transition: 'all 0.2s' }} title="Instagram">
-                            <i className="fa-brands fa-instagram"></i>
+                            <i className="fa-brands fa-instagram" aria-hidden="true"></i>
                           </a>
                         )}
                         {drawerCustom.facebook && (
                           <a href={drawerCustom.facebook.startsWith('http') ? drawerCustom.facebook : `https://facebook.com/${drawerCustom.facebook}`} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2', fontSize: '13px', transition: 'all 0.2s' }} title="Facebook">
-                            <i className="fa-brands fa-facebook"></i>
+                            <i className="fa-brands fa-facebook" aria-hidden="true"></i>
                           </a>
                         )}
                         {drawerCustom.youtube && (
                           <a href={drawerCustom.youtube.startsWith('http') ? drawerCustom.youtube : `https://youtube.com/${drawerCustom.youtube}`} target="_blank" rel="noopener noreferrer" style={{ color: '#FF0000', fontSize: '13px', transition: 'all 0.2s' }} title="YouTube">
-                            <i className="fa-brands fa-youtube"></i>
+                            <i className="fa-brands fa-youtube" aria-hidden="true"></i>
                           </a>
                         )}
                         {drawerCustom.tiktok && (
                           <a href={drawerCustom.tiktok.startsWith('http') ? drawerCustom.tiktok : `https://tiktok.com/@${drawerCustom.tiktok.replace('@','')}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', fontSize: '13px', transition: 'all 0.2s' }} title="TikTok">
-                            <i className="fa-brands fa-tiktok"></i>
+                            <i className="fa-brands fa-tiktok" aria-hidden="true"></i>
                           </a>
                         )}
                         {drawerCustom.email && (
                           <a href={`mailto:${drawerCustom.email}`} target="_blank" rel="noopener noreferrer" style={{ color: '#EA4335', fontSize: '13px', transition: 'all 0.2s' }} title="Email">
-                            <i className="fa-solid fa-envelope"></i>
+                            <i className="fa-solid fa-envelope" aria-hidden="true"></i>
                           </a>
                         )}
                         {drawerCustom.telegram && (
                           <a href={`https://t.me/${drawerCustom.telegram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{ color: '#0088cc', fontSize: '13px', transition: 'all 0.2s' }} title="Telegram">
-                            <i className="fa-brands fa-telegram"></i>
+                            <i className="fa-brands fa-telegram" aria-hidden="true"></i>
                           </a>
                         )}
                       </div>
@@ -723,19 +723,19 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
               {/* Info List */}
               <div style={{ padding: '16px 20px', flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)' }}>
-                  <i className="fa-solid fa-graduation-cap" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }}></i>
+                  <i className="fa-solid fa-graduation-cap" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }} aria-hidden="true"></i>
                   <span>Jenjang: <strong style={{ color: 'var(--text-primary)' }}>{drawerSchool.level}</strong></span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)' }}>
-                  <i className="fa-solid fa-users" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }}></i>
+                  <i className="fa-solid fa-users" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }} aria-hidden="true"></i>
                   <span>Siswa: <strong style={{ color: 'var(--text-primary)' }}>{drawerSchool.studentCount}</strong> • Guru: <strong style={{ color: 'var(--text-primary)' }}>{drawerSchool.teacherCount}</strong></span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)' }}>
-                  <i className="fa-solid fa-user-tie" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }}></i>
+                  <i className="fa-solid fa-user-tie" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }} aria-hidden="true"></i>
                   <span>Kepsek: <strong style={{ color: 'var(--text-primary)' }}>{drawerSchool.principalName || '-'}</strong></span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)' }}>
-                  <i className="fa-solid fa-headset" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }}></i>
+                  <i className="fa-solid fa-headset" style={{ width: '16px', textAlign: 'center', color: 'var(--primary)' }} aria-hidden="true"></i>
                   <span>Operator: <strong style={{ color: 'var(--text-primary)' }}>{drawerSchool.operatorName || '-'}</strong></span>
                 </div>
               </div>
@@ -750,7 +750,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                     className="btn btn-sm"
                     style={{ flex: 1, background: '#25D366', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', borderRadius: '12px', padding: '10px', fontSize: '12px', fontWeight: 600, textDecoration: 'none' }}
                   >
-                    <i className="fa-brands fa-whatsapp"></i> WhatsApp
+                    <i className="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp
                   </a>
                 )}
                 <button
@@ -758,7 +758,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                   onClick={() => { setDrawerSchool(null); onSchoolClick?.(drawerSchool); }}
                   style={{ flex: 1, borderRadius: '12px', padding: '10px', fontSize: '12px' }}
                 >
-                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Detail
+                  <i className="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Detail
                 </button>
               </div>
             </div>
@@ -785,7 +785,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
         }}>
           <div style={{ fontWeight: 'bold', borderBottom: '1px solid var(--card-border)', paddingBottom: '4px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <i className="fa-solid fa-layer-group"></i> Keterangan Status
+            <i className="fa-solid fa-layer-group" aria-hidden="true"></i> Keterangan Status
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
@@ -832,7 +832,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
           <div style={{ padding: '16px 20px', borderTop: '1px solid var(--card-border)', marginTop: '16px' }}>
             <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between' }}>
               <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <i className="fa-solid fa-school-circle-check"></i>
+                <i className="fa-solid fa-school-circle-check" aria-hidden="true"></i>
                 Sekolah Binaan {activeGugus === 'I' ? 'Gugus I (Cibadak Utara)' : activeGugus === 'II' ? 'Gugus II (Karangtengah)' : activeGugus === 'III' ? 'Gugus III (Pamuruyan)' : activeGugus === 'IV' ? 'Gugus IV (Leumbursawah)' : 'Gugus V (Swasta/Lainnya)'}
               </h3>
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)', background: 'var(--primary-glow)', padding: '4px 10px', borderRadius: '6px', fontWeight: '600' }}>
@@ -894,7 +894,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                         justifyContent: 'center',
                         border: '1px solid var(--primary)'
                       }}>
-                        <i className="fa-solid fa-school" style={{ fontSize: '22px', color: 'var(--primary)' }}></i>
+                        <i className="fa-solid fa-school" style={{ fontSize: '22px', color: 'var(--primary)' }} aria-hidden="true"></i>
                       </div>
                     )}
                     
@@ -904,8 +904,8 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
                         {school.name}
                       </h4>
                       <p style={{ fontSize: '10px', color: 'var(--text-secondary)', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span><i className="fa-solid fa-hashtag"></i> {school.npsn}</span>
-                        <span><i className="fa-solid fa-layer-group"></i> {school.level}</span>
+                        <span><i className="fa-solid fa-hashtag" aria-hidden="true"></i> {school.npsn}</span>
+                        <span><i className="fa-solid fa-layer-group" aria-hidden="true"></i> {school.level}</span>
                       </p>
                       <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'space-between' }}>
                         <div style={{ flex: '1', background: 'var(--card-border)', height: '4px', borderRadius: '2px', overflow: 'hidden' }}>

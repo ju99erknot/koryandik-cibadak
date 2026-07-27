@@ -257,7 +257,7 @@ export default function FaqPage() {
       <main className="static-page-main">
         <section className="pub-hero animate-fade-in">
           <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <i className="fa-solid fa-circle-question" />
+            <i className="fa-solid fa-circle-question"  aria-hidden="true"/>
             Pusat Bantuan Resmi
           </div>
           <h1 className="pub-hero-title">Pertanyaan yang Sering Ditanyakan</h1>

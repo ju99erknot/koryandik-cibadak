@@ -418,7 +418,7 @@ export default function SekolahDirectoryPage() {
         {/* Hero */}
         <section className="pub-hero animate-fade-in" style={{ paddingBottom: '28px' }}>
           <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <i className="fa-solid fa-graduation-cap" />
+            <i className="fa-solid fa-graduation-cap"  aria-hidden="true"/>
             <span>Portal Sekolah Binaan</span>
           </div>
           <h1 className="skl-hero-title">Direktori Sekolah</h1>
@@ -431,28 +431,28 @@ export default function SekolahDirectoryPage() {
         <div className="skl-stat-grid animate-fade-in">
           <div className="skl-stat-card">
             <div className="skl-stat-icon" style={{ background: 'linear-gradient(135deg, #3b82f6, #06b6d4)' }}>
-              <i className="fa-solid fa-school" />
+              <i className="fa-solid fa-school"  aria-hidden="true"/>
             </div>
             <div className="skl-stat-num"><AnimatedNumber target={schools.length || 49} /></div>
             <div className="skl-stat-label">Total Sekolah</div>
           </div>
           <div className="skl-stat-card">
             <div className="skl-stat-icon" style={{ background: 'linear-gradient(135deg, #8b5cf6, #ec4899)' }}>
-              <i className="fa-solid fa-user-graduate" />
+              <i className="fa-solid fa-user-graduate"  aria-hidden="true"/>
             </div>
             <div className="skl-stat-num"><AnimatedNumber target={totalStudents} /></div>
             <div className="skl-stat-label">Total Siswa</div>
           </div>
           <div className="skl-stat-card">
             <div className="skl-stat-icon" style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}>
-              <i className="fa-solid fa-chalkboard-user" />
+              <i className="fa-solid fa-chalkboard-user"  aria-hidden="true"/>
             </div>
             <div className="skl-stat-num"><AnimatedNumber target={totalTeachers} /></div>
             <div className="skl-stat-label">Total Guru</div>
           </div>
           <div className="skl-stat-card">
             <div className="skl-stat-icon" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
-              <i className="fa-solid fa-layer-group" />
+              <i className="fa-solid fa-layer-group"  aria-hidden="true"/>
             </div>
             <div className="skl-stat-num">{GUGUS_LIST.length}</div>
             <div className="skl-stat-label">Gugus Binaan</div>
@@ -462,7 +462,7 @@ export default function SekolahDirectoryPage() {
         {/* Search */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '24px 20px 20px' }}>
           <div className="skl-search-wrap">
-            <i className="fa-solid fa-magnifying-glass icon" />
+            <i className="fa-solid fa-magnifying-glass icon"  aria-hidden="true"/>
             <input
               className="skl-search-input"
               type="text"
@@ -472,7 +472,7 @@ export default function SekolahDirectoryPage() {
             />
             {search && (
               <button className="skl-search-clear" onClick={() => setSearch('')}>
-                <i className="fa-solid fa-xmark" />
+                <i className="fa-solid fa-xmark"  aria-hidden="true"/>
               </button>
             )}
           </div>
@@ -487,7 +487,7 @@ export default function SekolahDirectoryPage() {
               style={filterGugus === 'all' && filterLevel === 'all' ? { background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' } : {}}
               onClick={clearFilters}
             >
-              <i className="fa-solid fa-layer-group" style={{ fontSize: '11px' }} />
+              <i className="fa-solid fa-layer-group" style={{ fontSize: '11px' }}  aria-hidden="true"/>
               Semua
               <span className="chip-count">{schools.length}</span>
             </button>
@@ -515,13 +515,13 @@ export default function SekolahDirectoryPage() {
               className={`skl-chip-level${filterLevel === 'Negeri' ? ' active' : ''}`}
               onClick={() => setFilterLevel(filterLevel === 'Negeri' ? 'all' : 'Negeri')}
             >
-              <i className="fa-solid fa-landmark" style={{ fontSize: '10px' }} /> Negeri <span style={{ fontWeight: 800 }}>({negeriCount})</span>
+              <i className="fa-solid fa-landmark" style={{ fontSize: '10px' }}  aria-hidden="true"/> Negeri <span style={{ fontWeight: 800 }}>({negeriCount})</span>
             </button>
             <button
               className={`skl-chip-level${filterLevel === 'Swasta' ? ' active' : ''}`}
               onClick={() => setFilterLevel(filterLevel === 'Swasta' ? 'all' : 'Swasta')}
             >
-              <i className="fa-solid fa-building" style={{ fontSize: '10px' }} /> Swasta <span style={{ fontWeight: 800 }}>({swastaCount})</span>
+              <i className="fa-solid fa-building" style={{ fontSize: '10px' }}  aria-hidden="true"/> Swasta <span style={{ fontWeight: 800 }}>({swastaCount})</span>
             </button>
           </div>
         </div>
@@ -532,7 +532,7 @@ export default function SekolahDirectoryPage() {
             Menampilkan <strong style={{ color: 'var(--text-primary)', fontSize: '15px' }}>{filtered.length}</strong> sekolah
             {hasFilters && (
               <button onClick={clearFilters} style={{ marginLeft: '10px', background: 'none', border: 'none', color: 'var(--primary)', fontSize: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'inherit' }}>
-                <i className="fa-solid fa-xmark" style={{ marginRight: 4 }} />Reset filter
+                <i className="fa-solid fa-xmark" style={{ marginRight: 4 }}  aria-hidden="true"/>Reset filter
               </button>
             )}
           </span>
@@ -545,13 +545,13 @@ export default function SekolahDirectoryPage() {
             </select>
             <div className="skl-view-toggle">
               <button className={`skl-view-btn${viewMode === 'grid' ? ' active' : ''}`} onClick={() => setViewMode('grid')} title="Grid">
-                <i className="fa-solid fa-grip" />
+                <i className="fa-solid fa-grip"  aria-hidden="true"/>
               </button>
               <button className={`skl-view-btn${viewMode === 'list' ? ' active' : ''}`} onClick={() => setViewMode('list')} title="List">
-                <i className="fa-solid fa-list" />
+                <i className="fa-solid fa-list"  aria-hidden="true"/>
               </button>
               <button className={`skl-view-btn${viewMode === 'compact' ? ' active' : ''}`} onClick={() => setViewMode('compact')} title="Compact">
-                <i className="fa-solid fa-table-cells" />
+                <i className="fa-solid fa-table-cells"  aria-hidden="true"/>
               </button>
             </div>
           </div>
@@ -567,12 +567,12 @@ export default function SekolahDirectoryPage() {
         ) : filtered.length === 0 ? (
           <div className="skl-empty animate-fade-in">
             <div className="skl-empty-icon">
-              <i className="fa-solid fa-school-circle-xmark" />
+              <i className="fa-solid fa-school-circle-xmark"  aria-hidden="true"/>
             </div>
             <p style={{ fontWeight: 700, fontSize: '16px', color: 'var(--text-primary)', margin: '0 0 6px' }}>Tidak Ada Sekolah Ditemukan</p>
             <p style={{ fontSize: '13px', margin: '0 0 16px' }}>Tidak ditemukan sekolah yang cocok dengan filter atau pencarian yang dipilih.</p>
             <button onClick={clearFilters} style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', fontSize: '13px' }}>
-              <i className="fa-solid fa-arrow-rotate-left" style={{ marginRight: 6 }} />Reset Semua Filter
+              <i className="fa-solid fa-arrow-rotate-left" style={{ marginRight: 6 }}  aria-hidden="true"/>Reset Semua Filter
             </button>
           </div>
 
@@ -598,7 +598,7 @@ export default function SekolahDirectoryPage() {
                         <div className="skl-card-logo" style={{ background: school.logoUrl ? 'var(--card-glass)' : `linear-gradient(135deg,${theme.primary},${theme.accent})` }}>
                           {school.logoUrl
                             ? <img src={school.logoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 12 }} />
-                            : <i className="fa-solid fa-graduation-cap" />}
+                            : <i className="fa-solid fa-graduation-cap"  aria-hidden="true"/>}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h3 className="skl-card-name">{school.name}</h3>
@@ -644,13 +644,13 @@ export default function SekolahDirectoryPage() {
                         <div className="skl-card-info">
                           {school.principalName && (
                             <div className="skl-card-info-row">
-                              <div className="skl-card-info-icon"><i className="fa-solid fa-user-tie" /></div>
+                              <div className="skl-card-info-icon"><i className="fa-solid fa-user-tie"  aria-hidden="true"/></div>
                               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{school.principalName}</span>
                             </div>
                           )}
                           {school.address && (
                             <div className="skl-card-info-row">
-                              <div className="skl-card-info-icon"><i className="fa-solid fa-location-dot" /></div>
+                              <div className="skl-card-info-icon"><i className="fa-solid fa-location-dot"  aria-hidden="true"/></div>
                               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.4 }}>{school.address}</span>
                             </div>
                           )}
@@ -658,7 +658,7 @@ export default function SekolahDirectoryPage() {
 
                         {/* Action */}
                         <MagneticButton className="skl-card-action" onClick={() => router.push(`/sekolah/${slug}`)}>
-                          Buka Portal <i className="fa-solid fa-arrow-right" />
+                          Buka Portal <i className="fa-solid fa-arrow-right"  aria-hidden="true"/>
                         </MagneticButton>
                       </div>
                     </div>
@@ -683,7 +683,7 @@ export default function SekolahDirectoryPage() {
                   <div className="skl-list-logo" style={{ background: school.logoUrl ? 'var(--card-glass)' : `linear-gradient(135deg,${theme.primary},${theme.accent})` }}>
                     {school.logoUrl
                       ? <img src={school.logoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 10 }} />
-                      : <i className="fa-solid fa-graduation-cap" />}
+                      : <i className="fa-solid fa-graduation-cap"  aria-hidden="true"/>}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{school.name}</p>
@@ -694,12 +694,12 @@ export default function SekolahDirectoryPage() {
                   <div className="skl-list-right">
                     <span className="skl-list-stat-chip" style={{ borderLeft: `2px solid ${theme.primary}` }}>Gugus {school.gugus}</span>
                     <span className="skl-list-stat-chip">
-                      <i className="fa-solid fa-users" style={{ marginRight: 4, fontSize: '9px', color: 'var(--primary)' }} />{school.studentCount} siswa
+                      <i className="fa-solid fa-users" style={{ marginRight: 4, fontSize: '9px', color: 'var(--primary)' }}  aria-hidden="true"/>{school.studentCount} siswa
                     </span>
                     <span className="skl-list-stat-chip">
-                      <i className="fa-solid fa-chalkboard-user" style={{ marginRight: 4, fontSize: '9px', color: 'var(--accent)' }} />{school.teacherCount} guru
+                      <i className="fa-solid fa-chalkboard-user" style={{ marginRight: 4, fontSize: '9px', color: 'var(--accent)' }}  aria-hidden="true"/>{school.teacherCount} guru
                     </span>
-                    <i className="fa-solid fa-chevron-right" style={{ fontSize: '11px', color: 'var(--text-muted)' }} />
+                    <i className="fa-solid fa-chevron-right" style={{ fontSize: '11px', color: 'var(--text-muted)' }}  aria-hidden="true"/>
                   </div>
                 </div>
               );
@@ -722,7 +722,7 @@ export default function SekolahDirectoryPage() {
                   <div className="skl-compact-logo" style={{ background: school.logoUrl ? 'var(--card-glass)' : `linear-gradient(135deg,${theme.primary},${theme.accent})` }}>
                     {school.logoUrl
                       ? <img src={school.logoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
-                      : <i className="fa-solid fa-graduation-cap" />}
+                      : <i className="fa-solid fa-graduation-cap"  aria-hidden="true"/>}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{school.name}</p>
@@ -730,7 +730,7 @@ export default function SekolahDirectoryPage() {
                       Gugus {school.gugus} · {getSchoolStatus(school)} · {school.studentCount} siswa
                     </p>
                   </div>
-                  <i className="fa-solid fa-arrow-right" style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }} />
+                  <i className="fa-solid fa-arrow-right" style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}  aria-hidden="true"/>
                 </div>
               );
             })}

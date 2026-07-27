@@ -162,7 +162,7 @@ export default function AdminSchools() {
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{schools.length}</span>
@@ -171,7 +171,7 @@ export default function AdminSchools() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--success-glow)', color: 'var(--success)' }}>
-                <i className="fa-solid fa-graduation-cap"></i>
+                <i className="fa-solid fa-graduation-cap" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalStudents.toLocaleString('id-ID')}</span>
@@ -180,7 +180,7 @@ export default function AdminSchools() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'var(--warning-glow)', color: 'var(--warning)' }}>
-                <i className="fa-solid fa-chalkboard-user"></i>
+                <i className="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalTeachers.toLocaleString('id-ID')}</span>
@@ -197,11 +197,11 @@ export default function AdminSchools() {
           {/* School List card */}
           <div className="card animate-fade-in">
             <div className="card-header flex-col md:flex-row gap-4" style={{ alignItems: 'stretch' }}>
-              <h2 style={{ display: 'flex', alignItems: 'center' }}><i className="fa-solid fa-list-check" style={{ marginRight: '8px' }}></i> Daftar Lembaga</h2>
+              <h2 style={{ display: 'flex', alignItems: 'center' }}><i className="fa-solid fa-list-check" style={{ marginRight: '8px' }} aria-hidden="true"></i> Daftar Lembaga</h2>
               
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginLeft: 'auto' }}>
                 <div className="input-with-icon" style={{ flex: 1, minWidth: '220px' }}>
-                  <i className="fa-solid fa-magnifying-glass"></i>
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                   <input
                     type="text"
                     className="form-control"
@@ -281,11 +281,11 @@ export default function AdminSchools() {
                   }}
                   style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  <i className="fa-solid fa-qrcode"></i> Cetak QR Massal
+                  <i className="fa-solid fa-qrcode" aria-hidden="true"></i> Cetak QR Massal
                 </button>
 
                 <button className="btn btn-primary" onClick={handleOpenAdd}>
-                  <i className="fa-solid fa-plus"></i> Tambah Sekolah
+                  <i className="fa-solid fa-plus" aria-hidden="true"></i> Tambah Sekolah
                 </button>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function AdminSchools() {
                               rel="noopener noreferrer"
                               style={{ fontSize: '11px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontWeight: 600 }}
                             >
-                              <i className="fa-brands fa-whatsapp" /> {school.ksPhone}
+                              <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> {school.ksPhone}
                             </a>
                           )}
                         </td>
@@ -335,7 +335,7 @@ export default function AdminSchools() {
                               rel="noopener noreferrer"
                               style={{ fontSize: '11px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontWeight: 600 }}
                             >
-                              <i className="fa-brands fa-whatsapp" /> {school.operatorPhone}
+                              <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> {school.operatorPhone}
                             </a>
                           )}
                         </td>
@@ -401,7 +401,7 @@ export default function AdminSchools() {
                               });
                               return (
                                 <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }} title={`Unggah berkas terakhir: ${uploadDateTime}`}>
-                                  <i className="fa-solid fa-file-arrow-up" style={{ color: 'var(--primary)' }}></i>
+                                  <i className="fa-solid fa-file-arrow-up" style={{ color: 'var(--primary)' }} aria-hidden="true"></i>
                                   Unggah: {formatRelativeTime(lastSub.submittedAt)}
                                 </div>
                               );
@@ -418,19 +418,19 @@ export default function AdminSchools() {
                               title="QR Code"
                               style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                             >
-                              <i className="fa-solid fa-qrcode"></i> QR
+                              <i className="fa-solid fa-qrcode" aria-hidden="true"></i> QR
                             </button>
                             <button 
                               className="btn btn-outline btn-xs" 
                               onClick={() => handleOpenEdit(school)}
                             >
-                              <i className="fa-solid fa-pen-to-square"></i> Edit
+                              <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                             </button>
                             <button 
                               className="btn btn-danger btn-xs" 
                               onClick={() => handleDeleteSchool(school.npsn, school.name)}
                             >
-                              <i className="fa-solid fa-trash"></i> Hapus
+                              <i className="fa-solid fa-trash" aria-hidden="true"></i> Hapus
                             </button>
                           </div>
                         </td>
@@ -470,7 +470,7 @@ export default function AdminSchools() {
                 onClick={() => { setEditingSchool(null); setIsAddModalOpen(false); }}
                 style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}
               >
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <div className="card-body">
@@ -614,7 +614,7 @@ export default function AdminSchools() {
                 {/* Akreditasi & Status */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
                   <div className="form-group">
-                    <label><i className="fa-solid fa-certificate" style={{ marginRight: '6px', color: '#f59e0b' }}></i>Akreditasi</label>
+                    <label><i className="fa-solid fa-certificate" style={{ marginRight: '6px', color: '#f59e0b' }} aria-hidden="true"></i>Akreditasi</label>
                     <select className="form-control" value={formData.accreditation || 'B'} onChange={(e) => setFormData({ ...formData, accreditation: e.target.value })}>
                       <option value="A">Akreditasi A (Unggul)</option>
                       <option value="B">Akreditasi B (Baik)</option>
@@ -623,7 +623,7 @@ export default function AdminSchools() {
                     </select>
                   </div>
                   <div className="form-group">
-                    <label><i className="fa-solid fa-building-user" style={{ marginRight: '6px', color: '#10b981' }}></i>Status Sekolah</label>
+                    <label><i className="fa-solid fa-building-user" style={{ marginRight: '6px', color: '#10b981' }} aria-hidden="true"></i>Status Sekolah</label>
                     <select className="form-control" value={formData.status || 'Negeri'} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
                       <option value="Negeri">Negeri</option>
                       <option value="Swasta">Swasta</option>
@@ -632,10 +632,10 @@ export default function AdminSchools() {
                 </div>
                 {/* Branding & Media Sosial */}
                 <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '16px', marginTop: '16px' }}>
-                  <h3 style={{ fontSize: '13px', marginBottom: '12px', color: 'var(--text-secondary)' }}><i className="fa-solid fa-palette" style={{ marginRight: '6px' }}></i>Branding & Media Sosial</h3>
+                  <h3 style={{ fontSize: '13px', marginBottom: '12px', color: 'var(--text-secondary)' }}><i className="fa-solid fa-palette" style={{ marginRight: '6px' }} aria-hidden="true"></i>Branding & Media Sosial</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div className="form-group">
-                      <label><i className="fa-solid fa-globe" style={{ marginRight: '6px', color: 'var(--primary)' }}></i>Website</label>
+                      <label><i className="fa-solid fa-globe" style={{ marginRight: '6px', color: 'var(--primary)' }} aria-hidden="true"></i>Website</label>
                       <input 
                         type="text" 
                         className="form-control" 
@@ -645,7 +645,7 @@ export default function AdminSchools() {
                       />
                     </div>
                     <div className="form-group">
-                      <label><i className="fa-brands fa-instagram" style={{ marginRight: '6px', color: '#E1306C' }}></i>Instagram</label>
+                      <label><i className="fa-brands fa-instagram" style={{ marginRight: '6px', color: '#E1306C' }} aria-hidden="true"></i>Instagram</label>
                       <input 
                         type="text" 
                         className="form-control" 
@@ -684,10 +684,10 @@ export default function AdminSchools() {
         >
           <div className="modal-card" style={{ background: 'var(--bg-space)', border: '1px solid var(--card-border)', borderRadius: '16px', padding: '32px', maxWidth: '360px', width: '90%', textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setQrSchool(null)} style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '18px', cursor: 'pointer' }}>
-              <i className="fa-solid fa-xmark"></i>
+              <i className="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
             <div style={{ marginBottom: '16px' }}>
-              <i className="fa-solid fa-qrcode" style={{ fontSize: '24px', color: 'var(--accent)', marginBottom: '8px', display: 'block' }}></i>
+              <i className="fa-solid fa-qrcode" style={{ fontSize: '24px', color: 'var(--accent)', marginBottom: '8px', display: 'block' }} aria-hidden="true"></i>
               <h3 style={{ margin: '0 0 4px', fontSize: '16px', color: 'var(--text-primary)' }}>{qrSchool.name}</h3>
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>NPSN: {qrSchool.npsn}</span>
             </div>
@@ -722,10 +722,10 @@ export default function AdminSchools() {
                 };
                 img.src = blobUrl;
               }} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <i className="fa-solid fa-download"></i> Unduh PNG
+                <i className="fa-solid fa-download" aria-hidden="true"></i> Unduh PNG
               </button>
               <button className="btn btn-outline btn-sm" onClick={() => { const printWin = window.open('', '_blank'); if (!printWin) return; const svg = document.querySelector('#qr-code-container svg'); if (!svg) return; const svgData = new XMLSerializer().serializeToString(svg); printWin.document.write(`<html><head><title>QR Code - ${qrSchool.name}</title></head><body style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif"><div style="text-align:center"><h2>${qrSchool.name}</h2><p>NPSN: ${qrSchool.npsn}</p><div>${svgData}</div><p style="margin-top:16px;color:#666;font-size:12px">Scan untuk membuka portal Koryandik</p></div></body></html>`); printWin.document.close(); setTimeout(() => printWin.print(), 500); }} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <i className="fa-solid fa-print"></i> Cetak
+                <i className="fa-solid fa-print" aria-hidden="true"></i> Cetak
               </button>
             </div>
           </div>

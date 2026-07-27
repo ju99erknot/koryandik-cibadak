@@ -27,7 +27,7 @@ export default function BackToTop() {
       onClick={scrollToTop}
       aria-label="Kembali ke atas"
     >
-      <i className="fa-solid fa-arrow-up" />
+      <i className="fa-solid fa-arrow-up"  aria-hidden="true"/>
     </button>
   )
 }

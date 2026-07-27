@@ -140,14 +140,14 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
         <div style={{ flex: 1.2, padding: '24px', background: 'var(--bg-space-dark)', borderRight: '1px solid var(--card-border)', display: 'flex', flexDirection: 'column', gap: '16px', overflow: 'hidden', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--card-border)', paddingBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <i className="fa-solid fa-file-pdf" style={{ color: '#ef4444', fontSize: '24px' }}></i>
+              <i className="fa-solid fa-file-pdf" style={{ color: '#ef4444', fontSize: '24px' }} aria-hidden="true"></i>
               <div>
                 <h3 style={{ fontSize: '14px', fontWeight: 700 }}>{submission.fileName || 'Dokumen_Berkas.pdf'}</h3>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>MOCK PREVIEW (SINKRON DENGAN DOKUMEN GOOGLE DRIVE)</span>
               </div>
             </div>
             <a href={submission.driveLink || '#'} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-sm" style={{ padding: '6px 12px', fontSize: '11px' }}>
-              Buka File Asli <i className="fa-solid fa-arrow-up-right-from-square" style={{ marginLeft: '6px' }}></i>
+              Buka File Asli <i className="fa-solid fa-arrow-up-right-from-square" style={{ marginLeft: '6px' }} aria-hidden="true"></i>
             </a>
           </div>
 
@@ -270,7 +270,7 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
           <div className="card" style={{ border: '1px solid var(--primary-glow)', background: 'var(--primary-glow)' }}>
             <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <h3 style={{ fontSize: '13px', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <i className="fa-solid fa-wand-magic-sparkles"></i> AI Quick-Scan Auditor
+                <i className="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> AI Quick-Scan Auditor
               </h3>
               
               <button 
@@ -280,9 +280,9 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
                 style={{ fontSize: '12px', padding: '10px' }}
               >
                 {isScanning ? (
-                  <span><i className="fa-solid fa-spinner fa-spin" style={{ marginRight: '6px' }}></i> Memindai Berkas...</span>
+                  <span><i className="fa-solid fa-spinner fa-spin" style={{ marginRight: '6px' }} aria-hidden="true"></i> Memindai Berkas...</span>
                 ) : (
-                  <span><i className="fa-solid fa-circle-notch"></i> Pindai dengan AI Auditor</span>
+                  <span><i className="fa-solid fa-circle-notch" aria-hidden="true"></i> Pindai dengan AI Auditor</span>
                 )}
               </button>
 
@@ -319,7 +319,7 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
           {/* Verification Checklist */}
           <div className="card">
             <div className="card-header">
-              <h3><i className="fa-solid fa-list-check"></i> Checklist Pemeriksa</h3>
+              <h3><i className="fa-solid fa-list-check" aria-hidden="true"></i> Checklist Pemeriksa</h3>
             </div>
             <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer' }}>
@@ -389,7 +389,7 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
                       transition: 'all 0.15s'
                     }}
                   >
-                    <i className="fa-solid fa-pen-nib" style={{ marginRight: '6px' }}></i>
+                    <i className="fa-solid fa-pen-nib" style={{ marginRight: '6px' }} aria-hidden="true"></i>
                     {tmpl.text}
                   </button>
                 ))}
@@ -437,7 +437,7 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
                     onApprove(submission.id);
                   }}
                 >
-                  Setujui Berkas <i className="fa-solid fa-circle-check" style={{ marginLeft: '4px' }}></i>
+                  Setujui Berkas <i className="fa-solid fa-circle-check" style={{ marginLeft: '4px' }} aria-hidden="true"></i>
                 </button>
               </div>
 
@@ -457,7 +457,7 @@ export default function DocumentReviewer({ submission, onApprove, onRejectSubmit
                   onApprove(submission.id);
                 }}
               >
-                <i className="fa-solid fa-bolt"></i> Setujui Instan (Lompati Checklist)
+                <i className="fa-solid fa-bolt" aria-hidden="true"></i> Setujui Instan (Lompati Checklist)
               </button>
             </div>
           </div>

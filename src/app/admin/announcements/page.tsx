@@ -70,7 +70,7 @@ export default function AdminAnnouncements() {
             {/* Create form */}
             <div className="card animate-fade-in">
               <div className="card-header">
-                <h2><i className="fa-solid fa-pen-nib"></i> Tulis Pengumuman</h2>
+                <h2><i className="fa-solid fa-pen-nib" aria-hidden="true"></i> Tulis Pengumuman</h2>
               </div>
               <div className="card-body">
                 <form onSubmit={handleSubmit}>
@@ -131,7 +131,7 @@ export default function AdminAnnouncements() {
                         alignItems: 'center',
                         gap: '8px'
                       }}>
-                        <i className="fa-solid fa-tower-broadcast" style={{ animation: 'pulse 1s infinite' }}></i>
+                        <i className="fa-solid fa-tower-broadcast" style={{ animation: 'pulse 1s infinite' }} aria-hidden="true"></i>
                         <span>Pengumuman ini akan ditampilkan sebagai <strong>Banner Siaran Darurat</strong> di dashboard semua sekolah yang sedang login!</span>
                       </div>
                     )}
@@ -154,9 +154,9 @@ export default function AdminAnnouncements() {
                     animation: priority === 'high' ? 'broadcast-pulse 2s ease-in-out infinite' : ''
                   }}>
                     {priority === 'high' ? (
-                      <><i className="fa-solid fa-tower-broadcast" style={{ marginRight: '6px' }}></i> Siarkan Darurat</>
+                      <><i className="fa-solid fa-tower-broadcast" style={{ marginRight: '6px' }} aria-hidden="true"></i> Siarkan Darurat</>
                     ) : (
-                      <>Publikasikan <i className="fa-solid fa-paper-plane" style={{ marginLeft: '6px' }}></i></>
+                      <>Publikasikan <i className="fa-solid fa-paper-plane" style={{ marginLeft: '6px' }} aria-hidden="true"></i></>
                     )}
                   </button>
                 </form>
@@ -166,7 +166,7 @@ export default function AdminAnnouncements() {
             {/* List */}
             <div className="card animate-fade-in" style={{ gridColumn: 'span 2' }}>
               <div className="card-header">
-                <h2><i className="fa-solid fa-list"></i> Riwayat Pengumuman</h2>
+                <h2><i className="fa-solid fa-list" aria-hidden="true"></i> Riwayat Pengumuman</h2>
               </div>
               <div className="card-body" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {announcements.map(ann => (
@@ -185,7 +185,7 @@ export default function AdminAnnouncements() {
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           {ann.priority === 'high' && (
-                            <i className="fa-solid fa-tower-broadcast" style={{ color: '#ef4444', fontSize: '14px', animation: 'pulse 1s infinite' }}></i>
+                            <i className="fa-solid fa-tower-broadcast" style={{ color: '#ef4444', fontSize: '14px', animation: 'pulse 1s infinite' }} aria-hidden="true"></i>
                           )}
                           <h3 style={{ fontSize: '16px' }}>{ann.title}</h3>
                         </div>
@@ -202,7 +202,7 @@ export default function AdminAnnouncements() {
                            onClick={() => handleDelete(ann.id)}
                            title="Hapus Pengumuman"
                          >
-                           <i className="fa-solid fa-trash-can"></i>
+                           <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
                          </button>
                       </div>
                     </div>
@@ -221,7 +221,7 @@ export default function AdminAnnouncements() {
                         alignItems: 'center',
                         gap: '6px'
                       }}>
-                        <i className="fa-solid fa-satellite-dish"></i>
+                        <i className="fa-solid fa-satellite-dish" aria-hidden="true"></i>
                         <span>Pengumuman ini sedang ditampilkan sebagai siaran darurat di semua dashboard sekolah</span>
                       </div>
                     )}

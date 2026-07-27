@@ -55,7 +55,7 @@ export default function LandingFooter({ schoolCount = 0, onOpenLogin }: LandingF
         {/* ─── BRAND BLOCK ─── */}
         <div className="ftx-brand-block">
           <div className="ftx-logo">
-            <i className="fa-solid fa-graduation-cap" />
+            <i className="fa-solid fa-graduation-cap"  aria-hidden="true"/>
           </div>
           <div className="ftx-brand-text">
             <span className="ftx-brand-name">Koryandik</span>
@@ -73,7 +73,7 @@ export default function LandingFooter({ schoolCount = 0, onOpenLogin }: LandingF
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fa-solid fa-envelope" />
+              <i className="fa-solid fa-envelope"  aria-hidden="true"/>
               <span>Email</span>
             </a>
             <a
@@ -82,11 +82,11 @@ export default function LandingFooter({ schoolCount = 0, onOpenLogin }: LandingF
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fa-solid fa-map-location-dot" />
+              <i className="fa-solid fa-map-location-dot"  aria-hidden="true"/>
               <span>Peta Lokasi</span>
             </a>
             <button type="button" className="ftx-pill ftx-pill-primary" onClick={onOpenLogin}>
-              <i className="fa-solid fa-right-to-bracket" />
+              <i className="fa-solid fa-right-to-bracket"  aria-hidden="true"/>
               <span>Masuk Portal</span>
             </button>
           </div>
@@ -105,7 +105,7 @@ export default function LandingFooter({ schoolCount = 0, onOpenLogin }: LandingF
                   <button type="button" onClick={link.action} className="ftx-nav-btn">
                     <i className={`fa-solid ${link.icon} ftx-nav-icon`} />
                     <span>{link.label}</span>
-                    <i className="fa-solid fa-arrow-right ftx-nav-arrow" />
+                    <i className="fa-solid fa-arrow-right ftx-nav-arrow"  aria-hidden="true"/>
                   </button>
                 </li>
               ))}

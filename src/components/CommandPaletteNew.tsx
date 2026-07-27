@@ -103,7 +103,7 @@ export default function CommandPalette({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="command-palette-header">
-                <i className="fa-solid fa-search command-palette-search-icon"></i>
+                <i className="fa-solid fa-search command-palette-search-icon" aria-hidden="true"></i>
                 <input
                   ref={inputRef}
                   type="text"
@@ -148,7 +148,7 @@ export default function CommandPalette({
                 ))}
                 {filteredCommands.length === 0 && (
                   <div className="command-palette-empty">
-                    <i className="fa-solid fa-search"></i>
+                    <i className="fa-solid fa-search" aria-hidden="true"></i>
                     <p>No commands found</p>
                   </div>
                 )}

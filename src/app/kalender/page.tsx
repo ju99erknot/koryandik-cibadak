@@ -184,7 +184,7 @@ export default function KalenderPage() {
         {/* Unified Hero Section */}
         <section className="pub-hero animate-fade-in">
           <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <i className="fa-solid fa-calendar-days" />
+            <i className="fa-solid fa-calendar-days"  aria-hidden="true"/>
             Kalender &amp; Agenda Akademik
           </div>
           <h1 className="pub-hero-title">Jadwal &amp; Agenda Resmi</h1>
@@ -225,7 +225,7 @@ export default function KalenderPage() {
             <div className="kalender-officials-section animate-fade-in">
               <div className="kalender-officials-header">
                 <h2>
-                  <i className="fa-solid fa-user-tie" style={{ marginRight: '8px', color: 'var(--primary)' }} />
+                  <i className="fa-solid fa-user-tie" style={{ marginRight: '8px', color: 'var(--primary)' }}  aria-hidden="true"/>
                   Pejabat &amp; Koordinator Terkait
                 </h2>
                 <p>

@@ -234,12 +234,12 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange, placeholder })
         {value ? (
           <i className={`${value.includes('google') || value.includes('youtube') || value.includes('facebook') || value.includes('instagram') || value.includes('twitter') || value.includes('whatsapp') ? 'fa-brands' : 'fa-solid'} ${value}`} style={{ fontSize: '18px', color: 'var(--primary)' }}></i>
         ) : (
-          <i className="fa-solid fa-link" style={{ fontSize: '18px', color: 'var(--text-muted)' }}></i>
+          <i className="fa-solid fa-link" style={{ fontSize: '18px', color: 'var(--text-muted)' }} aria-hidden="true"></i>
         )}
         <span style={{ flex: 1, color: value ? 'var(--text-primary)' : 'var(--text-muted)' }}>
           {value || placeholder || 'Pilih Ikon'}
         </span>
-        <i className="fa-solid fa-chevron-down" style={{ color: 'var(--text-muted)', fontSize: '12px' }}></i>
+        <i className="fa-solid fa-chevron-down" style={{ color: 'var(--text-muted)', fontSize: '12px' }} aria-hidden="true"></i>
       </div>
       
       {isOpen && typeof window !== 'undefined' && createPortal(renderDropdown(), document.body)}

@@ -139,7 +139,7 @@ export default function PengawasDashboard() {
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6' }}>
-                <i className="fa-solid fa-school"></i>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{schools.length}</span>
@@ -148,7 +148,7 @@ export default function PengawasDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981' }}>
-                <i className="fa-solid fa-circle-check"></i>
+                <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalApproved}</span>
@@ -157,7 +157,7 @@ export default function PengawasDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>
-                <i className="fa-solid fa-clock"></i>
+                <i className="fa-solid fa-clock" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalPending}</span>
@@ -166,7 +166,7 @@ export default function PengawasDashboard() {
             </div>
             <div className="stat-card">
               <div className="stat-icon" style={{ background: 'rgba(239,68,68,0.15)', color: '#ef4444' }}>
-                <i className="fa-solid fa-circle-xmark"></i>
+                <i className="fa-solid fa-circle-xmark" aria-hidden="true"></i>
               </div>
               <div className="stat-info">
                 <span className="stat-value">{totalRejected}</span>
@@ -195,7 +195,7 @@ export default function PengawasDashboard() {
 
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-chart-line"></i> Progress Keseluruhan</h2>
+              <h2><i className="fa-solid fa-chart-line" aria-hidden="true"></i> Progress Keseluruhan</h2>
               <span className="badge badge-success">{overallProgress}%</span>
             </div>
             <div className="card-body">
@@ -211,7 +211,7 @@ export default function PengawasDashboard() {
           {/* Recharts Bar Chart - Gugus Comparison */}
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-chart-bar"></i> Perbandingan Progres Berkas per Gugus</h2>
+              <h2><i className="fa-solid fa-chart-bar" aria-hidden="true"></i> Perbandingan Progres Berkas per Gugus</h2>
             </div>
             <div className="card-body" style={{ height: '300px' }}>
               <ResponsiveContainer width="100%" height="100%">
@@ -247,12 +247,12 @@ export default function PengawasDashboard() {
           {/* Filter & Search */}
           <div className="card animate-fade-in">
             <div className="card-header">
-              <h2><i className="fa-solid fa-school"></i> Monitoring Sekolah Binaan</h2>
+              <h2><i className="fa-solid fa-school" aria-hidden="true"></i> Monitoring Sekolah Binaan</h2>
             </div>
             <div className="card-body">
               <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
                 <div className="input-with-icon" style={{ flex: 1, minWidth: '200px' }}>
-                  <i className="fa-solid fa-magnifying-glass"></i>
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                   <input
                     type="text"
                     className="form-control"
@@ -328,7 +328,7 @@ export default function PengawasDashboard() {
                               onClick={() => handleOpenSupervisionModal(school)}
                               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', padding: '6px 12px', borderRadius: '8px' }}
                             >
-                              <i className="fa-solid fa-clipboard-user"></i> Catat Supervisi
+                              <i className="fa-solid fa-clipboard-user" aria-hidden="true"></i> Catat Supervisi
                             </button>
                           </td>
                         </tr>
@@ -343,7 +343,7 @@ export default function PengawasDashboard() {
           {/* Supervision Notes History */}
           <div className="card animate-fade-in" style={{ marginTop: '24px' }}>
             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2><i className="fa-solid fa-clipboard-check"></i> Riwayat Catatan Supervisi Pengawas</h2>
+              <h2><i className="fa-solid fa-clipboard-check" aria-hidden="true"></i> Riwayat Catatan Supervisi Pengawas</h2>
               <span className="badge badge-info">{supervisionNotes.length} Catatan</span>
             </div>
             <div className="card-body">
@@ -367,7 +367,7 @@ export default function PengawasDashboard() {
                         <div>
                           <strong style={{ fontSize: '14px', color: 'var(--text-primary)' }}>{note.schoolName}</strong>
                           <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }}></i>
+                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }} aria-hidden="true"></i>
                             {new Date(note.visitDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                           </div>
                         </div>
@@ -400,7 +400,7 @@ export default function PengawasDashboard() {
                           style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}
                           title="Hapus Catatan"
                         >
-                          <i className="fa-solid fa-trash-can"></i>
+                          <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
                         </button>
                       </div>
                     </div>
@@ -408,7 +408,7 @@ export default function PengawasDashboard() {
                 </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '30px', opacity: 0.6 }}>
-                  <i className="fa-solid fa-clipboard-list" style={{ fontSize: '32px', marginBottom: '8px' }}></i>
+                  <i className="fa-solid fa-clipboard-list" style={{ fontSize: '32px', marginBottom: '8px' }} aria-hidden="true"></i>
                   <p style={{ margin: 0 }}>Belum ada catatan supervisi yang dibuat.</p>
                 </div>
               )}
@@ -422,10 +422,10 @@ export default function PengawasDashboard() {
           <div style={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '20px', width: '100%', maxWidth: '520px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', margin: 'auto' }}>
             <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--card-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }}></i> Catat Supervisi Sekolah
+                <i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }} aria-hidden="true"></i> Catat Supervisi Sekolah
               </h3>
               <button onClick={() => setIsSupervisionModalOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}>
-                <i className="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
             <form onSubmit={handleSaveSupervisionNote} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -481,7 +481,7 @@ export default function PengawasDashboard() {
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '12px' }}>
                 <button type="button" className="btn btn-secondary" onClick={() => setIsSupervisionModalOpen(false)}>Batal</button>
-                <button type="submit" className="btn btn-primary"><i className="fa-solid fa-floppy-disk"></i> Simpan Catatan</button>
+                <button type="submit" className="btn btn-primary"><i className="fa-solid fa-floppy-disk" aria-hidden="true"></i> Simpan Catatan</button>
               </div>
             </form>
           </div>

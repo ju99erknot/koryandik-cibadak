@@ -766,7 +766,7 @@ export default function SchoolProfile() {
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = '0'; }}
           >
-            <i className="fa-solid fa-camera" style={{ color: '#fff', fontSize: '20px' }} />
+            <i className="fa-solid fa-camera" style={{ color: '#fff', fontSize: '20px' }}  aria-hidden="true"/>
           </div>
         )}
       </div>
@@ -784,7 +784,7 @@ export default function SchoolProfile() {
           onClick={() => { setter(''); setHasChanges(true); }}
           style={{ ...S.miniBtn('#ef4444'), fontSize: '10px', padding: '4px 10px' }}
         >
-          <i className="fa-solid fa-trash" style={{ marginRight: '4px' }} /> Hapus
+          <i className="fa-solid fa-trash" style={{ marginRight: '4px' }}  aria-hidden="true"/> Hapus
         </button>
       )}
     </div>
@@ -830,7 +830,7 @@ export default function SchoolProfile() {
             fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '12px',
             boxShadow: '0 4px 12px rgba(239,68,68,0.1)'
           }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '20px', flexShrink: 0, color: '#f59e0b' }} />
+            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '20px', flexShrink: 0, color: '#f59e0b' }}  aria-hidden="true"/>
             <div>
               <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>
                 PERINGATAN: Supabase Belum Terhubung di Production
@@ -858,7 +858,7 @@ export default function SchoolProfile() {
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               ) : (
-                <i className="fa-solid fa-school" style={{ fontSize: '24px', color: 'var(--text-muted)' }} />
+                <i className="fa-solid fa-school" style={{ fontSize: '24px', color: 'var(--text-muted)' }}  aria-hidden="true"/>
               )}
             </div>
             {/* School Info */}
@@ -926,7 +926,7 @@ export default function SchoolProfile() {
           <div className="animate-fade-in" style={S.sectionCard}>
             <div style={S.sectionHeader}>
               <div style={S.iconBubble('#3b82f6')}>
-                <i className="fa-solid fa-school" />
+                <i className="fa-solid fa-school"  aria-hidden="true"/>
               </div>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Data Identitas Sekolah</h3>
@@ -944,7 +944,7 @@ export default function SchoolProfile() {
                 {renderNumberField('Jumlah Guru', 'fa-solid fa-chalkboard-user', teacherCount, setTeacherCount)}
                 <div className="form-group">
                   <label style={S.fieldLabel}>
-                    <i className="fa-solid fa-award" style={{ fontSize: '11px' }} />
+                    <i className="fa-solid fa-award" style={{ fontSize: '11px' }}  aria-hidden="true"/>
                     Akreditasi Sekolah
                   </label>
                   <select style={{ ...S.fieldInput, cursor: 'pointer' }}
@@ -958,7 +958,7 @@ export default function SchoolProfile() {
                 </div>
                 <div className="form-group">
                   <label style={S.fieldLabel}>
-                    <i className="fa-solid fa-building-user" style={{ fontSize: '11px' }} />
+                    <i className="fa-solid fa-building-user" style={{ fontSize: '11px' }}  aria-hidden="true"/>
                     Status Sekolah
                   </label>
                   <select style={{ ...S.fieldInput, cursor: 'pointer' }}
@@ -978,7 +978,7 @@ export default function SchoolProfile() {
           <div className="animate-fade-in" style={S.sectionCard}>
             <div style={S.sectionHeader}>
               <div style={S.iconBubble('#8b5cf6')}>
-                <i className="fa-solid fa-palette" />
+                <i className="fa-solid fa-palette"  aria-hidden="true"/>
               </div>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Branding & Visual</h3>
@@ -996,7 +996,7 @@ export default function SchoolProfile() {
               {/* Stempel Color Selector */}
               <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--card-border)' }}>
                 <label style={{ ...S.fieldLabel, marginBottom: '8px', fontSize: '13px' }}>
-                  <i className="fa-solid fa-stamp" style={{ color: stempelColor }} />
+                  <i className="fa-solid fa-stamp" style={{ color: stempelColor }}  aria-hidden="true"/>
                   Warna Stempel Digital Sekolah
                 </label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -1015,7 +1015,7 @@ export default function SchoolProfile() {
               </div>
               <div style={{ marginTop: '20px', padding: '14px 18px', borderRadius: '12px', background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.1)' }}>
                 <p style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <i className="fa-solid fa-circle-info" style={{ color: 'var(--primary)' }} />
+                  <i className="fa-solid fa-circle-info" style={{ color: 'var(--primary)' }}  aria-hidden="true"/>
                   Format yang didukung: JPG, PNG, WebP. Maksimal 500 KB (tanda tangan: 300 KB). Gunakan gambar dengan latar belakang transparan untuk hasil terbaik.
                 </p>
               </div>
@@ -1028,7 +1028,7 @@ export default function SchoolProfile() {
           <div className="animate-fade-in" style={S.sectionCard}>
             <div style={S.sectionHeader}>
               <div style={S.iconBubble('#E1306C')}>
-                <i className="fa-solid fa-share-nodes" />
+                <i className="fa-solid fa-share-nodes"  aria-hidden="true"/>
               </div>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Media Sosial & Kontak</h3>
@@ -1074,7 +1074,7 @@ export default function SchoolProfile() {
             <div style={{ ...S.sectionCard, marginBottom: '20px' }}>
               <div style={S.sectionHeader}>
                 <div style={S.iconBubble('#10b981')}>
-                  <i className="fa-solid fa-plus" />
+                  <i className="fa-solid fa-plus"  aria-hidden="true"/>
                 </div>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 700 }}>{editingFacilityId ? 'Edit Fasilitas' : 'Tambah Fasilitas Baru'}</h3>
@@ -1155,7 +1155,7 @@ export default function SchoolProfile() {
             <div style={S.sectionCard}>
               <div style={S.sectionHeader}>
                 <div style={S.iconBubble('#10b981')}>
-                  <i className="fa-solid fa-building" />
+                  <i className="fa-solid fa-building"  aria-hidden="true"/>
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Daftar Fasilitas</h3>
@@ -1165,7 +1165,7 @@ export default function SchoolProfile() {
               <div style={{ ...S.sectionBody, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {facilities.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                    <i className="fa-solid fa-building-circle-xmark" style={{ fontSize: '36px', marginBottom: '12px', opacity: 0.3, display: 'block' }} />
+                    <i className="fa-solid fa-building-circle-xmark" style={{ fontSize: '36px', marginBottom: '12px', opacity: 0.3, display: 'block' }}  aria-hidden="true"/>
                     <p style={{ fontSize: '14px', fontWeight: 600 }}>Belum ada fasilitas</p>
                     <p style={{ fontSize: '12px', marginTop: '4px' }}>Tambahkan fasilitas sekolah Anda di form di atas</p>
                   </div>
@@ -1193,7 +1193,7 @@ export default function SchoolProfile() {
                         style={S.miniBtn('#3b82f6')}
                         title="Edit"
                       >
-                        <i className="fa-solid fa-pen" />
+                        <i className="fa-solid fa-pen"  aria-hidden="true"/>
                       </button>
                       <button
                         type="button"
@@ -1201,7 +1201,7 @@ export default function SchoolProfile() {
                         style={S.miniBtn('#ef4444')}
                         title="Hapus"
                       >
-                        <i className="fa-solid fa-trash" />
+                        <i className="fa-solid fa-trash"  aria-hidden="true"/>
                       </button>
                     </div>
                   </div>
@@ -1218,7 +1218,7 @@ export default function SchoolProfile() {
             <div style={{ ...S.sectionCard, marginBottom: '20px' }}>
               <div style={S.sectionHeader}>
                 <div style={S.iconBubble('#f59e0b')}>
-                  <i className="fa-solid fa-plus" />
+                  <i className="fa-solid fa-plus"  aria-hidden="true"/>
                 </div>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 700 }}>{editingAchievementId ? 'Edit Prestasi' : 'Tambah Prestasi Baru'}</h3>
@@ -1228,7 +1228,7 @@ export default function SchoolProfile() {
               <div style={S.sectionBody}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '14px' }}>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-heading" style={{ fontSize: '11px' }} /> Judul Prestasi</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-heading" style={{ fontSize: '11px' }}  aria-hidden="true"/> Judul Prestasi</label>
                     <input
                       style={S.fieldInput}
                       placeholder="Contoh: Juara 1 Lomba Cerdas Cermat Kecamatan"
@@ -1239,7 +1239,7 @@ export default function SchoolProfile() {
                     />
                   </div>
                   <div>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-calendar" style={{ fontSize: '11px' }} /> Tahun</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-calendar" style={{ fontSize: '11px' }}  aria-hidden="true"/> Tahun</label>
                     <input
                       type="number"
                       style={S.fieldInput}
@@ -1250,7 +1250,7 @@ export default function SchoolProfile() {
                     />
                   </div>
                   <div>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-tag" style={{ fontSize: '11px' }} /> Kategori</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-tag" style={{ fontSize: '11px' }}  aria-hidden="true"/> Kategori</label>
                     <select
                       style={{ ...S.fieldInput, cursor: 'pointer' }}
                       value={achievementForm.category}
@@ -1262,7 +1262,7 @@ export default function SchoolProfile() {
                     </select>
                   </div>
                   <div>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-icons" style={{ fontSize: '11px' }} /> Ikon</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-icons" style={{ fontSize: '11px' }}  aria-hidden="true"/> Ikon</label>
                     <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                       {ACHIEVEMENT_ICON_OPTIONS.map(ico => (
                         <button
@@ -1284,7 +1284,7 @@ export default function SchoolProfile() {
                     </div>
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-align-left" style={{ fontSize: '11px' }} /> Deskripsi (opsional)</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-align-left" style={{ fontSize: '11px' }}  aria-hidden="true"/> Deskripsi (opsional)</label>
                     <input
                       style={S.fieldInput}
                       placeholder="Contoh: Tingkat Kecamatan Cibadak, Kabupaten Sukabumi"
@@ -1325,7 +1325,7 @@ export default function SchoolProfile() {
             <div style={S.sectionCard}>
               <div style={S.sectionHeader}>
                 <div style={S.iconBubble('#f59e0b')}>
-                  <i className="fa-solid fa-trophy" />
+                  <i className="fa-solid fa-trophy"  aria-hidden="true"/>
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Daftar Prestasi</h3>
@@ -1335,7 +1335,7 @@ export default function SchoolProfile() {
               <div style={{ ...S.sectionBody, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {achievements.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                    <i className="fa-solid fa-trophy" style={{ fontSize: '36px', marginBottom: '12px', opacity: 0.3, display: 'block' }} />
+                    <i className="fa-solid fa-trophy" style={{ fontSize: '36px', marginBottom: '12px', opacity: 0.3, display: 'block' }}  aria-hidden="true"/>
                     <p style={{ fontSize: '14px', fontWeight: 600 }}>Belum ada prestasi</p>
                     <p style={{ fontSize: '12px', marginTop: '4px' }}>Tambahkan prestasi sekolah Anda untuk ditampilkan di profil publik</p>
                   </div>
@@ -1375,7 +1375,7 @@ export default function SchoolProfile() {
                           style={S.miniBtn('#3b82f6')}
                           title="Edit"
                         >
-                          <i className="fa-solid fa-pen" />
+                          <i className="fa-solid fa-pen"  aria-hidden="true"/>
                         </button>
                         <button
                           type="button"
@@ -1383,7 +1383,7 @@ export default function SchoolProfile() {
                           style={S.miniBtn('#ef4444')}
                           title="Hapus"
                         >
-                          <i className="fa-solid fa-trash" />
+                          <i className="fa-solid fa-trash"  aria-hidden="true"/>
                         </button>
                       </div>
                     </div>
@@ -1401,7 +1401,7 @@ export default function SchoolProfile() {
             <div style={{ ...S.sectionCard, marginBottom: '20px' }}>
               <div style={S.sectionHeader}>
                 <div style={S.iconBubble('#06b6d4')}>
-                  <i className="fa-solid fa-plus" />
+                  <i className="fa-solid fa-plus"  aria-hidden="true"/>
                 </div>
                 <div>
                   <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Tambah Foto Galeri</h3>
@@ -1411,7 +1411,7 @@ export default function SchoolProfile() {
               <div style={S.sectionBody}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '14px' }}>
                   <div>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-heading" style={{ fontSize: '11px' }} /> Judul</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-heading" style={{ fontSize: '11px' }}  aria-hidden="true"/> Judul</label>
                     <input style={S.fieldInput} placeholder="Contoh: Upacara Bendera"
                       value={galleryForm.title} onChange={(e) => setGalleryForm(p => ({ ...p, title: e.target.value }))}
                       onFocus={(e) => { e.currentTarget.style.borderColor = '#06b6d4'; }}
@@ -1419,7 +1419,7 @@ export default function SchoolProfile() {
                     />
                   </div>
                   <div>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-tag" style={{ fontSize: '11px' }} /> Kategori</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-tag" style={{ fontSize: '11px' }}  aria-hidden="true"/> Kategori</label>
                     <select style={{ ...S.fieldInput, cursor: 'pointer' }}
                       value={galleryForm.category} onChange={(e) => setGalleryForm(p => ({ ...p, category: e.target.value as GalleryItem['category'] }))}
                     >
@@ -1429,7 +1429,7 @@ export default function SchoolProfile() {
                     </select>
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={S.fieldLabel}><i className="fa-brands fa-google-drive" style={{ fontSize: '11px' }} /> URL Gambar (Google Drive / langsung)</label>
+                    <label style={S.fieldLabel}><i className="fa-brands fa-google-drive" style={{ fontSize: '11px' }}  aria-hidden="true"/> URL Gambar (Google Drive / langsung)</label>
                     <input style={S.fieldInput}
                       placeholder="https://drive.google.com/file/d/xxx/view atau URL gambar langsung"
                       value={galleryForm.imageUrl} onChange={(e) => setGalleryForm(p => ({ ...p, imageUrl: e.target.value }))}
@@ -1437,12 +1437,12 @@ export default function SchoolProfile() {
                       onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--card-border)'; }}
                     />
                     <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <i className="fa-solid fa-circle-info" style={{ color: '#06b6d4' }} />
+                      <i className="fa-solid fa-circle-info" style={{ color: '#06b6d4' }}  aria-hidden="true"/>
                       Pastikan file Google Drive di-share sebagai &quot;Anyone with the link&quot;. Link akan dikonversi otomatis.
                     </p>
                   </div>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={S.fieldLabel}><i className="fa-solid fa-align-left" style={{ fontSize: '11px' }} /> Deskripsi (opsional)</label>
+                    <label style={S.fieldLabel}><i className="fa-solid fa-align-left" style={{ fontSize: '11px' }}  aria-hidden="true"/> Deskripsi (opsional)</label>
                     <input style={S.fieldInput} placeholder="Keterangan singkat tentang foto"
                       value={galleryForm.description} onChange={(e) => setGalleryForm(p => ({ ...p, description: e.target.value }))}
                       onFocus={(e) => { e.currentTarget.style.borderColor = '#06b6d4'; }}
@@ -1453,7 +1453,7 @@ export default function SchoolProfile() {
                 <button type="button" onClick={handleAddGalleryItem} className="btn btn-primary"
                   style={{ borderRadius: '12px', padding: '10px 20px', fontSize: '13px', fontWeight: 600, marginTop: '16px' }}
                 >
-                  <i className="fa-solid fa-plus" style={{ marginRight: '6px' }} /> Tambah ke Galeri
+                  <i className="fa-solid fa-plus" style={{ marginRight: '6px' }}  aria-hidden="true"/> Tambah ke Galeri
                 </button>
               </div>
             </div>
@@ -1461,7 +1461,7 @@ export default function SchoolProfile() {
             {/* Gallery Grid */}
             <div style={S.sectionCard}>
               <div style={S.sectionHeader}>
-                <div style={S.iconBubble('#06b6d4')}><i className="fa-solid fa-images" /></div>
+                <div style={S.iconBubble('#06b6d4')}><i className="fa-solid fa-images"  aria-hidden="true"/></div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Galeri Foto Sekolah</h3>
                   <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>{galleryItems.length} foto terdokumentasi</p>
@@ -1470,7 +1470,7 @@ export default function SchoolProfile() {
               <div style={{ ...S.sectionBody }}>
                 {galleryItems.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                    <i className="fa-solid fa-images" style={{ fontSize: '36px', marginBottom: '12px', opacity: 0.3, display: 'block' }} />
+                    <i className="fa-solid fa-images" style={{ fontSize: '36px', marginBottom: '12px', opacity: 0.3, display: 'block' }}  aria-hidden="true"/>
                     <p style={{ fontSize: '14px', fontWeight: 600 }}>Belum ada foto galeri</p>
                     <p style={{ fontSize: '12px', marginTop: '4px' }}>Tambahkan foto kegiatan sekolah lewat link Google Drive</p>
                   </div>
@@ -1496,7 +1496,7 @@ export default function SchoolProfile() {
                             <span style={S.badge('#06b6d4')}>{item.category}</span>
                             <button type="button" onClick={() => handleDeleteGalleryItem(item.id)}
                               style={S.miniBtn('#ef4444')} title="Hapus">
-                              <i className="fa-solid fa-trash" />
+                              <i className="fa-solid fa-trash"  aria-hidden="true"/>
                             </button>
                           </div>
                         </div>
@@ -1514,7 +1514,7 @@ export default function SchoolProfile() {
           <div className="animate-fade-in" style={S.sectionCard}>
             <div style={S.sectionHeader}>
               <div style={S.iconBubble('#ef4444')}>
-                <i className="fa-solid fa-map-location-dot" />
+                <i className="fa-solid fa-map-location-dot"  aria-hidden="true"/>
               </div>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Lokasi Sekolah</h3>
@@ -1533,7 +1533,7 @@ export default function SchoolProfile() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group">
                   <label style={S.fieldLabel}>
-                    <i className="fa-solid fa-location-crosshairs" style={{ fontSize: '11px' }} />
+                    <i className="fa-solid fa-location-crosshairs" style={{ fontSize: '11px' }}  aria-hidden="true"/>
                     Garis Lintang (Latitude)
                   </label>
                   <input type="number" step="0.000001" style={S.fieldInput}
@@ -1550,7 +1550,7 @@ export default function SchoolProfile() {
                 </div>
                 <div className="form-group">
                   <label style={S.fieldLabel}>
-                    <i className="fa-solid fa-location-crosshairs" style={{ fontSize: '11px' }} />
+                    <i className="fa-solid fa-location-crosshairs" style={{ fontSize: '11px' }}  aria-hidden="true"/>
                     Garis Bujur (Longitude)
                   </label>
                   <input type="number" step="0.000001" style={S.fieldInput}
@@ -1569,7 +1569,7 @@ export default function SchoolProfile() {
 
               <div style={{ marginTop: '16px', padding: '14px 18px', borderRadius: '12px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.1)' }}>
                 <p style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <i className="fa-solid fa-circle-info" style={{ color: '#ef4444' }} />
+                  <i className="fa-solid fa-circle-info" style={{ color: '#ef4444' }}  aria-hidden="true"/>
                   Koordinat ini tersinkronisasi dengan Portal Admin. Klik langsung pada peta atau geser pin marker untuk menentukan lokasi. Data akan tersimpan saat Anda mengklik &quot;Simpan Perubahan&quot;.
                 </p>
               </div>
@@ -1582,7 +1582,7 @@ export default function SchoolProfile() {
           <div className="animate-fade-in" style={S.sectionCard}>
             <div style={S.sectionHeader}>
               <div style={S.iconBubble('#8b5cf6')}>
-                <i className="fa-solid fa-bullseye" />
+                <i className="fa-solid fa-bullseye"  aria-hidden="true"/>
               </div>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Visi & Misi Sekolah</h3>
@@ -1598,7 +1598,7 @@ export default function SchoolProfile() {
                       width: '28px', height: '28px', borderRadius: '10px',
                       background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', color: '#fff',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px',
-                    }}><i className="fa-solid fa-eye" /></span>
+                    }}><i className="fa-solid fa-eye"  aria-hidden="true"/></span>
                     Visi Sekolah
                   </label>
                   <textarea
@@ -1617,7 +1617,7 @@ export default function SchoolProfile() {
                       width: '28px', height: '28px', borderRadius: '10px',
                       background: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#fff',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px',
-                    }}><i className="fa-solid fa-list-check" /></span>
+                    }}><i className="fa-solid fa-list-check"  aria-hidden="true"/></span>
                     Misi Sekolah
                   </label>
                   <textarea
@@ -1635,7 +1635,7 @@ export default function SchoolProfile() {
               {(vision || mission) && (
                 <div style={{ marginTop: '24px', padding: '20px', borderRadius: '16px', border: '1px dashed var(--card-border)', background: 'rgba(139,92,246,0.03)' }}>
                   <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <i className="fa-solid fa-eye" style={{ color: '#8b5cf6' }} /> Pratinjau Tampilan Publik
+                    <i className="fa-solid fa-eye" style={{ color: '#8b5cf6' }}  aria-hidden="true"/> Pratinjau Tampilan Publik
                   </h4>
                   {vision && (
                     <div style={{ marginBottom: '16px' }}>
@@ -1666,7 +1666,7 @@ export default function SchoolProfile() {
                 </>
               ) : (
                 <>
-                  <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }} />
+                  <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}  aria-hidden="true"/>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)' }}>Semua data tersimpan</span>
                 </>
               )}
@@ -1682,9 +1682,9 @@ export default function SchoolProfile() {
               }}
             >
               {saving ? (
-                <><i className="fa-solid fa-spinner fa-spin" style={{ marginRight: '8px' }} /> Menyimpan...</>
+                <><i className="fa-solid fa-spinner fa-spin" style={{ marginRight: '8px' }}  aria-hidden="true"/> Menyimpan...</>
               ) : (
-                <><i className="fa-solid fa-floppy-disk" style={{ marginRight: '8px' }} /> Simpan Perubahan</>
+                <><i className="fa-solid fa-floppy-disk" style={{ marginRight: '8px' }}  aria-hidden="true"/> Simpan Perubahan</>
               )}
             </button>
           </div>
@@ -1701,7 +1701,7 @@ export default function SchoolProfile() {
                 onClick={() => setShowIconPicker(false)}
                 style={{ width: '32px', height: '32px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-glass)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}
               >
-                <i className="fa-solid fa-xmark" />
+                <i className="fa-solid fa-xmark"  aria-hidden="true"/>
               </button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>

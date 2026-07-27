@@ -213,7 +213,7 @@ export default function DynamicIsland() {
             className="close-button"
             aria-label="Tutup pengingat"
           >
-            <i className="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark" aria-hidden="true"></i>
           </button>
         )}
       </div>

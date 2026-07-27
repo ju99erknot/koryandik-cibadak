@@ -247,7 +247,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div className="dir-header-icon">
-              <i className="fa-solid fa-address-book" />
+              <i className="fa-solid fa-address-book"  aria-hidden="true"/>
             </div>
             <div>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>Direktori Kontak Koryandik</h3>
@@ -257,7 +257,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
             </div>
           </div>
           <button onClick={onClose} className="dir-close-button" aria-label="Tutup">
-            <i className="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -273,7 +273,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
               }}
               style={{ fontSize: '12.5px', padding: '10px' }}
             >
-              <i className="fa-solid fa-school fa-fw" /> Sekolah ({schools.length})
+              <i className="fa-solid fa-school fa-fw"  aria-hidden="true"/> Sekolah ({schools.length})
             </button>
             <button
               className={`static-tab-btn ${activeTab === 'officers' ? 'is-active' : ''}`}
@@ -283,7 +283,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
               }}
               style={{ fontSize: '12.5px', padding: '10px' }}
             >
-              <i className="fa-solid fa-user-tie fa-fw" /> Pengawas &amp; Pejabat ({supervisors.length})
+              <i className="fa-solid fa-user-tie fa-fw"  aria-hidden="true"/> Pengawas &amp; Pejabat ({supervisors.length})
             </button>
           </div>
 
@@ -301,7 +301,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
                   fontSize: '13px',
                   zIndex: 2
                 }}
-              />
+               aria-hidden="true"/>
               <input
                 type="text"
                 className="dir-search-input"
@@ -404,7 +404,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
                               rel="noopener noreferrer"
                               className="dir-wa-badge-btn"
                             >
-                              <i className="fa-brands fa-whatsapp" /> Chat WhatsApp
+                              <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> Chat WhatsApp
                             </a>
                           )}
                         </div>
@@ -420,7 +420,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
                               rel="noopener noreferrer"
                               className="dir-wa-badge-btn"
                             >
-                              <i className="fa-brands fa-whatsapp" /> Chat WhatsApp
+                              <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> Chat WhatsApp
                             </a>
                           )}
                         </div>
@@ -432,7 +432,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
 
               {filteredSchools.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
-                  <i className="fa-solid fa-school-circle-xmark" style={{ fontSize: '36px', opacity: 0.3, marginBottom: '10px', display: 'block' }} />
+                  <i className="fa-solid fa-school-circle-xmark" style={{ fontSize: '36px', opacity: 0.3, marginBottom: '10px', display: 'block' }}  aria-hidden="true"/>
                   Sekolah tidak ditemukan.
                 </div>
               )}
@@ -498,7 +498,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
                       className="dir-wa-badge-btn"
                       style={{ marginTop: 0 }}
                     >
-                      <i className="fa-brands fa-whatsapp" /> Chat WhatsApp
+                      <i className="fa-brands fa-whatsapp"  aria-hidden="true"/> Chat WhatsApp
                     </a>
                   )}
                 </div>
@@ -506,7 +506,7 @@ export default function ContactDirectoryModal({ isOpen, onClose }: ContactDirect
 
               {filteredSupervisors.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
-                  <i className="fa-solid fa-user-slash" style={{ fontSize: '36px', opacity: 0.3, marginBottom: '10px', display: 'block' }} />
+                  <i className="fa-solid fa-user-slash" style={{ fontSize: '36px', opacity: 0.3, marginBottom: '10px', display: 'block' }}  aria-hidden="true"/>
                   Pejabat tidak ditemukan.
                 </div>
               )}

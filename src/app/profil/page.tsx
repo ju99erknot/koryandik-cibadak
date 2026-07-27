@@ -1266,7 +1266,7 @@ export default function ProfilKoryandik() {
         {/* Hero */}
         <section className="pub-hero animate-fade-in">
           <div className="pub-hero-badge" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <i className="fa-solid fa-building-columns" />
+            <i className="fa-solid fa-building-columns"  aria-hidden="true"/>
             Profil &amp; Organisasi Koryandik
           </div>
           <h1 className="pub-hero-title">Koryandik Kec. Cibadak</h1>
@@ -1314,7 +1314,7 @@ export default function ProfilKoryandik() {
             <div className="profil-vm-grid">
               <article className="profil-visi-card reveal-on-scroll" style={{ ['--reveal-delay' as string]: '0ms' } as React.CSSProperties}>
                 <div className="profil-visi-badge">
-                  <i className="fa-solid fa-eye" /> Visi Kami
+                  <i className="fa-solid fa-eye"  aria-hidden="true"/> Visi Kami
                 </div>
                 <p className="profil-visi-quote">
                   {profile?.vision || 'Terwujudnya pelayanan pendidikan prima yang transparan, akuntabel, dan berintegritas tinggi guna mendorong terwujudnya sekolah dasar binaan Kecamatan Cibadak yang unggul, cerdas, dan berkarakter mulia.'}
@@ -1338,7 +1338,7 @@ export default function ProfilKoryandik() {
             {/* Section: Nilai Inti */}
             <div className="profil-sec-head">
               <span className="profil-sec-eyebrow">
-                <i className="fa-solid fa-star" style={{ color: '#f59e0b' }} /> Nilai Inti
+                <i className="fa-solid fa-star" style={{ color: '#f59e0b' }}  aria-hidden="true"/> Nilai Inti
               </span>
               <h2 className="profil-sec-title">Empat Prinsip Pelayanan Kami</h2>
               <p className="profil-sec-caption">
@@ -1387,13 +1387,13 @@ export default function ProfilKoryandik() {
                   )}
                 >
                   <div className="profil-org-avatar">
-                    {pengawas?.photoUrl ? <img src={pengawas.photoUrl} alt={pengawas.name} /> : <i className="fa-solid fa-user-tie" />}
+                    {pengawas?.photoUrl ? <img src={pengawas.photoUrl} alt={pengawas.name} /> : <i className="fa-solid fa-user-tie"  aria-hidden="true"/>}
                   </div>
                   <span className="profil-org-badge">Koordinator Pelayanan</span>
                   <h3 className="profil-org-name">{pengawas?.name || 'Memuat…'}</h3>
                   <p className="profil-org-nip">NIP. {pengawas?.nip || '—'}</p>
                   <span className="profil-org-cta">
-                    <i className="fa-solid fa-arrow-right" /> Lihat Detail
+                    <i className="fa-solid fa-arrow-right"  aria-hidden="true"/> Lihat Detail
                   </span>
                 </div>
               </div>
@@ -1416,13 +1416,13 @@ export default function ProfilKoryandik() {
                   )}
                 >
                   <div className="profil-org-avatar">
-                    {kkks?.photoUrl ? <img src={kkks.photoUrl} alt={kkks.name} /> : <i className="fa-solid fa-users-gear" />}
+                    {kkks?.photoUrl ? <img src={kkks.photoUrl} alt={kkks.name} /> : <i className="fa-solid fa-users-gear"  aria-hidden="true"/>}
                   </div>
                   <span className="profil-org-badge">Ketua KKKS</span>
                   <h3 className="profil-org-name">{kkks?.name || 'Memuat…'}</h3>
                   <p className="profil-org-nip">NIP. {kkks?.nip || '—'}</p>
                   <span className="profil-org-cta">
-                    <i className="fa-solid fa-arrow-right" /> Lihat Detail
+                    <i className="fa-solid fa-arrow-right"  aria-hidden="true"/> Lihat Detail
                   </span>
                 </div>
 
@@ -1439,13 +1439,13 @@ export default function ProfilKoryandik() {
                   )}
                 >
                   <div className="profil-org-avatar">
-                    {pgri?.photoUrl ? <img src={pgri.photoUrl} alt={pgri.name} /> : <i className="fa-solid fa-id-card" />}
+                    {pgri?.photoUrl ? <img src={pgri.photoUrl} alt={pgri.name} /> : <i className="fa-solid fa-id-card"  aria-hidden="true"/>}
                   </div>
                   <span className="profil-org-badge">Ketua PGRI</span>
                   <h3 className="profil-org-name">{pgri?.name || 'Memuat…'}</h3>
                   <p className="profil-org-nip">NIP. {pgri?.nip || '—'}</p>
                   <span className="profil-org-cta">
-                    <i className="fa-solid fa-arrow-right" /> Lihat Detail
+                    <i className="fa-solid fa-arrow-right"  aria-hidden="true"/> Lihat Detail
                   </span>
                 </div>
               </div>
@@ -1454,7 +1454,7 @@ export default function ProfilKoryandik() {
             {/* Gugus section */}
             <div className="profil-sec-head">
               <span className="profil-sec-eyebrow">
-                <i className="fa-solid fa-sitemap" style={{ color: '#8b5cf6' }} /> Pelaksana Wilayah
+                <i className="fa-solid fa-sitemap" style={{ color: '#8b5cf6' }}  aria-hidden="true"/> Pelaksana Wilayah
               </span>
               <h2 className="profil-sec-title">Lima Gugus Pelaksana</h2>
               <p className="profil-sec-caption">
@@ -1478,7 +1478,7 @@ export default function ProfilKoryandik() {
                   >
                     <div className="profil-gugus-head">
                       <span className="profil-gugus-tag">Gugus {g.id}</span>
-                      <div className="profil-gugus-icon"><i className="fa-solid fa-school" /></div>
+                      <div className="profil-gugus-icon"><i className="fa-solid fa-school"  aria-hidden="true"/></div>
                     </div>
                     <h5 className="profil-gugus-coord">{g.koordinator || '—'}</h5>
                     <p className="profil-gugus-wilayah">
@@ -1519,14 +1519,14 @@ export default function ProfilKoryandik() {
                   <OfficeStatus />
 
                   <h3 className="profil-kontak-h">
-                    <i className="fa-solid fa-map-location-dot" /> Kantor Sekretariat Koryandik
+                    <i className="fa-solid fa-map-location-dot"  aria-hidden="true"/> Kantor Sekretariat Koryandik
                   </h3>
                   <p className="profil-kontak-addr">
                     Gedung Pelayanan Koryandik Cibadak<br />
                     {profile?.address || KORYANDIK_ADDRESS}
                   </p>
                   <div className="profil-kontak-coord">
-                    <i className="fa-solid fa-location-crosshairs" />
+                    <i className="fa-solid fa-location-crosshairs"  aria-hidden="true"/>
                     {(profile?.lat ?? KORYANDIK_CENTER.lat).toFixed(6)}° S, {(profile?.lng ?? KORYANDIK_CENTER.lng).toFixed(6)}° E
                   </div>
 
@@ -1536,7 +1536,7 @@ export default function ProfilKoryandik() {
                       className="profil-kontak-action-btn"
                       style={{ ['--action-color' as string]: '#8b5cf6' } as React.CSSProperties}
                     >
-                      <i className="fa-solid fa-envelope" /> Kirim Email
+                      <i className="fa-solid fa-envelope"  aria-hidden="true"/> Kirim Email
                     </a>
                     <button
                       type="button"
@@ -1546,7 +1546,7 @@ export default function ProfilKoryandik() {
                         window.open(mapUrl, '_blank');
                       }}
                     >
-                      <i className="fa-solid fa-diamond-turn-right" /> Petunjuk Arah
+                      <i className="fa-solid fa-diamond-turn-right"  aria-hidden="true"/> Petunjuk Arah
                     </button>
                   </div>
                 </div>
@@ -1556,7 +1556,7 @@ export default function ProfilKoryandik() {
                   <div className="profil-kontak-lines">
                     <div className="profil-kontak-line" style={{ ['--kline-color' as string]: '#3b82f6' } as React.CSSProperties}>
                       <div className="profil-kontak-line-icon">
-                        <i className="fa-solid fa-phone" />
+                        <i className="fa-solid fa-phone"  aria-hidden="true"/>
                       </div>
                       <div className="profil-kontak-line-body">
                         <div className="profil-kontak-line-label">Telepon Dinas</div>
@@ -1571,7 +1571,7 @@ export default function ProfilKoryandik() {
                       style={{ ['--kline-color' as string]: '#8b5cf6' } as React.CSSProperties}
                     >
                       <div className="profil-kontak-line-icon">
-                        <i className="fa-solid fa-envelope" />
+                        <i className="fa-solid fa-envelope"  aria-hidden="true"/>
                       </div>
                       <div className="profil-kontak-line-body">
                         <div className="profil-kontak-line-label">Email Resmi</div>
@@ -1580,13 +1580,13 @@ export default function ProfilKoryandik() {
                         </div>
                       </div>
                       <span className="profil-kontak-copy-hint">
-                        <i className="fa-solid fa-copy" /> Salin
+                        <i className="fa-solid fa-copy"  aria-hidden="true"/> Salin
                       </span>
                     </button>
 
                     <div className="profil-kontak-line" style={{ ['--kline-color' as string]: '#10b981' } as React.CSSProperties}>
                       <div className="profil-kontak-line-icon">
-                        <i className="fa-brands fa-whatsapp" />
+                        <i className="fa-brands fa-whatsapp"  aria-hidden="true"/>
                       </div>
                       <div className="profil-kontak-line-body">
                         <div className="profil-kontak-line-label">WhatsApp Koordinasi</div>
@@ -1598,7 +1598,7 @@ export default function ProfilKoryandik() {
                   {/* Operating Hours */}
                   <div className="profil-kontak-hours">
                     <div className="profil-kontak-hours-head">
-                      <i className="fa-solid fa-clock" /> Jam Operasional Pelayanan
+                      <i className="fa-solid fa-clock"  aria-hidden="true"/> Jam Operasional Pelayanan
                     </div>
                     <div className="profil-kontak-hours-row">
                       <span className="profil-kontak-hours-day">Senin – Kamis</span>
@@ -1640,12 +1640,12 @@ export default function ProfilKoryandik() {
               onClick={() => setSelectedPerson(null)}
               aria-label="Tutup"
             >
-              <i className="fa-solid fa-xmark" />
+              <i className="fa-solid fa-xmark"  aria-hidden="true"/>
             </button>
             <div className="profil-modal-avatar">
               {selectedPerson.photoUrl
                 ? <img src={selectedPerson.photoUrl} alt={selectedPerson.name} />
-                : <i className="fa-solid fa-user-tie" />
+                : <i className="fa-solid fa-user-tie"  aria-hidden="true"/>
               }
             </div>
             <span className="profil-modal-badge">{selectedPerson.role}</span>
@@ -1653,7 +1653,7 @@ export default function ProfilKoryandik() {
             <p className="profil-modal-nip">NIP. {selectedPerson.nip}</p>
             <div className="profil-modal-body">
               <div className="profil-modal-body-label">
-                <i className="fa-solid fa-circle-info" /> Tugas Pokok &amp; Wewenang
+                <i className="fa-solid fa-circle-info"  aria-hidden="true"/> Tugas Pokok &amp; Wewenang
               </div>
               <p>{selectedPerson.bio}</p>
             </div>
@@ -1662,14 +1662,14 @@ export default function ProfilKoryandik() {
                 href={`mailto:${selectedPerson.email}`}
                 className="profil-modal-btn profil-modal-btn-ghost"
               >
-                <i className="fa-solid fa-envelope" /> Email
+                <i className="fa-solid fa-envelope"  aria-hidden="true"/> Email
               </a>
               <button
                 type="button"
                 className="profil-modal-btn profil-modal-btn-solid"
                 onClick={() => { setSelectedPerson(null); toast.success('Panggilan disiapkan.'); }}
               >
-                <i className="fa-solid fa-phone" /> Kontak
+                <i className="fa-solid fa-phone"  aria-hidden="true"/> Kontak
               </button>
             </div>
           </div>

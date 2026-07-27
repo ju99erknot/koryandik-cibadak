@@ -68,14 +68,14 @@ export default function Carousel({
             onClick={prevSlide}
             aria-label="Previous slide"
           >
-            <i className="fa-solid fa-chevron-left"></i>
+            <i className="fa-solid fa-chevron-left" aria-hidden="true"></i>
           </button>
           <button
             className="carousel-arrow carousel-arrow-next"
             onClick={nextSlide}
             aria-label="Next slide"
           >
-            <i className="fa-solid fa-chevron-right"></i>
+            <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
           </button>
         </>
       )}

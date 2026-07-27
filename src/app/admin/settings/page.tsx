@@ -482,7 +482,7 @@ export default function AdminSettingsPage() {
           <div className="card animate-fade-in">
             <div className="card-header">
               <h2>
-                <i className="fa-solid fa-gears" /> Pengaturan Sistem Global
+                <i className="fa-solid fa-gears"  aria-hidden="true"/> Pengaturan Sistem Global
               </h2>
             </div>
             <div className="card-body" style={{ display: 'grid', gap: '20px' }}>
@@ -523,7 +523,7 @@ export default function AdminSettingsPage() {
                           onClick={() => handleSaveGlobal(item.key)}
                           disabled={savingGlobal}
                         >
-                          <i className="fa-solid fa-cloud-arrow-up" /> Simpan
+                          <i className="fa-solid fa-cloud-arrow-up"  aria-hidden="true"/> Simpan
                         </button>
                       </div>
                     </div>
@@ -661,7 +661,7 @@ export default function AdminSettingsPage() {
           <form onSubmit={handleSaveProfile} className="card animate-fade-in">
             <div className="card-header">
               <h2>
-                <i className="fa-solid fa-address-card" /> Informasi &amp; Profil Koryandik
+                <i className="fa-solid fa-address-card"  aria-hidden="true"/> Informasi &amp; Profil Koryandik
               </h2>
             </div>
             <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -720,7 +720,7 @@ export default function AdminSettingsPage() {
                         }
                         title="Hapus poin misi"
                       >
-                        <i className="fa-solid fa-times" />
+                        <i className="fa-solid fa-times"  aria-hidden="true"/>
                       </button>
                     </li>
                   ))}
@@ -931,14 +931,14 @@ export default function AdminSettingsPage() {
                                    className="btn btn-outline btn-xs"
                                    onClick={() => setEditingFaq(faq)}
                                  >
-                                   <i className="fa-solid fa-pen-to-square"></i> Edit
+                                   <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                                  </button>
                                  <button
                                    type="button"
                                    className="btn btn-danger btn-xs"
                                    onClick={() => handleDeleteFaq(faq.id)}
                                  >
-                                   <i className="fa-solid fa-trash"></i> Hapus
+                                   <i className="fa-solid fa-trash" aria-hidden="true"></i> Hapus
                                  </button>
                                </div>
                             </td>
@@ -1193,7 +1193,7 @@ export default function AdminSettingsPage() {
                             </td>
                             <td>
                               <span style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--success)' }}>
-                                <i className="fa-solid fa-download" style={{ marginRight: '4px' }} />
+                                <i className="fa-solid fa-download" style={{ marginRight: '4px' }}  aria-hidden="true"/>
                                 {item.downloadCount || 0}x
                               </span>
                             </td>
@@ -1226,14 +1226,14 @@ export default function AdminSettingsPage() {
                                   className="btn btn-outline btn-xs"
                                   onClick={() => setEditingDownload(item)}
                                 >
-                                  <i className="fa-solid fa-pen-to-square"></i> Edit
+                                  <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                                 </button>
                                 <button
                                   type="button"
                                   className="btn btn-danger btn-xs"
                                   onClick={() => handleDeleteDownload(item.id)}
                                 >
-                                  <i className="fa-solid fa-trash"></i> Hapus
+                                  <i className="fa-solid fa-trash" aria-hidden="true"></i> Hapus
                                 </button>
                               </div>
                             </td>
@@ -1253,14 +1253,14 @@ export default function AdminSettingsPage() {
           <div className="card animate-fade-in">
             <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <h2>
-                <i className="fa-solid fa-user-tie" /> Kelola Pengawas &amp; Pejabat
+                <i className="fa-solid fa-user-tie"  aria-hidden="true"/> Kelola Pengawas &amp; Pejabat
               </h2>
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
                 onClick={() => setEditingSupervisor({ role: 'pengawas', wilayah: 'Kecamatan Cibadak' })}
               >
-                <i className="fa-solid fa-plus" /> Tambah Pengawas
+                <i className="fa-solid fa-plus"  aria-hidden="true"/> Tambah Pengawas
               </button>
             </div>
             <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -1279,7 +1279,7 @@ export default function AdminSettingsPage() {
                   }}
                 >
                   <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>
-                    <i className="fa-solid fa-user-pen" style={{ marginRight: '8px' }} />
+                    <i className="fa-solid fa-user-pen" style={{ marginRight: '8px' }}  aria-hidden="true"/>
                     {editingSupervisor.id ? 'Edit Pengawas' : 'Tambah Pengawas Baru'}
                   </h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
@@ -1449,14 +1449,14 @@ export default function AdminSettingsPage() {
                               className="btn btn-outline btn-xs"
                               onClick={() => setEditingSupervisor(item)}
                             >
-                              <i className="fa-solid fa-pen-to-square"></i> Edit
+                              <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                             </button>
                             <button
                               type="button"
                               className="btn btn-danger btn-xs"
                               onClick={() => handleDeleteSupervisor(item.id)}
                             >
-                              <i className="fa-solid fa-trash"></i> Hapus
+                              <i className="fa-solid fa-trash" aria-hidden="true"></i> Hapus
                             </button>
                           </div>
                         </td>
@@ -1465,7 +1465,7 @@ export default function AdminSettingsPage() {
                     {supervisors.length === 0 && (
                       <tr>
                         <td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
-                          <i className="fa-solid fa-user-slash" style={{ fontSize: '24px', opacity: 0.4, marginBottom: '8px', display: 'block' }} />
+                          <i className="fa-solid fa-user-slash" style={{ fontSize: '24px', opacity: 0.4, marginBottom: '8px', display: 'block' }}  aria-hidden="true"/>
                           Belum ada data pengawas.
                         </td>
                       </tr>
@@ -1672,14 +1672,14 @@ export default function AdminSettingsPage() {
                                       className="btn btn-outline btn-xs"
                                       onClick={() => setEditingLink({ ...link })}
                                     >
-                                      <i className="fa-solid fa-pen-to-square"></i> Edit
+                                      <i className="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit
                                     </button>
                                     <button
                                       type="button"
                                       className="btn btn-danger btn-xs"
                                       onClick={() => handleDeleteLink(link.id)}
                                     >
-                                      <i className="fa-solid fa-trash"></i> Hapus
+                                      <i className="fa-solid fa-trash" aria-hidden="true"></i> Hapus
                                     </button>
                                   </div>
                                 </td>
@@ -1689,7 +1689,7 @@ export default function AdminSettingsPage() {
                         {relatedLinks.length === 0 && (
                           <tr>
                             <td colSpan={6} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
-                              <i className="fa-solid fa-link-slash" style={{ fontSize: '24px', opacity: 0.4, marginBottom: '8px', display: 'block' }} />
+                              <i className="fa-solid fa-link-slash" style={{ fontSize: '24px', opacity: 0.4, marginBottom: '8px', display: 'block' }}  aria-hidden="true"/>
                               Belum ada tautan terdaftar.
                             </td>
                           </tr>

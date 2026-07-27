@@ -112,7 +112,7 @@ export default function SchoolLinks() {
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '60px 24px' }}>
-                <i className="fa-solid fa-link-slash" style={{ fontSize: '48px', color: 'var(--text-muted)', marginBottom: '16px' }}></i>
+                <i className="fa-solid fa-link-slash" style={{ fontSize: '48px', color: 'var(--text-muted)', marginBottom: '16px' }} aria-hidden="true"></i>
                 <h3 style={{ fontSize: '16px', marginBottom: '8px', color: 'var(--text-primary)' }}>Belum Ada Tautan Terkait</h3>
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
                   Tautan layanan pendidikan akan ditampilkan di sini oleh admin.

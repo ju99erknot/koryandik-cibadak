@@ -489,7 +489,7 @@ export default function DashboardShell({
                         transition: 'background 0.2s',
                       }}
                     >
-                      <i className="fa-solid fa-user-pen" style={{ color: 'var(--primary)' }}></i> Edit Profil
+                      <i className="fa-solid fa-user-pen" style={{ color: 'var(--primary)' }} aria-hidden="true"></i> Edit Profil
                     </button>
 
                     {currentUser.role === 'admin' && (
@@ -515,7 +515,7 @@ export default function DashboardShell({
                           transition: 'background 0.2s',
                         }}
                       >
-                        <i className="fa-solid fa-gears" style={{ color: 'var(--success)' }}></i> Pengaturan Aplikasi
+                        <i className="fa-solid fa-gears" style={{ color: 'var(--success)' }} aria-hidden="true"></i> Pengaturan Aplikasi
                       </button>
                     )}
 
@@ -543,7 +543,7 @@ export default function DashboardShell({
                         marginTop: '4px',
                       }}
                     >
-                      <i className="fa-solid fa-right-from-bracket"></i> Keluar
+                      <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Keluar
                     </button>
                   </div>
                 </>
@@ -633,7 +633,7 @@ export default function DashboardShell({
                 cursor: 'pointer',
               }}
             >
-              <i className="fa-solid fa-xmark"></i>
+              <i className="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
 
             <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>
@@ -657,7 +657,7 @@ export default function DashboardShell({
                 />
                 {currentUser.role === 'school' && (
                   <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
-                    <i className="fa-solid fa-lock" style={{ marginRight: '4px' }}></i> Nama sekolah hanya dapat diubah oleh Administrator.
+                    <i className="fa-solid fa-lock" style={{ marginRight: '4px' }} aria-hidden="true"></i> Nama sekolah hanya dapat diubah oleh Administrator.
                   </span>
                 )}
               </div>
@@ -694,7 +694,7 @@ export default function DashboardShell({
                       className="btn btn-outline btn-xs"
                       style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                     >
-                      <i className="fa-solid fa-upload"></i> Unggah Foto
+                      <i className="fa-solid fa-upload" aria-hidden="true"></i> Unggah Foto
                       <input
                         type="file"
                         accept="image/*"
@@ -709,7 +709,7 @@ export default function DashboardShell({
                         onClick={() => setEditAvatar('')}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                       >
-                        <i className="fa-solid fa-trash-can"></i> Hapus Foto
+                        <i className="fa-solid fa-trash-can" aria-hidden="true"></i> Hapus Foto
                       </button>
                     )}
                   </div>
@@ -808,7 +808,7 @@ export default function DashboardShell({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px', color: '#25d366' }} />
+                <i className="fa-brands fa-whatsapp" style={{ fontSize: '18px', color: '#25d366' }}  aria-hidden="true"/>
                 <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.03em' }}>WHATSAPP GATEWAY (SIMULATOR)</span>
               </div>
               <span style={{ fontSize: '10px', opacity: 0.7 }}>{alert.timestamp}</span>
