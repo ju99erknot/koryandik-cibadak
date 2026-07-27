@@ -9,6 +9,7 @@ import PushNotificationListener from '@/components/PushNotificationListener';
 import ScrollProgress from '@/components/ScrollProgress';
 import { ToastProvider } from '@/components/Toast';
 import CustomCursor from '@/components/CustomCursor';
+import SyncStatusBanner from '@/components/SyncStatusBanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -110,6 +111,7 @@ export default function RootLayout({
             <ScrollProgress />
             <DynamicIsland />
             <ConfirmDialog />
+        <SyncStatusBanner />
             <PushNotificationListener />
             {children}
           </ToastProvider>

@@ -13,6 +13,7 @@ import { archiveSubmissionToDrive } from './driveArchive';
 import { logger } from './logger';
 import { todayLocal } from '@/lib/dateUtils';
 import { currentPeriod, resolvePeriod } from './monthArchive';
+import { reportSyncFailure, reportSyncSuccess } from './syncStatus';
 
 export interface Submission {
   id: string;
@@ -179,6 +180,7 @@ export async function upsertAppSetting(
         logger.warn('Fallback to local app setting upsert due to Supabase error', { error });
       }
     } catch (err) {
+      reportSyncFailure('upsertAppSetting', 'Menyimpan pengaturan');
       logger.warn('Fallback to local app setting upsert', { error: err });
     }
   }
@@ -455,6 +457,7 @@ export async function addSchool(school: School): Promise<School> {
         return mapSchoolRow(data as Record<string, unknown>);
       }
     } catch (err) {
+      reportSyncFailure('updateSchool', 'Menyimpan data sekolah');
       logger.warn('Fallback add school', { error: err });
     }
   }
@@ -474,6 +477,7 @@ export async function deleteSchool(npsn: string): Promise<void> {
         .eq('npsn', npsn);
       return;
     } catch (err) {
+      reportSyncFailure('addSchool', 'Menambah sekolah');
       logger.warn('Fallback delete school', { error: err });
     }
   }
@@ -503,6 +507,7 @@ export async function getCategories(): Promise<Category[]> {
         }));
       }
     } catch (err) {
+      reportSyncFailure('deleteSchool', 'Menghapus sekolah');
       logger.warn('Fallback to local categories', { error: err });
     }
   }
@@ -540,6 +545,7 @@ export async function updateCategory(id: string, updates: Partial<Category>): Pr
         };
       }
     } catch (err) {
+      reportSyncFailure('updateCategory', 'Menyimpan kategori berkas');
       logger.warn('Fallback update category', { error: err });
     }
   }
@@ -564,6 +570,7 @@ export async function addCategory(cat: Category): Promise<Category> {
         return data;
       }
     } catch (err) {
+      reportSyncFailure('addCategory', 'Menambah kategori berkas');
       logger.warn('Fallback add category', { error: err });
     }
   }
@@ -583,6 +590,7 @@ export async function deleteCategory(id: string): Promise<void> {
         .eq('id', id);
       return;
     } catch (err) {
+      reportSyncFailure('deleteCategory', 'Menghapus kategori berkas');
       logger.warn('Fallback delete category', { error: err });
     }
   }
@@ -683,6 +691,7 @@ export async function updateGugus(gugusId: string, updates: Partial<GugusData>):
         };
       }
     } catch (err) {
+      reportSyncFailure('updateGugus', 'Menyimpan data gugus');
       logger.warn('Fallback update gugus', { error: err });
     }
   }
@@ -791,6 +800,7 @@ export async function saveSupervisors(supervisors: PengawasData[]): Promise<void
         .upsert(formatted);
       if (error) throw error;
     } catch (err) {
+      reportSyncFailure('saveSupervisors', 'Menyimpan data pengawas');
       logger.error('Failed to save supervisors to Supabase', err);
     }
   }
@@ -893,7 +903,11 @@ export async function updateSubmission(id: string, updates: Partial<Submission>)
         .select()
         .single();
         
+      if (error) reportSyncFailure('updateSubmission', 'Memperbarui status berkas');
+        
       if (!error && data) {
+        
+        reportSyncSuccess('updateSubmission');
         const submissionObj = mapSubmissionRow(data as Record<string, unknown>);
 
         // Add log entry & notification in parallel (fire-and-forget pattern)
@@ -935,6 +949,7 @@ export async function updateSubmission(id: string, updates: Partial<Submission>)
         return submissionObj;
       }
     } catch (err) {
+      reportSyncFailure('updateSubmission', 'Memperbarui status berkas');
       logger.warn('Fallback update submission', { error: err });
     }
   }
@@ -1069,7 +1084,9 @@ export async function addSubmission(submission: Omit<Submission, 'id' | 'submitt
         .insert(dbInsert)
         .select()
         .single();
+      if (error) reportSyncFailure('addSubmission', 'Mengunggah berkas');
       if (!error && data) {
+        reportSyncSuccess('addSubmission');
         const subObj = mapSubmissionRow(data as Record<string, unknown>);
         const schools = await getSchools();
         const school = schools.find((s) => s.npsn === subObj.schoolNpsn);
@@ -1098,6 +1115,7 @@ export async function addSubmission(submission: Omit<Submission, 'id' | 'submitt
         return subObj;
       }
     } catch (err) {
+      reportSyncFailure('addSubmission', 'Mengunggah berkas');
       logger.warn('Fallback add submission', { error: err });
     }
   }
@@ -1266,6 +1284,7 @@ export async function addAnnouncement(ann: Omit<Announcement, 'id' | 'createdAt'
         return created;
       }
     } catch (err) {
+      reportSyncFailure('addAnnouncement', 'Menerbitkan pengumuman');
       logger.warn('Fallback add announcement', { error: err });
     }
   }
@@ -1305,6 +1324,7 @@ export async function deleteAnnouncement(id: string): Promise<void> {
         .eq('id', id);
       return;
     } catch (err) {
+      reportSyncFailure('deleteAnnouncement', 'Menghapus pengumuman');
       logger.warn('Fallback delete announcement', { error: err });
     }
   }
@@ -1925,6 +1945,7 @@ export async function getOnlineUsers(): Promise<OnlinePresence[]> {
         }));
       }
     } catch (err) {
+      reportSyncFailure('saveProfileSettings', 'Menyimpan profil koryandik');
       logger.warn('[Presence] Get online fallback', { error: err });
     }
   }
@@ -2435,6 +2456,7 @@ export async function addSupervisionNote(note: Omit<SupervisionNote, 'id' | 'cre
         .single();
       if (!error && data) return mapSupervisionNoteRow(data as Record<string, unknown>);
     } catch (err) {
+      reportSyncFailure('addSupervisionNote', 'Menyimpan catatan supervisi');
       logger.warn('Fallback add supervision note to Supabase', { error: err });
     }
   }
@@ -2447,6 +2469,7 @@ export async function deleteSupervisionNote(id: string): Promise<void> {
     try {
       await supabase.from('supervision_notes').delete().eq('id', id);
     } catch (err) {
+      reportSyncFailure('deleteSupervisionNote', 'Menghapus catatan supervisi');
       logger.warn('Fallback delete supervision note', { error: err });
     }
   }
