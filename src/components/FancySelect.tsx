@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface FancySelectOption {
@@ -84,9 +84,14 @@ export default function FancySelect({
     });
   };
 
+  useLayoutEffect(() => {
+    if (!open) return;
+    // Runs before paint, so the menu is never shown at a stale position.
+    updateMenuPosition();
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
-    updateMenuPosition();
     if (showSearch) searchRef.current?.focus();
 
     const onScrollOrResize = () => updateMenuPosition();
@@ -133,6 +138,10 @@ export default function FancySelect({
   const openMenu = () => {
     setQuery('');
     setHighlight(0);
+    // Measure before opening: otherwise the first render paints the menu at
+    // width 0 and the open animation can finish before the effect corrects it,
+    // which makes the dropdown look like it never appeared.
+    updateMenuPosition();
     setOpen(true);
   };
 
@@ -172,7 +181,9 @@ export default function FancySelect({
           ? {
               position: 'fixed',
               left: menuPos.left,
-              width: menuPos.width,
+              // Fall back to the trigger's live width if the measurement has
+              // not landed yet, so the menu can never paint at zero width.
+              width: menuPos.width || triggerRef.current?.offsetWidth || 260,
               top: menuPos.top,
               bottom: menuPos.bottom,
               zIndex: 10050,
