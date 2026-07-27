@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import type { School, Category } from '@/lib/schoolsData';
 import { getSubmissionsBySchool, getCategories } from '@/lib/db';
 import type { Submission } from '@/lib/db';
@@ -15,7 +14,6 @@ import { toast } from 'sonner';
 import { confirmAction } from '@/components/ConfirmDialog';
 
 export default function SchoolReceipt() {
-  const router = useRouter();
   const { user, loading, logout } = useAuth('school');
   usePresence(user, '/school/receipt');
   const [school, setSchool] = useState<School | null>(null);

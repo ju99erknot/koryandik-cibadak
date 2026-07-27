@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import LandingNav from '@/components/LandingNav';
 import LandingFooter from '@/components/LandingFooter';
@@ -44,7 +44,6 @@ export default function GaleriPage() {
   const [slideshowMode, setSlideshowMode] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const lightboxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getSchools().then(s => { if (s.length > 0) setSchoolCount(s.length); });

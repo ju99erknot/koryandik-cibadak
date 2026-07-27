@@ -15,7 +15,7 @@ export default function AnimatedText({ text, className = '', delay = 0, duration
 
   const container = {
     hidden: { opacity: 0 },
-    visible: (i = 1) => ({
+    visible: () => ({
       opacity: 1,
       transition: { staggerChildren: duration, delayChildren: delay }
     })

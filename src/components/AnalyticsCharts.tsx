@@ -33,10 +33,21 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export default function AnalyticsCharts({ submissions, categories, schools, variant = 'full' }: AnalyticsChartsProps) {
-  // Proteksi input array 100% aman
-  const validSubmissions = Array.isArray(submissions) ? submissions : [];
-  const validCategories = Array.isArray(categories) ? categories : [];
-  const validSchools = Array.isArray(schools) ? schools : [];
+  // Proteksi input array 100% aman. Dibungkus useMemo agar identitas array
+  // stabil antar-render — tanpa ini setiap render menghasilkan array baru,
+  // sehingga seluruh useMemo di bawah ikut dihitung ulang percuma.
+  const validSubmissions = useMemo(
+    () => (Array.isArray(submissions) ? submissions : []),
+    [submissions]
+  );
+  const validCategories = useMemo(
+    () => (Array.isArray(categories) ? categories : []),
+    [categories]
+  );
+  const validSchools = useMemo(
+    () => (Array.isArray(schools) ? schools : []),
+    [schools]
+  );
 
   // --- 1. Monthly Trend ---
   const monthlyData = useMemo(() => {

@@ -118,6 +118,10 @@ export default function LandingLocationMap({
         mapInstance.current = null;
       }
     };
+  // centerTuple is derived from centerLat/centerLng (already listed) and the
+  // remaining values are only read when the map is first created. Adding them
+  // would destroy and re-create the Leaflet instance on every render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [centerLat, centerLng, address]);
 
   useEffect(() => {

@@ -12,7 +12,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
 import { toggleThemeWithTransition } from '@/lib/theme';
-import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { todayLocal } from '@/lib/dateUtils';
 
 export default function PengawasDashboard() {

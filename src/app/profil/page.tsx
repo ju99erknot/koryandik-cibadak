@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { GugusData, PengawasData } from '@/lib/schoolsData';
 import { getGugusData, getSupervisors, getSchools, getProfileSettings } from '@/lib/db';
@@ -140,6 +140,7 @@ export default function ProfilKoryandik() {
     'Meningkatkan pembinaan mutu profesionalisme pendidik dan tenaga kependidikan se-Kecamatan Cibadak.',
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const tabConfig = TABS.find(t => t.id === activeTab);
 
   return (

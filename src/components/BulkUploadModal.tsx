@@ -126,7 +126,7 @@ export default function BulkUploadModal({ isOpen, onClose, categories, schoolNps
 
         setFiles(prev => prev.map(item => item.id === f.id ? { ...item, status: 'success' } : item));
         successCount++;
-      } catch (err) {
+      } catch {
         setFiles(prev => prev.map(item => item.id === f.id ? { ...item, status: 'error', errorMsg: 'Gagal mengunggah berkas' } : item));
       }
     }

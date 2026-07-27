@@ -49,7 +49,7 @@ export default function CustomCursor() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [isEnabled]);
 
   if (!isEnabled) return null;
 

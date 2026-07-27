@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
@@ -12,7 +11,6 @@ import type { RelatedLink } from '@/lib/types';
 import type { School } from '@/lib/schoolsData';
 
 export default function SchoolLinks() {
-  const router = useRouter();
   const { user, loading, logout } = useAuth('school');
   usePresence(user, '/school/links');
   const school = (user?.details as School | undefined) ?? null;
@@ -40,7 +38,7 @@ export default function SchoolLinks() {
           <div className="card-body">
             {relatedLinks.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
-                {relatedLinks.map((link, index) => (
+                {relatedLinks.map((link) => (
                   <a
                     key={link.id}
                     href={link.url}

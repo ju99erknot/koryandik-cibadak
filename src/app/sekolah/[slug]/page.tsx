@@ -54,23 +54,6 @@ function RingChart({ value, max, size = 110, strokeWidth = 10, color, label, suf
 }
 
 /* ═══════════════════════════════════════════
-   HELPER: Star Rating Component
-   ═══════════════════════════════════════════ */
-function StarRating({ rating, label, color }: { rating: number; label: string; color: string }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <div style={{ display: 'flex', gap: 3 }}>
-        {[1, 2, 3, 4, 5].map(i => (
-          <i key={i} className={`fa-${i <= rating ? 'solid' : 'regular'} fa-star`}
-            style={{ fontSize: 14, color: i <= rating ? color : 'var(--card-border)', transition: `color 0.3s ${i * 0.08}s`, filter: i <= rating ? `drop-shadow(0 0 4px ${color}40)` : 'none' }} />
-        ))}
-      </div>
-      <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>{label}</span>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════
    HELPER: Liquid SVG Wave Section Divider
    ═══════════════════════════════════════════ */
 function LiquidDivider({ color }: { color: string }) {
@@ -120,7 +103,6 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
   const [theme, setTheme] = useState<GugusTheme>(getGugusTheme('default'));
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
   const [notFound, setNotFound] = useState(false);
-  const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
 
   // ─── Animated counters ───
@@ -240,7 +222,6 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
         dashArray: '4 4',
       }).addTo(m);
       map = m;
-      setMapReady(true);
       setTimeout(() => {
         m.invalidateSize();
       }, 200);
@@ -280,10 +261,6 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ slug: 
   const gugusAvgStudents = school ? Math.round(allSchools.filter(s => s.gugus === school.gugus).reduce((a, s) => a + s.studentCount, 0) / Math.max(allSchools.filter(s => s.gugus === school.gugus).length, 1)) : 0;
   const ratio = school ? Math.round(school.studentCount / Math.max(school.teacherCount, 1)) : 0;
 
-  // Rating calculations
-  const facilityRating = facilities.length >= 7 ? 5 : facilities.length >= 5 ? 4 : facilities.length >= 3 ? 3 : facilities.length >= 1 ? 2 : 1;
-  const sdmRating = ratio <= 15 ? 5 : ratio <= 20 ? 4 : ratio <= 25 ? 3 : ratio <= 30 ? 2 : 1;
-  const achieveRating = achievements.length >= 5 ? 5 : achievements.length >= 3 ? 4 : achievements.length >= 2 ? 3 : achievements.length >= 1 ? 2 : 1;
 
   const socialLinks = school ? [
     { key: 'website', icon: 'fa-globe', label: 'Website', value: school.website, color: '#3b82f6' },

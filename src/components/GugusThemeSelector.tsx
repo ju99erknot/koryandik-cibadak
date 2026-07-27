@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { GUGUS_THEMES, getGugusTheme, applyGugusTheme, saveGugusThemePreference } from '@/lib/gugusThemes';
+import { GUGUS_THEMES, applyGugusTheme, saveGugusThemePreference } from '@/lib/gugusThemes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useClientOnce } from '@/hooks/useIsClient';
 

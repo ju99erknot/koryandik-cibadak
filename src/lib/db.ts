@@ -79,10 +79,6 @@ function setStorageItem(key: string, value: unknown): void {
 let _appSettingsMemCache: { data: Record<string, AppSetting>; ts: number } | null = null;
 const APP_SETTINGS_CACHE_TTL = 60_000; // 60 seconds
 
-function invalidateAppSettingsCache(): void {
-  _appSettingsMemCache = null;
-}
-
 function setAppSettingsCache(settings: Record<string, AppSetting>): void {
   if (typeof window === 'undefined') return;
   setStorageItem('koryandik_app_settings', settings);

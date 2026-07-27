@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import type { School, Category } from '@/lib/schoolsData';
-import { getSubmissionsBySchool, addSubmission, updateSubmission, getCategories, getAnnouncements, checkAndCreateDeadlineReminders, getAppSetting, getCalendarEvents, getRelatedLinks, getSupervisionNotesBySchool } from '@/lib/db';
+import { getSubmissionsBySchool, addSubmission, updateSubmission, getCategories, getAnnouncements, checkAndCreateDeadlineReminders, getAppSetting, getCalendarEvents, getSupervisionNotesBySchool } from '@/lib/db';
 import type { Submission, Announcement } from '@/lib/db';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import { useAuth } from '@/hooks/useAuth';
 import { usePresence } from '@/hooks/usePresence';
-import type { SessionUser, CalendarEvent, RelatedLink, SupervisionNote } from '@/lib/types';
+import type { SessionUser, CalendarEvent, SupervisionNote } from '@/lib/types';
 import { playCelebrationSound, playSuccessSound } from '@/lib/sound';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
@@ -22,7 +21,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 export default function SchoolDashboard() {
-  const router = useRouter();
   const { user, loading, logout } = useAuth('school');
   usePresence(user, '/school/dashboard');
   const school = (user?.details as School | undefined) ?? null;

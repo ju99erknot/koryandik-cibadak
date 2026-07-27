@@ -2,15 +2,7 @@ import { useRef, useCallback } from 'react';
 
 type SoundType = 'click' | 'hover' | 'success' | 'error' | 'notification';
 
-interface SoundEffects {
-  click?: string;
-  hover?: string;
-  success?: string;
-  error?: string;
-  notification?: string;
-}
-
-export function useSoundEffects(enabled = true, customSounds?: SoundEffects) {
+export function useSoundEffects(enabled = true) {
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const getOrCreateContext = useCallback(() => {

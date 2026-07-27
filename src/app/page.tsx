@@ -13,7 +13,6 @@ import { formatPhoneForWhatsApp } from '@/lib/phoneUtils';
 import DistrictMap from '@/components/DistrictMap';
 import LandingLocationMap from '@/components/LandingLocationMap';
 import LandingFooter from '@/components/LandingFooter';
-import { showDynamicNotification } from '@/components/DynamicIsland';
 import CityScapeChart from '@/components/CityScapeChart';
 import LiveRadar from '@/components/LiveRadar';
 import { toggleThemeWithTransition } from '@/lib/theme';
@@ -27,8 +26,6 @@ import BackToTop from '@/components/BackToTop';
 import ParticleBackground from '@/components/ParticleBackground';
 import RevealOnScroll from '@/components/RevealOnScroll';
 import GradientText from '@/components/GradientText';
-import AnimatedCard from '@/components/AnimatedCard';
-import TiltCard from '@/components/TiltCard';
 import SpotlightCard from '@/components/SpotlightCard';
 import MagneticButton from '@/components/MagneticButton';
 import ProgressBar from '@/components/ProgressBar';
@@ -49,17 +46,14 @@ export default function LandingPage() {
 
   // UI state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
-  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([
     { sender: 'bot', text: 'Halo! 👋 Saya **Koryandik AI Assistant**, pakar regulasi & administrasi pendidikan Kecamatan Cibadak.\n\nAda yang bisa saya bantu terkait **Juknis BOS, TPG/Sertifikasi, Dapodik, NUPTK, atau Berkas Koryandik** hari ini?' }
   ]);
   const [chatTyping, setChatTyping] = useState(false);
 
   // Navbar scroll state
-  const [navScrolled, setNavScrolled] = useState(false);
 
   // Status Tracker states
   const [selectedSearchSchool, setSelectedSearchSchool] = useState('');
@@ -73,7 +67,6 @@ export default function LandingPage() {
 
 
   // Activity Pulse State
-  const [activityPulseSchool, setActivityPulseSchool] = useState<string | null>(null);
 
   // Animated Counter State
   const [animatedSchools, setAnimatedSchools] = useState(0);
@@ -146,12 +139,6 @@ export default function LandingPage() {
     
     // Navbar scroll listener
     const handleScroll = () => {
-      if (window.scrollY > 30) {
-        setNavScrolled(true);
-      } else {
-        setNavScrolled(false);
-      }
-
       // Handle navbar spacer height
       const spacer = document.getElementById('navbar-spacer');
       if (spacer) {
@@ -215,13 +202,7 @@ export default function LandingPage() {
   };
 
 
-  const getSupervisorName = (role: string): string => {
-    const sup = supervisors.find(s => s.role === role);
-    return sup ? sup.name : '';
-  };
-
   const scrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
     // Map legacy nav ids to new standalone section IDs
     const idMap: Record<string, string> = {
       pengawas: 'pengawas-section',
@@ -792,7 +773,7 @@ export default function LandingPage() {
             { icon: 'fa-solid fa-trophy', title: 'Leaderboard Kepatuhan', desc: 'Papan peringkat sekolah yang paling responsif dan lengkap mengirimkan berkas laporan.', accent: '#f97316' },
             { icon: 'fa-solid fa-satellite-dish', title: 'Radar Aktivitas', desc: 'Memantau aktivitas pengunggahan dan verifikasi berkas secara real-time di seluruh kecamatan.', accent: '#ec4899' },
             { icon: 'fa-solid fa-file-shield', title: 'Bukti Tanda Terima', desc: 'Menerbitkan bukti tanda terima berkas resmi ber-QR Code untuk keperluan arsip.', accent: '#14b8a6' },
-          ].map((feat, idx) => (
+          ].map((feat) => (
             <SpotlightCard
               key={feat.title}
               className="landing-feature-card"

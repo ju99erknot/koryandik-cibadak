@@ -16,35 +16,6 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
   if (!isOpen || !doc) return null;
 
   // Convert Google Drive/Docs URL to embed URL using Google Docs Viewer
-  const getGoogleDriveEmbedUrl = (url: string) => {
-    // Handle Google Docs URLs - use direct preview link
-    const docsMatch = url.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);
-    if (docsMatch) {
-      const fileId = docsMatch[1];
-      // Use direct preview without viewer wrapper to avoid blocking
-      return `https://docs.google.com/document/d/${fileId}/preview?rm=minimal`;
-    }
-    
-    // Handle Google Drive file URLs
-    const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (driveMatch) {
-      const fileId = driveMatch[1];
-      // Use direct Drive preview
-      return `https://drive.google.com/file/d/${fileId}/preview?rm=minimal`;
-    }
-    
-    // Handle Google Sheets URLs
-    const sheetsMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-    if (sheetsMatch) {
-      const fileId = sheetsMatch[1];
-      return `https://docs.google.com/spreadsheets/d/${fileId}/preview?rm=minimal`;
-    }
-    
-    return null;
-  };
-
-  const embedUrl = doc.previewUrl || getGoogleDriveEmbedUrl(doc.downloadUrl);
-  const canEmbed = !!embedUrl && embedUrl !== '#' && !embedUrl.includes('EXAMPLE_FILE_ID');
 
   const handleDownload = async () => {
     try {
@@ -60,7 +31,7 @@ export default function DocumentPreviewModal({ isOpen, onClose, document: doc, o
       } else {
         toast.error('Link download tidak tersedia');
       }
-    } catch (err) {
+    } catch {
       toast.error('Gagal memproses unduhan berkas.');
     }
   };

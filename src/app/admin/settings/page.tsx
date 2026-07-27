@@ -13,10 +13,7 @@ import {
   getSupervisors,
   saveSupervisors,
   getAllRelatedLinks,
-  saveRelatedLinks,
-  addRelatedLink,
-  updateRelatedLink,
-  deleteRelatedLink
+  saveRelatedLinks
 } from '@/lib/db';
 import type { AppSetting } from '@/lib/db';
 import type { FaqItem, DownloadItem, ProfileSettings, RelatedLink } from '@/lib/types';
@@ -68,7 +65,7 @@ export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('global');
 
   // Global settings state
-  const [settings, setSettings] = useState<Record<string, AppSetting>>({});
+  const [, setSettings] = useState<Record<string, AppSetting>>({});
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [savingGlobal, setSavingGlobal] = useState(false);
 
@@ -158,7 +155,7 @@ export default function AdminSettingsPage() {
       );
       setSettings((prev) => ({ ...prev, [key]: updated }));
       toast.success(`Pengaturan ${key} berhasil disimpan.`);
-    } catch (error) {
+    } catch {
       toast.error('Format JSON tidak valid. Periksa kembali struktur data.');
     } finally {
       setSavingGlobal(false);

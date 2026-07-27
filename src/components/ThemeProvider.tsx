@@ -5,8 +5,6 @@ import { Toaster } from 'sonner';
 import { initTheme, getStoredTheme, applyTheme, type Theme } from '@/lib/theme';
 import { getAppSettings } from '@/lib/db';
 
-const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('koryandik_theme');if(!t){var s=localStorage.getItem('koryandik_app_settings');if(s){try{var p=JSON.parse(s);t=p?.default_theme?.value?.mode;}catch(e){t=null;}}}t=t==='light'||t==='dark'?t:'dark';document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(t);document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}})();`;
-
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme());
 

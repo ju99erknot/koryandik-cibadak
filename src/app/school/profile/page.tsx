@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import type { School } from '@/lib/schoolsData';
-import { updateSchool, getSchools, getSchoolByNpsn, getSchoolFacilities, addSchoolFacility, updateSchoolFacility, deleteSchoolFacility, getSchoolAchievements, addSchoolAchievement, updateSchoolAchievement, deleteSchoolAchievement, getGalleryBySchool, addGalleryItemBySchool, deleteGalleryItemBySchool, isSupabaseConfigured } from '@/lib/db';
+import { updateSchool, getSchools, getSchoolByNpsn, getSchoolFacilities, addSchoolFacility, updateSchoolFacility, deleteSchoolFacility, getSchoolAchievements, addSchoolAchievement, updateSchoolAchievement, deleteSchoolAchievement, getGalleryBySchool, deleteGalleryItemBySchool, isSupabaseConfigured } from '@/lib/db';
 import type { SchoolFacility, SchoolAchievement, AchievementCategory, GalleryItem } from '@/lib/types';
 import { FACILITY_ICONS, ACHIEVEMENT_CATEGORIES } from '@/lib/types';
 import { toast } from 'sonner';
@@ -70,7 +69,6 @@ const CATEGORY_COLORS: Record<string, string> = {
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════ */
 export default function SchoolProfile() {
-  const router = useRouter();
   const { user, loading, logout } = useAuth('school');
   usePresence(user, '/school/profile');
   const [school, setSchool] = useState<School | null>(null);

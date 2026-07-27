@@ -56,18 +56,30 @@ export default function CommandPalette({ currentUser, onThemeToggle }: CommandPa
 
   useEffect(() => {
     if (!isOpen) return;
+
+    // The focus timer lives outside the async function so it can actually be
+    // cleared on unmount, and results are dropped if the palette closed while
+    // the requests were still in flight.
+    let cancelled = false;
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 50);
+
     const loadData = async () => {
-      const timer = window.setTimeout(() => inputRef.current?.focus(), 50);
       const [schools, categories, announcements] = await Promise.all([
         getSchools(),
         getCategories(),
         getAnnouncements()
       ]);
+      if (cancelled) return;
       setSchools(schools);
       setCategories(categories);
       setAnnouncements(announcements);
     };
     loadData();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(focusTimer);
+    };
   }, [isOpen]);
 
   // Build command list based on user role

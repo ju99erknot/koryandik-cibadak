@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import LandingNav from '@/components/LandingNav';
 import LandingFooter from '@/components/LandingFooter';
 import BackToTop from '@/components/BackToTop';
-import TiltCard from '@/components/TiltCard';
 import RevealOnScroll from '@/components/RevealOnScroll';
 import MagneticButton from '@/components/MagneticButton';
 import { getSchools, getGugusData } from '@/lib/db';

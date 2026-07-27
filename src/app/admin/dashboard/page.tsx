@@ -6,7 +6,7 @@ import type { Submission, LogEntry, Announcement, OnlinePresence } from '@/lib/d
 import type { School, Category, GugusData } from '@/lib/schoolsData';
 import { usePresence } from '@/hooks/usePresence';
 import { toast } from 'sonner';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import CommandPalette from '@/components/CommandPalette';
 import FancySelect from '@/components/FancySelect';
 import DocumentReviewer from '@/components/DocumentReviewer';

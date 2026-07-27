@@ -113,9 +113,14 @@ export default function DashboardShell({
     };
 
     window.addEventListener('koryandik_wa_simulated', handleWaEvent);
+
+    // Capture the Set now: reading waTimeoutsRef.current inside the cleanup
+    // could observe a different object if the ref were reassigned.
+    const pendingTimeouts = waTimeoutsRef.current;
     return () => {
       window.removeEventListener('koryandik_wa_simulated', handleWaEvent);
-      waTimeoutsRef.current.forEach(id => clearTimeout(id));
+      pendingTimeouts.forEach(id => clearTimeout(id));
+      pendingTimeouts.clear();
     };
   }, []);
 

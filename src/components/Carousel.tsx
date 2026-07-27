@@ -35,11 +35,14 @@ export default function Carousel({
   };
 
   useEffect(() => {
-    if (autoPlay) {
-      const timer = setInterval(nextSlide, interval);
-      return () => clearInterval(timer);
-    }
-  }, [autoPlay, interval]);
+    if (!autoPlay) return;
+    // Advance via a functional update so the interval does not capture a stale
+    // nextSlide closure (which would freeze on the slide it was created with).
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % children.length);
+    }, interval);
+    return () => clearInterval(timer);
+  }, [autoPlay, interval, children.length]);
 
   return (
     <div className={`carousel ${className}`}>

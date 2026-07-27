@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { School } from '@/lib/schoolsData';
-import { getSubmissions, getSchoolCoordinatesMap, saveSchoolCoordinates, resetSchoolCoordinates, getSchools, getCategories, getOnlineUsers, getProfileSettings } from '@/lib/db';
+import { getSubmissions, getSchoolCoordinatesMap, saveSchoolCoordinates, resetSchoolCoordinates, getSchools, getCategories, getOnlineUsers } from '@/lib/db';
 import type { Submission, OnlinePresence } from '@/lib/db';
-import type { ProfileSettings } from '@/lib/types';
 import { KORYANDIK_CENTER_TUPLE } from '@/lib/mapConstants';
 import { toast } from 'sonner';
 import { confirmAction } from '@/components/ConfirmDialog';
@@ -71,7 +70,6 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
   const [isHeatmapMode, setIsHeatmapMode] = useState(false);
   const isDark = useIsDarkTheme(true);
   const [totalCategories, setTotalCategories] = useState(8);
-  const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const tileLayerRef = useRef<LeafletNS.TileLayer | null>(null);
 
@@ -157,7 +155,6 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
   useEffect(() => {
     if (typeof window === 'undefined' || !mapContainerRef.current) return;
 
-    setMapLoaded(false);
     setMapError(null);
 
     // Dynamically import Leaflet to avoid SSR window errors
@@ -198,7 +195,6 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
           // Force map to invalidate size after initialization
           setTimeout(() => {
             map.invalidateSize();
-            setMapLoaded(true);
             console.log('Map initialized successfully');
           }, 100);
         }
@@ -440,6 +436,10 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
       setMapError(error instanceof Error ? error.message : 'Failed to load map');
     }
     })();
+  // getCoordinates & escapeHtml are stable module/render helpers, and the
+  // JSON.stringify(...) dependency is deliberate: it compares presence data by
+  // value so the map is not torn down and rebuilt on every poll tick.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schools, isEditMode, selectedSchoolNpsn, activeGugus, isHeatmapMode, JSON.stringify(onlinePresenceList), submissions, customCoordsMap, customSchoolsMap, totalCategories]);
 
   const handleManualCoordChange = async (lat: number, lng: number) => {
@@ -841,7 +841,7 @@ export default function DistrictMap({ onSchoolClick, isAdminMode = false, showHe
             </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
-              {schools.filter(s => s.gugus === activeGugus).map((school, idx) => {
+              {schools.filter(s => s.gugus === activeGugus).map((school) => {
                 const progress = getSchoolProgress(school.npsn);
                 const color = getSchoolStatusColor(school.npsn);
                 return (
