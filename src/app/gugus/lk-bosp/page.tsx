@@ -6,7 +6,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { getLkBospSubmissions, getSchools } from '@/lib/db';
-import type { LkBospSubmission } from '@/lib/types';
+import type { LkBospSubmission, LkBospBreakdown } from '@/lib/types';
 import type { School, GugusData } from '@/lib/schoolsData';
 
 export default function GugusLkBospPage() {
@@ -17,6 +17,7 @@ export default function GugusLkBospPage() {
   const [schools, setSchools] = useState<School[]>([]);
   const [selectedTw, setSelectedTw] = useState<number>(1);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [detailModal, setDetailModal] = useState<LkBospSubmission | null>(null);
 
   useEffect(() => {
     loadData();
@@ -102,6 +103,7 @@ export default function GugusLkBospPage() {
                     <th style={{ textAlign: 'right' }}>Total Realisasi (Rp)</th>
                     <th style={{ textAlign: 'right' }}>Sisa Saldo Rekening</th>
                     <th>Status Laporan</th>
+                    <th style={{ textAlign: 'center' }}>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -137,6 +139,20 @@ export default function GugusLkBospPage() {
                               <span className="badge" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>Belum Unggah</span>
                             )}
                           </td>
+                          <td style={{ textAlign: 'center' }}>
+                            {sub ? (
+                              <button
+                                type="button"
+                                onClick={() => setDetailModal(sub)}
+                                className="btn btn-sm btn-secondary"
+                                style={{ fontSize: '11px' }}
+                              >
+                                <i className="fa-solid fa-magnifying-glass" aria-hidden="true" style={{ marginRight: '4px' }} /> Detail
+                              </button>
+                            ) : (
+                              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>-</span>
+                            )}
+                          </td>
                         </tr>
                       );
                     })
@@ -146,6 +162,99 @@ export default function GugusLkBospPage() {
             </div>
           </div>
         </div>
+
+        {/* Modal Detail Rincian Belanja per Jenis Kegiatan */}
+        {detailModal && (() => {
+          const b = detailModal.breakdown || {} as LkBospBreakdown;
+          const totalRealisasi = (b.totalBarangJasa || 0) + (b.totalModal || 0);
+          return (
+            <div style={{
+              position: 'fixed', inset: 0, zIndex: 'var(--z-modal)',
+              background: 'var(--modal-backdrop)',
+              backdropFilter: 'blur(var(--modal-blur))',
+              WebkitBackdropFilter: 'blur(var(--modal-blur))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
+            }}>
+              <div className="card glass-card animate-scale-in" style={{ width: '100%', maxWidth: '900px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h3><i className="fa-solid fa-chart-pie" style={{ color: 'var(--primary)', marginRight: '8px' }} aria-hidden="true" /> Detail Rincian Realisasi BOS - {detailModal.schoolName}</h3>
+                  <button type="button" onClick={() => setDetailModal(null)} className="btn btn-sm btn-secondary" aria-label="Tutup">
+                    <i className="fa-solid fa-xmark" aria-hidden="true" />
+                  </button>
+                </div>
+                <div className="card-body" style={{ flex: 1, overflow: 'auto' }}>
+                  {/* Ringkasan Kas */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+                    <div style={{ padding: '14px', borderRadius: '12px', background: 'var(--card-bg-elevated)', border: '1px solid var(--card-border)' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Saldo Awal</div>
+                      <div style={{ fontSize: '16px', fontWeight: 800 }}>Rp {detailModal.saldoAwal.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div style={{ padding: '14px', borderRadius: '12px', background: 'var(--card-bg-elevated)', border: '1px solid var(--card-border)' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Total Penerimaan</div>
+                      <div style={{ fontSize: '16px', fontWeight: 800 }}>Rp {detailModal.totalPenerimaan.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div style={{ padding: '14px', borderRadius: '12px', background: 'var(--primary-glow)', border: '1px solid var(--primary)' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Total Realisasi</div>
+                      <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--primary)' }}>Rp {detailModal.totalRealisasi.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div style={{ padding: '14px', borderRadius: '12px', background: detailModal.isBalanceMatch ? 'var(--success-glow)' : 'var(--danger-glow)', border: `1px solid ${detailModal.isBalanceMatch ? 'var(--success)' : 'var(--danger)'}` }}>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Sisa Saldo</div>
+                      <div style={{ fontSize: '16px', fontWeight: 800, color: detailModal.isBalanceMatch ? 'var(--success)' : 'var(--danger)' }}>Rp {detailModal.sisaSaldo.toLocaleString('id-ID')}</div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                    <span className="badge badge-primary">TW {detailModal.triwulan} / {detailModal.periodYear}</span>
+                    <span className={`badge ${detailModal.status === 'approved' ? 'badge-success' : detailModal.status === 'revision' ? 'badge-danger' : 'badge-warning'}`}>
+                      {detailModal.status === 'approved' ? 'Disetujui' : detailModal.status === 'revision' ? 'Perlu Revisi' : 'Menunggu Review'}
+                    </span>
+                  </div>
+
+                  <div className="table-responsive">
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: '40px' }}>No</th>
+                          <th>Kelompok Belanja</th>
+                          <th>Jenis Pengeluaran Kegiatan</th>
+                          <th style={{ textAlign: 'right' }}>Jumlah Realisasi (Rp)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>1</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Belanja Barang Pakai Habis (BHP ATK/Kebersihan/Listrik)</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.bhp || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>2</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Jasa Tenaga Pendidik dan Kependidikan (Honor)</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.honor || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>3</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Daya dan Jasa (Listrik, Air, Telepon, Internet)</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.dayaJasa || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>4</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Bahan Pemeliharaan Sarana &amp; Gedung Sekolah</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.pemeliharaan || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>5</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Upah Pemeliharaan (Jasa Tukang Perbaikan Fisik)</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.upahPemeliharaan || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>6</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Biaya Pendaftaran Lomba / Bimtek / Workshop</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.lombaBimtek || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>7</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Honorarium Kegiatan / Panitia</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.honorKegiatan || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>8</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Makan dan Minum Kegiatan Rapat / Acara</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.makanMinum || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>9</td><td><span className="badge badge-outline">Barang &amp; Jasa</span></td><td>Perjalanan Dinas / Transport Kegiatan</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.perdin || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr style={{ background: 'var(--primary-glow)' }}>
+                          <td colSpan={3}><strong>TOTAL BELANJA BARANG DAN JASA</strong></td>
+                          <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--primary)' }}>{(b.totalBarangJasa || 0).toLocaleString('id-ID')}</td>
+                        </tr>
+                        <tr><td>10</td><td><span className="badge badge-primary">Belanja Modal</span></td><td>Peralatan dan Mesin (KIB B)</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.kibB || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr><td>11</td><td><span className="badge badge-primary">Belanja Modal</span></td><td>Aset Tetap Lainnya (KIB E)</td><td style={{ textAlign: 'right', fontWeight: 700 }}>{(b.kibE || 0).toLocaleString('id-ID')}</td></tr>
+                        <tr style={{ background: 'var(--success-glow)' }}>
+                          <td colSpan={3}><strong>TOTAL BELANJA MODAL (KIB B + KIB E)</strong></td>
+                          <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--success)' }}>{(b.totalModal || 0).toLocaleString('id-ID')}</td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr style={{ fontSize: '15px', background: 'var(--card-bg-elevated)' }}>
+                          <th colSpan={3}>TOTAL REALISASI DANA BOS</th>
+                          <th style={{ textAlign: 'right', color: 'var(--primary)', fontWeight: 900 }}>{totalRealisasi.toLocaleString('id-ID')}</th>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
       </div>
     </DashboardShell>
   );
