@@ -2498,7 +2498,9 @@ export async function deleteSupervisionNote(id: string): Promise<void> {
 // ==========================================
 
 export async function getLkBospSubmissions(): Promise<LkBospSubmission[]> {
-  const localItems = getStorageItem<LkBospSubmission[]>('koryandik_lk_bosp_submissions', []);
+  let dbItems: LkBospSubmission[] = [];
+  let useLocalFallback = false;
+
   if (isSupabaseConfigured()) {
     try {
       const { data, error } = await supabase
@@ -2507,35 +2509,74 @@ export async function getLkBospSubmissions(): Promise<LkBospSubmission[]> {
         .order('period_year', { ascending: false })
         .order('triwulan', { ascending: false });
 
-      if (!error && data && data.length > 0) {
-        return data.map((d: Record<string, unknown>) => ({
-          id: String(d.id),
-          npsn: String(d.npsn || ''),
-          schoolName: String(d.school_name || ''),
-          gugus: String(d.gugus || ''),
-          periodYear: Number(d.period_year || 2026),
-          triwulan: Number(d.triwulan || 1) as 1 | 2 | 3 | 4,
-          excelFileUrl: d.excel_file_url ? String(d.excel_file_url) : undefined,
-          excelFileName: d.excel_file_name ? String(d.excel_file_name) : undefined,
-          rekeningKoranUrl: d.rekening_koran_url ? String(d.rekening_koran_url) : undefined,
-          rekeningKoranName: d.rekening_koran_name ? String(d.rekening_koran_name) : undefined,
-          saldoAwal: Number(d.saldo_awal || 0),
-          totalPenerimaan: Number(d.total_penerimaan || 0),
-          totalRealisasi: Number(d.total_realisasi || 0),
-          sisaSaldo: Number(d.sisa_saldo || 0),
-          isBalanceMatch: Boolean(d.is_balance_match ?? true),
-          breakdown: (typeof d.breakdown === 'object' && d.breakdown ? d.breakdown : {}) as LkBospBreakdown,
-          status: (d.status || 'pending') as 'pending' | 'approved' | 'revision',
-          notes: d.notes ? String(d.notes) : undefined,
-          updatedAt: String(d.updated_at || new Date().toISOString()),
-        }));
+      if (!error && data) {
+        dbItems = data.map((d: Record<string, unknown>) => {
+          const rawBk = typeof d.breakdown === 'object' && d.breakdown ? (d.breakdown as LkBospBreakdown) : {} as LkBospBreakdown;
+          const breakdown: LkBospBreakdown = {
+            bhp: Number(d.bhp ?? rawBk.bhp ?? 0),
+            honor: Number(d.honor ?? rawBk.honor ?? 0),
+            dayaJasa: Number(d.daya_jasa ?? rawBk.dayaJasa ?? 0),
+            pemeliharaan: Number(d.pemeliharaan ?? rawBk.pemeliharaan ?? 0),
+            upahPemeliharaan: Number(d.upah_pemeliharaan ?? rawBk.upahPemeliharaan ?? 0),
+            lombaBimtek: Number(d.lomba_bimtek ?? rawBk.lombaBimtek ?? 0),
+            honorKegiatan: Number(d.honor_kegiatan ?? rawBk.honorKegiatan ?? 0),
+            makanMinum: Number(d.makan_minum ?? rawBk.makanMinum ?? 0),
+            perdin: Number(d.perdin ?? rawBk.perdin ?? 0),
+            totalBarangJasa: Number(d.total_barang_jasa ?? rawBk.totalBarangJasa ?? 0),
+            kibB: Number(d.kib_b ?? rawBk.kibB ?? 0),
+            kibE: Number(d.kib_e ?? rawBk.kibE ?? 0),
+            totalModal: Number(d.total_modal ?? rawBk.totalModal ?? 0),
+            itemsBhp: rawBk.itemsBhp || [],
+            itemsKibB: rawBk.itemsKibB || [],
+            itemsKibE: rawBk.itemsKibE || [],
+            itemsPemeliharaan: rawBk.itemsPemeliharaan || [],
+          };
+
+          return {
+            id: String(d.id),
+            npsn: String(d.npsn || ''),
+            schoolName: String(d.school_name || ''),
+            gugus: String(d.gugus || ''),
+            periodYear: Number(d.period_year || 2026),
+            triwulan: Number(d.triwulan || 1) as 1 | 2 | 3 | 4,
+            excelFileUrl: d.excel_file_url ? String(d.excel_file_url) : undefined,
+            excelFileName: d.excel_file_name ? String(d.excel_file_name) : undefined,
+            rekeningKoranUrl: d.rekening_koran_url ? String(d.rekening_koran_url) : undefined,
+            rekeningKoranName: d.rekening_koran_name ? String(d.rekening_koran_name) : undefined,
+            saldoAwal: Number(d.saldo_awal || 0),
+            totalPenerimaan: Number(d.total_penerimaan || 0),
+            totalRealisasi: Number(d.total_realisasi || 0),
+            sisaSaldo: Number(d.sisa_saldo || 0),
+            isBalanceMatch: Boolean(d.is_balance_match ?? true),
+            breakdown,
+            status: (d.status || 'pending') as 'pending' | 'approved' | 'revision',
+            notes: d.notes ? String(d.notes) : undefined,
+            updatedAt: String(d.updated_at || new Date().toISOString()),
+          };
+        });
+
+        if (dbItems.length > 0) return dbItems;
+      } else if (error) {
+        useLocalFallback = true;
+        logger.warn('Fallback to local LK BOSP submissions due to error', { error });
       }
     } catch (err) {
+      useLocalFallback = true;
       logger.warn('Fallback to local LK BOSP submissions', { error: err });
+    }
+  } else {
+    useLocalFallback = true;
+  }
+
+  const localItems = getStorageItem<LkBospSubmission[]>('koryandik_lk_bosp_submissions', []);
+  const combined = [...dbItems];
+  for (const local of localItems) {
+    if (!combined.some(s => s.npsn === local.npsn && s.periodYear === local.periodYear && s.triwulan === local.triwulan)) {
+      combined.push(local);
     }
   }
 
-  return localItems;
+  return combined;
 }
 
 export async function saveLkBospSubmission(sub: Omit<LkBospSubmission, 'id' | 'updatedAt'> & { id?: string }): Promise<LkBospSubmission> {
@@ -2598,11 +2639,15 @@ export async function saveLkBospSubmission(sub: Omit<LkBospSubmission, 'id' | 'u
           notes: submission.notes,
           updated_at: now,
         });
+      reportSyncSuccess('saveLkBospSubmission');
     } catch (err) {
       reportSyncFailure('saveLkBospSubmission', 'Menyimpan Laporan LK BOSP');
       logger.warn('Fallback save LK BOSP submission', { error: err });
     }
   }
+
+  // Trigger app notification update event
+  emitNotificationsUpdated();
 
   return submission;
 }
@@ -2624,10 +2669,14 @@ export async function updateLkBospStatus(id: string, status: 'pending' | 'approv
         .from('lk_bosp_submissions')
         .update({ status, notes, updated_at: new Date().toISOString() })
         .eq('id', id);
+      reportSyncSuccess('updateLkBospStatus');
     } catch (err) {
       reportSyncFailure('updateLkBospStatus', 'Mengubah status LK BOSP');
       logger.warn('Fallback update status LK BOSP', { error: err });
     }
   }
+
+  // Trigger app notification update event
+  emitNotificationsUpdated();
 }
 
