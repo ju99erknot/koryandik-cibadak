@@ -102,8 +102,8 @@ export default function SchoolLkBospPage() {
         if (!buffer) return;
 
         const parsed = parseLkBospExcel(buffer, school?.npsn || user?.npsn, allSchools);
-        if (parsed.saldoAwal > 0) setSaldoAwalInput(parsed.saldoAwal);
-        if (parsed.totalPenerimaan > 0) setTotalPenerimaanInput(parsed.totalPenerimaan);
+        setSaldoAwalInput(parsed.saldoAwal);
+        setTotalPenerimaanInput(parsed.totalPenerimaan);
 
         setParsedBreakdown(parsed.breakdown);
         toast.success(`Berhasil mengekstrak data dari ${file.name}`);

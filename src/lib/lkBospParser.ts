@@ -144,8 +144,8 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string, 
       const r = targetRowIndex;
 
       // Extract EXACT verified BPK columns:
-      saldoAwal = Number(getCell('F', r)) || 0;
-      totalPenerimaan = Number(getCell('G', r)) || 0;
+      saldoAwal = Number(getCell('E', r)) || 0;
+      totalPenerimaan = Number(getCell('F', r)) || 0;
 
       breakdown.bhp = Number(getCell('H', r)) || 0;
       breakdown.honor = Number(getCell('J', r)) || 0;
@@ -410,8 +410,8 @@ export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): Parsed
     if (!schoolName || schoolName.toLowerCase().includes('jumlah') || schoolName.toLowerCase().includes('total')) continue;
     if (!npsn || npsn.length < 7 || npsn.toLowerCase().includes('npsn')) continue;
 
-    const saldoAwal = Number(getCell('F', r)) || 0;
-    const totalPenerimaan = Number(getCell('G', r)) || 0;
+    const saldoAwal = Number(getCell('E', r)) || 0;
+    const totalPenerimaan = Number(getCell('F', r)) || 0;
 
     const breakdown: LkBospBreakdown = {
       bhp: Number(getCell('H', r)) || 0,
