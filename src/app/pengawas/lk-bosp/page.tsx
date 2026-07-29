@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
-import { getLkBospSubmissions, updateLkBospStatus, getSchools } from '@/lib/db';
+import { getLkBospSubmissions, updateLkBospStatus, getSchools, getGugusData } from '@/lib/db';
 import type { LkBospSubmission, LkBospBreakdown } from '@/lib/types';
-import type { School } from '@/lib/schoolsData';
+import type { School, GugusData } from '@/lib/schoolsData';
 import { toast } from 'sonner';
 
 export default function PengawasLkBospPage() {
@@ -17,6 +17,8 @@ export default function PengawasLkBospPage() {
   const [schools, setSchools] = useState<School[]>([]);
   const [selectedTw, setSelectedTw] = useState<number>(1);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [guguses, setGuguses] = useState<GugusData[]>([]);
+  const [filterGugus, setFilterGugus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRekeningKoran, setSelectedRekeningKoran] = useState<{ schoolName: string; fileUrl: string } | null>(null);
   const [detailModal, setDetailModal] = useState<LkBospSubmission | null>(null);
@@ -27,20 +29,31 @@ export default function PengawasLkBospPage() {
 
   const loadData = async () => {
     try {
-      const [subData, schoolData] = await Promise.all([
+      const [subData, schoolData, gugusList] = await Promise.all([
         getLkBospSubmissions(),
-        getSchools()
+        getSchools(),
+        getGugusData()
       ]);
       setSubmissions(subData);
       setSchools(schoolData);
+      setGuguses(gugusList);
     } catch {
       /* ignore */
     }
   };
 
-  const filteredSchools = schools.filter(s =>
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.npsn.includes(searchQuery)
-  );
+  const yearOptions = useMemo(() => {
+    const years = new Set([2026, 2025, ...submissions.map(s => s.periodYear)]);
+    return Array.from(years).sort((a, b) => b - a);
+  }, [submissions]);
+
+  const filteredSchools = useMemo(() => {
+    return schools.filter(s => {
+      const matchGugus = filterGugus === 'all' || s.gugus === filterGugus;
+      const matchSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.npsn.includes(searchQuery);
+      return matchGugus && matchSearch;
+    });
+  }, [schools, filterGugus, searchQuery]);
 
   if (!user) return <LoadingScreen />;
 
@@ -56,33 +69,55 @@ export default function PengawasLkBospPage() {
         <div className="card glass-card" style={{ marginBottom: '24px', padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
             <div>
-              <span className="badge badge-warning" style={{ marginBottom: '8px', display: 'inline-block' }}>
-                Supervisi BOSP Pembina
+              <span className="badge badge-primary" style={{ marginBottom: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <i className="fa-solid fa-user-tie" aria-hidden="true" />
+                Supervisi BOSP Pembina - Korwil Cibadak
               </span>
-              <h2 style={{ fontSize: '22px', fontWeight: 800 }}>Verifikasi Berkas BOSP Sekolah Binaan</h2>
+              <h2 style={{ fontSize: '22px', fontWeight: 800 }}>Monitoring &amp; Rekapitulasi LK BOSP Pembina</h2>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                Verifikasi berkas LK BOSP dan keselarasan saldo rekening koran sekolah binaan.
+              </p>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
-                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', fontWeight: 700 }}
+                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', color: 'var(--text-primary)', fontWeight: 700, fontSize: '13px', outline: 'none' }}
               >
-                <option value={2026}>Tahun 2026</option>
-                <option value={2025}>Tahun 2025</option>
+                {yearOptions.map((y: number) => (
+                  <option key={y} value={y}>Tahun {y}</option>
+                ))}
+              </select>
+
+              <select
+                value={filterGugus}
+                onChange={(e) => setFilterGugus(e.target.value)}
+                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', color: 'var(--text-primary)', fontWeight: 700, fontSize: '13px', outline: 'none' }}
+              >
+                <option value="all">Semua Wilayah Gugus ({guguses.length} Gugus)</option>
+                {guguses.map(g => (
+                  <option key={g.id} value={g.id}>{g.name}</option>
+                ))}
               </select>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-            {[1, 2, 3, 4].map(tw => (
+          <div style={{ display: 'flex', gap: '10px', marginTop: '20px', overflowX: 'auto', paddingBottom: '4px' }}>
+            {[
+              { id: 1, label: 'Triwulan I (Jan-Mar)' },
+              { id: 2, label: 'Triwulan II (Apr-Jun)' },
+              { id: 3, label: 'Triwulan III (Jul-Sep)' },
+              { id: 4, label: 'Triwulan IV (Okt-Des)' },
+              { id: 0, label: 'Akumulasi Total 1 Tahun' },
+            ].map(tw => (
               <button
-                key={tw}
+                key={tw.id}
                 type="button"
-                onClick={() => setSelectedTw(tw)}
-                className={`btn ${selectedTw === tw ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ borderRadius: '10px', fontSize: '12px' }}
+                onClick={() => setSelectedTw(tw.id)}
+                className={`btn ${selectedTw === tw.id ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ borderRadius: '12px', fontSize: '12.5px', whiteSpace: 'nowrap' }}
               >
-                Triwulan {tw}
+                {tw.label}
               </button>
             ))}
           </div>
@@ -123,8 +158,8 @@ export default function PengawasLkBospPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredSchools.map(sc => {
-                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && s.triwulan === selectedTw);
+                    filteredSchools.map((sc: School) => {
+                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
                       return (
                         <tr key={sc.npsn}>
                           <td>

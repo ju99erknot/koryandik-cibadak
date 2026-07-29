@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
@@ -34,6 +34,11 @@ export default function SchoolLkBospPage() {
   const [parsedBreakdown, setParsedBreakdown] = useState<LkBospBreakdown | null>(null);
 
   const [allSchools, setAllSchools] = useState<School[]>([]);
+
+  const yearOptions = useMemo(() => {
+    const years = new Set([2026, 2025, ...submissions.map(s => s.periodYear)]);
+    return Array.from(years).sort((a, b) => b - a);
+  }, [submissions]);
 
   useEffect(() => {
     loadExistingSubmission();
@@ -215,18 +220,19 @@ export default function SchoolLkBospPage() {
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>Tahun Anggaran:</label>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
                 style={{
-                  padding: '8px 16px', borderRadius: '10px', border: '1px solid var(--card-border)',
-                  background: 'var(--card-bg-elevated)', color: 'var(--text-primary)', fontWeight: 700
+                  padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)',
+                  background: 'var(--card-bg-elevated)', color: 'var(--text-primary)', fontWeight: 700,
+                  fontSize: '13px', outline: 'none'
                 }}
               >
-                <option value={2026}>2026</option>
-                <option value={2025}>2025</option>
+                {yearOptions.map(y => (
+                  <option key={y} value={y}>Tahun {y}</option>
+                ))}
               </select>
             </div>
           </div>

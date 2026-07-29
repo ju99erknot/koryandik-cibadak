@@ -53,6 +53,12 @@ export default function AdminLkBospPage() {
     }
   };
 
+  // Dynamic Year Options from database
+  const yearOptions = useMemo(() => {
+    const years = new Set([2026, 2025, ...submissions.map(s => s.periodYear)]);
+    return Array.from(years).sort((a, b) => b - a);
+  }, [submissions]);
+
   // Filtered schools according to selected filters
   const filteredSchools = useMemo(() => {
     return schools.filter(sc => {
@@ -187,10 +193,11 @@ export default function AdminLkBospPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
-                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', fontWeight: 700 }}
+                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', color: 'var(--text-primary)', fontWeight: 700, fontSize: '13px', outline: 'none' }}
               >
-                <option value={2026}>Tahun 2026</option>
-                <option value={2025}>Tahun 2025</option>
+                {yearOptions.map(y => (
+                  <option key={y} value={y}>Tahun {y}</option>
+                ))}
               </select>
 
               {/* Gugus Select */}

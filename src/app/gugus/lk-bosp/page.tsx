@@ -36,6 +36,11 @@ export default function GugusLkBospPage() {
     }
   };
 
+  const yearOptions = useMemo(() => {
+    const years = new Set([2026, 2025, ...submissions.map(s => s.periodYear)]);
+    return Array.from(years).sort((a, b) => b - a);
+  }, [submissions]);
+
   const gugusSchools = useMemo(() => {
     const gid = gugusDetail?.id || user?.id || '1';
     return schools.filter(s => s.gugus === gid);
@@ -57,33 +62,44 @@ export default function GugusLkBospPage() {
         <div className="card glass-card" style={{ marginBottom: '24px', padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
             <div>
-              <span className="badge badge-primary" style={{ marginBottom: '8px', display: 'inline-block' }}>
+              <span className="badge badge-primary" style={{ marginBottom: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <i className="fa-solid fa-layer-group" aria-hidden="true" />
                 Gugus {gugusDetail?.id || user.id} - Korwil Cibadak
               </span>
-              <h2 style={{ fontSize: '22px', fontWeight: 800 }}>Rekapitulasi BOSP Sekolah Anggota</h2>
+              <h2 style={{ fontSize: '22px', fontWeight: 800 }}>Monitoring &amp; Rekapitulasi BOSP Sekolah Anggota</h2>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                Pemantauan berkas LK BOSP dan kas rekening sekolah anggota gugus.
+              </p>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
-                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', fontWeight: 700 }}
+                style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', color: 'var(--text-primary)', fontWeight: 700, fontSize: '13px', outline: 'none' }}
               >
-                <option value={2026}>Tahun 2026</option>
-                <option value={2025}>Tahun 2025</option>
+                {yearOptions.map(y => (
+                  <option key={y} value={y}>Tahun {y}</option>
+                ))}
               </select>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-            {[1, 2, 3, 4].map(tw => (
+          <div style={{ display: 'flex', gap: '10px', marginTop: '20px', overflowX: 'auto', paddingBottom: '4px' }}>
+            {[
+              { id: 1, label: 'Triwulan I (Jan-Mar)' },
+              { id: 2, label: 'Triwulan II (Apr-Jun)' },
+              { id: 3, label: 'Triwulan III (Jul-Sep)' },
+              { id: 4, label: 'Triwulan IV (Okt-Des)' },
+              { id: 0, label: 'Akumulasi Total 1 Tahun' },
+            ].map(tw => (
               <button
-                key={tw}
+                key={tw.id}
                 type="button"
-                onClick={() => setSelectedTw(tw)}
-                className={`btn ${selectedTw === tw ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ borderRadius: '10px', fontSize: '12px' }}
+                onClick={() => setSelectedTw(tw.id)}
+                className={`btn ${selectedTw === tw.id ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ borderRadius: '12px', fontSize: '12.5px', whiteSpace: 'nowrap' }}
               >
-                Triwulan {tw}
+                {tw.label}
               </button>
             ))}
           </div>
@@ -116,14 +132,14 @@ export default function GugusLkBospPage() {
                     </tr>
                   ) : (
                     gugusSchools.map(sc => {
-                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && s.triwulan === selectedTw);
+                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
                       return (
                         <tr key={sc.npsn}>
                           <td>
                             <div style={{ fontWeight: 700 }}>{sc.name}</div>
                             <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>NPSN: {sc.npsn}</span>
                           </td>
-                          <td>TW {selectedTw} / {selectedYear}</td>
+                          <td>{selectedTw === 0 ? `Total 1 Thn / ${selectedYear}` : `TW ${selectedTw} / ${selectedYear}`}</td>
                           <td style={{ textAlign: 'right', fontWeight: 700 }}>
                             {sub ? `Rp ${sub.totalRealisasi.toLocaleString('id-ID')}` : '-'}
                           </td>
