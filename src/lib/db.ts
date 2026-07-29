@@ -5,7 +5,7 @@
 import { supabase } from './supabaseClient';
 import { schoolsData, categories as initialCategories, gugusData, supervisorData } from './schoolsData';
 import type { School, Category, GugusData, PengawasData } from './schoolsData';
-import type { NotificationTargetRole, SubmissionStatus, NotificationType, FaqItem, DownloadItem, ProfileSettings, CalendarEvent, GalleryItem, RelatedLink, Notification, SchoolFacility, SchoolAchievement, AchievementCategory, SupervisionNote } from './types';
+import type { NotificationTargetRole, SubmissionStatus, NotificationType, FaqItem, DownloadItem, ProfileSettings, CalendarEvent, GalleryItem, RelatedLink, Notification, SchoolFacility, SchoolAchievement, AchievementCategory, SupervisionNote, LkBospSubmission, LkBospBreakdown } from './types';
 import { SUPERVISOR_ROLE_ORDER } from './types';
 import { emitNotificationsUpdated, maybeNotifyCurrentUser } from './notificationEvents';
 import { DEFAULT_FAQS, DEFAULT_DOWNLOADS, DEFAULT_PROFILE, DEFAULT_CALENDAR_EVENTS, DEFAULT_GALLERY, DEFAULT_RELATED_LINKS } from './dbSeeds';
@@ -2492,3 +2492,126 @@ export async function deleteSupervisionNote(id: string): Promise<void> {
   const items = getStorageItem<SupervisionNote[]>(key, []);
   setStorageItem(key, items.filter(n => n.id !== id));
 }
+
+// ==========================================
+// LK BOSP & REKENING KORAN DB FUNCTIONS
+// ==========================================
+
+export async function getLkBospSubmissions(): Promise<LkBospSubmission[]> {
+  const localItems = getStorageItem<LkBospSubmission[]>('koryandik_lk_bosp_submissions', []);
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('lk_bosp_submissions')
+        .select('*')
+        .order('period_year', { ascending: false })
+        .order('triwulan', { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        return data.map((d: Record<string, unknown>) => ({
+          id: String(d.id),
+          npsn: String(d.npsn || ''),
+          schoolName: String(d.school_name || ''),
+          gugus: String(d.gugus || ''),
+          periodYear: Number(d.period_year || 2026),
+          triwulan: Number(d.triwulan || 1) as 1 | 2 | 3 | 4,
+          excelFileUrl: d.excel_file_url ? String(d.excel_file_url) : undefined,
+          excelFileName: d.excel_file_name ? String(d.excel_file_name) : undefined,
+          rekeningKoranUrl: d.rekening_koran_url ? String(d.rekening_koran_url) : undefined,
+          rekeningKoranName: d.rekening_koran_name ? String(d.rekening_koran_name) : undefined,
+          saldoAwal: Number(d.saldo_awal || 0),
+          totalPenerimaan: Number(d.total_penerimaan || 0),
+          totalRealisasi: Number(d.total_realisasi || 0),
+          sisaSaldo: Number(d.sisa_saldo || 0),
+          isBalanceMatch: Boolean(d.is_balance_match ?? true),
+          breakdown: (typeof d.breakdown === 'object' && d.breakdown ? d.breakdown : {}) as LkBospBreakdown,
+          status: (d.status || 'pending') as 'pending' | 'approved' | 'revision',
+          notes: d.notes ? String(d.notes) : undefined,
+          updatedAt: String(d.updated_at || new Date().toISOString()),
+        }));
+      }
+    } catch (err) {
+      logger.warn('Fallback to local LK BOSP submissions', { error: err });
+    }
+  }
+
+  return localItems;
+}
+
+export async function saveLkBospSubmission(sub: Omit<LkBospSubmission, 'id' | 'updatedAt'> & { id?: string }): Promise<LkBospSubmission> {
+  const id = sub.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : generateId());
+  const now = new Date().toISOString();
+  const submission: LkBospSubmission = {
+    ...sub,
+    id,
+    updatedAt: now,
+  };
+
+  const key = 'koryandik_lk_bosp_submissions';
+  const existing = getStorageItem<LkBospSubmission[]>(key, []);
+  const idx = existing.findIndex(s => s.npsn === sub.npsn && s.periodYear === sub.periodYear && s.triwulan === sub.triwulan);
+  if (idx >= 0) {
+    existing[idx] = submission;
+  } else {
+    existing.unshift(submission);
+  }
+  setStorageItem(key, existing);
+
+  if (isSupabaseConfigured()) {
+    try {
+      await supabase
+        .from('lk_bosp_submissions')
+        .upsert({
+          id: submission.id,
+          npsn: submission.npsn,
+          school_name: submission.schoolName,
+          gugus: submission.gugus,
+          period_year: submission.periodYear,
+          triwulan: submission.triwulan,
+          excel_file_url: submission.excelFileUrl,
+          excel_file_name: submission.excelFileName,
+          rekening_koran_url: submission.rekeningKoranUrl,
+          rekening_koran_name: submission.rekeningKoranName,
+          saldo_awal: submission.saldoAwal,
+          total_penerimaan: submission.totalPenerimaan,
+          total_realisasi: submission.totalRealisasi,
+          sisa_saldo: submission.sisaSaldo,
+          is_balance_match: submission.isBalanceMatch,
+          breakdown: submission.breakdown,
+          status: submission.status,
+          notes: submission.notes,
+          updated_at: now,
+        });
+    } catch (err) {
+      reportSyncFailure('saveLkBospSubmission', 'Menyimpan Laporan LK BOSP');
+      logger.warn('Fallback save LK BOSP submission', { error: err });
+    }
+  }
+
+  return submission;
+}
+
+export async function updateLkBospStatus(id: string, status: 'pending' | 'approved' | 'revision', notes?: string): Promise<void> {
+  const key = 'koryandik_lk_bosp_submissions';
+  const items = getStorageItem<LkBospSubmission[]>(key, []);
+  const idx = items.findIndex(s => s.id === id);
+  if (idx >= 0) {
+    items[idx].status = status;
+    if (notes !== undefined) items[idx].notes = notes;
+    items[idx].updatedAt = new Date().toISOString();
+    setStorageItem(key, items);
+  }
+
+  if (isSupabaseConfigured()) {
+    try {
+      await supabase
+        .from('lk_bosp_submissions')
+        .update({ status, notes, updated_at: new Date().toISOString() })
+        .eq('id', id);
+    } catch (err) {
+      reportSyncFailure('updateLkBospStatus', 'Mengubah status LK BOSP');
+      logger.warn('Fallback update status LK BOSP', { error: err });
+    }
+  }
+}
+

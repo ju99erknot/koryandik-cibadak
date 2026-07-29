@@ -165,4 +165,83 @@ export interface SupervisionNote {
   recommendations: string;
   createdAt: string;
 }
+export interface LkBospBhpItem {
+  no: number;
+  namaBarang: string;
+  satuan: string;
+  kuantitasMasuk: number;
+  hargaMasuk: number;
+  totalMasuk: number;
+  kuantitasKeluar: number;
+  hargaKeluar: number;
+  totalKeluar: number;
+  bastOrInvoice?: string;
+}
 
+export interface LkBospKibItem {
+  no: number;
+  namaBarang: string;
+  kategori: 'KIB B' | 'KIB E';
+  bentukKontrak?: string;
+  program?: string;
+  kegiatan?: string;
+  kodeRekening108?: string;
+  spesifikasiJudul?: string;
+  volume: number;
+  hargaSatuan: number;
+  totalHarga: number;
+  bastOrInvoice?: string;
+  pengurusBarang?: string;
+}
+
+export interface LkBospMaintenanceItem {
+  no: number;
+  jenis: 'Bahan' | 'Jasa Upah';
+  uraian: string;
+  volume: number;
+  satuan: string;
+  hargaSatuan: number;
+  totalHarga: number;
+}
+
+export interface LkBospBreakdown {
+  bhp: number;             // Belanja Barang Pakai Habis
+  honor: number;           // Jasa Tenaga Pendidik / Honor
+  dayaJasa: number;        // Daya dan Jasa
+  pemeliharaan: number;    // Pemeliharaan Fisik
+  upahPemeliharaan: number;// Upah Kerja Tukang
+  lombaBimtek: number;     // Lomba / Bimtek / Workshop
+  honorKegiatan: number;   // Honor Kegiatan
+  makanMinum: number;      // Makan dan Minum Kegiatan
+  perdin: number;          // Perjalanan Dinas
+  kibB: number;            // Belanja Modal Peralatan & Mesin (KIB B)
+  kibE: number;            // Belanja Modal Aset Tetap Lainnya (KIB E)
+  totalBarangJasa: number;
+  totalModal: number;
+  itemsBhp?: LkBospBhpItem[];
+  itemsKibB?: LkBospKibItem[];
+  itemsKibE?: LkBospKibItem[];
+  itemsPemeliharaan?: LkBospMaintenanceItem[];
+}
+
+export interface LkBospSubmission {
+  id: string;
+  npsn: string;
+  schoolName: string;
+  gugus: string;
+  periodYear: number;
+  triwulan: 1 | 2 | 3 | 4;
+  excelFileUrl?: string;
+  excelFileName?: string;
+  rekeningKoranUrl?: string;
+  rekeningKoranName?: string;
+  saldoAwal: number;
+  totalPenerimaan: number;
+  totalRealisasi: number;
+  sisaSaldo: number;
+  isBalanceMatch: boolean;
+  breakdown: LkBospBreakdown;
+  status: 'pending' | 'approved' | 'revision';
+  notes?: string;
+  updatedAt: string;
+}

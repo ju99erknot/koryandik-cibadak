@@ -15,6 +15,7 @@ export interface DashboardBrand {
 
 const ADMIN_NAV: NavItem[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: 'fa-solid fa-house', showBadge: true },
+  { href: '/admin/lk-bosp', label: 'LK BOSP Triwulan', icon: 'fa-solid fa-file-invoice-dollar' },
   { href: '/admin/schools', label: 'Kelola Sekolah', icon: 'fa-solid fa-school' },
   { href: '/admin/gugus', label: 'Kelola Gugus', icon: 'fa-solid fa-sitemap' },
   { href: '/admin/categories', label: 'Kategori Berkas', icon: 'fa-solid fa-folder-tree' },
@@ -28,21 +29,17 @@ const ADMIN_NAV: NavItem[] = [
 
 const SCHOOL_NAV: NavItem[] = [
   { href: '/school/dashboard', label: 'Dashboard', icon: 'fa-solid fa-house', showBadge: true },
+  { href: '/school/lk-bosp', label: 'LK BOSP Triwulan', icon: 'fa-solid fa-file-invoice-dollar' },
   { href: '/school/profile', label: 'Profil Sekolah', icon: 'fa-solid fa-circle-user' },
   { href: '/school/receipt', label: 'Bukti Tanda Terima', icon: 'fa-solid fa-file-invoice' },
   { href: '/school/links', label: 'Tautan Terkait', icon: 'fa-solid fa-link' },
 ];
 
-/**
- * Menu portal pengawas/KKKS/PGRI.
- *
- * Sebelumnya hanya satu entri "Dashboard", sehingga seluruh pekerjaan
- * menumpuk di satu halaman panjang. `href` diisi relatif terhadap peran
- * oleh getDashboardNav().
- */
 function supervisorNav(base: string): NavItem[] {
+  const rootPath = base.replace('/dashboard', '');
   return [
     { href: base, label: 'Dashboard', icon: 'fa-solid fa-house', showBadge: true },
+    { href: `${rootPath}/lk-bosp`, label: 'LK BOSP Triwulan', icon: 'fa-solid fa-file-invoice-dollar' },
   ];
 }
 
