@@ -20,7 +20,28 @@ export interface ParsedLkBospResult {
 /**
  * Single Source of Truth Parser for LK BOSP Excel Workbooks.
  * Primary Master Sheet: 'Realisasi BOS - BPK Format'
- * Sub-Sheets: 'BHP', 'peralatan dan Mesin (B)', 'Asset Tetap Lainnya (E)', 'Rincian pemelihraan', 'Rincian Jasa Upah Pemelihraan'
+ * Exact Verified Column Mappings:
+ * - Col B: Nama Sekolah
+ * - Col C: NPSN
+ * - Col D: Kecamatan
+ * - Col F: Saldo Awal
+ * - Col G: Total Penerimaan
+ * - Col H: Belanja Barang Pakai Habis (BHP)
+ * - Col J: Jasa Tenaga Pendidik dan Kependidikan (Honor)
+ * - Col K: Daya dan Jasa
+ * - Col L: Pemeliharaan (Bahan Pemeliharaan)
+ * - Col M: Upah Pemeliharaan (Jasa Tukang)
+ * - Col N: Biaya Pendaftaran Lomba/Bimtek/Workshop
+ * - Col O: Honor Kegiatan
+ * - Col P: Makan Minum / Perjalanan Dinas
+ * - Col Q: TOTAL BELANJA BARANG DAN JASA (Sum H + J + K + L + M + N + O + P)
+ * - Col R: Peralatan dan Mesin (KIB B)
+ * - Col S: Aset Tetap Lainnya (KIB E)
+ * - Col T: TOTAL BELANJA MODAL (Sum R + S)
+ * - Col U: TOTAL REALISASI DANA BOS (Sum Q + T)
+ * - Col V: SISA DANA BOS (G - U)
+ * - Col W: Saldo Rekening
+ * - Col X: Saldo Kas Tunai
  */
 export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string): ParsedLkBospResult {
   const workbook = XLSX.read(arrayBuffer, { type: 'array' });
@@ -65,7 +86,6 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
   const masterSheetName = workbook.SheetNames.find(s => s.toLowerCase().includes('realisasi bos'));
   if (masterSheetName) {
     const sheet = workbook.Sheets[masterSheetName];
-    // Read raw cells with column letters
     const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:Z500');
 
     // Helper to get cell value by column letter and row number (1-based)
@@ -109,7 +129,8 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
       for (let r = 8; r <= range.e.r + 1; r++) {
         const rowName = String(getCell('B', r) || '').trim();
         const valH = Number(getCell('H', r)) || 0;
-        if (rowName && valH > 0) {
+        const valU = Number(getCell('U', r)) || 0;
+        if (rowName && (valH > 0 || valU > 0)) {
           targetRowIndex = r;
           schoolName = rowName;
           npsn = String(getCell('C', r) || npsnTarget || '');
@@ -121,7 +142,7 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     if (targetRowIndex !== -1) {
       const r = targetRowIndex;
 
-      // Extract EXACT columns according to BPK Master format:
+      // Extract EXACT verified BPK columns:
       saldoAwal = Number(getCell('F', r)) || 0;
       totalPenerimaan = Number(getCell('G', r)) || saldoAwal;
 
@@ -133,21 +154,29 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
       breakdown.lombaBimtek = Number(getCell('N', r)) || 0;
       breakdown.honorKegiatan = Number(getCell('O', r)) || 0;
       breakdown.makanMinum = Number(getCell('P', r)) || 0;
-      breakdown.perdin = Number(getCell('Q', r)) || 0;
+      breakdown.perdin = 0; // Perdin/MakanMinum in Col P
 
+      // Col Q: Total Belanja Barang dan Jasa (Sum H+J+K+L+M+N+O+P)
       breakdown.totalBarangJasa = Number(getCell('Q', r)) || (
         breakdown.bhp + breakdown.honor + breakdown.dayaJasa + breakdown.pemeliharaan +
         breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan +
-        breakdown.makanMinum + breakdown.perdin
+        breakdown.makanMinum
       );
 
+      // Col R: Peralatan dan Mesin (KIB B)
       breakdown.kibB = Number(getCell('R', r)) || 0;
+      // Col S: Aset Tetap Lainnya (KIB E)
       breakdown.kibE = Number(getCell('S', r)) || 0;
+      // Col T: Total Belanja Modal (Sum R+S)
       breakdown.totalModal = Number(getCell('T', r)) || (breakdown.kibB + breakdown.kibE);
 
+      // Col U: Total Realisasi Dana BOS (Sum Q+T)
       totalRealisasi = Number(getCell('U', r)) || (breakdown.totalBarangJasa + breakdown.totalModal);
+      // Col V: Sisa Dana BOS (G - U)
       sisaSaldo = Number(getCell('V', r)) || (totalPenerimaan - totalRealisasi);
+      // Col W: Saldo Rekening
       saldoRekening = Number(getCell('W', r)) || sisaSaldo;
+      // Col X: Saldo Kas Tunai
       saldoKasTunai = Number(getCell('X', r)) || 0;
     }
   }
@@ -198,7 +227,6 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     breakdown.itemsBhp = items;
     if (breakdown.bhp === 0 && sumBhp > 0) breakdown.bhp = sumBhp;
 
-    // Cross-validation check
     if (breakdown.bhp > 0 && sumBhp > 0 && Math.abs(breakdown.bhp - sumBhp) > 100) {
       validationWarnings.push(`Selisih BHP: Total Master (${breakdown.bhp.toLocaleString('id-ID')}) != Sum Sheet BHP (${sumBhp.toLocaleString('id-ID')})`);
     }
@@ -320,9 +348,9 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     if (breakdown.pemeliharaan === 0 && sumMaint > 0) breakdown.pemeliharaan = sumMaint;
   }
 
-  // Final totals recalculation if master sheet missing
+  // Recalculate totals
   breakdown.totalBarangJasa = breakdown.bhp + breakdown.honor + breakdown.dayaJasa + breakdown.pemeliharaan +
-    breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum + breakdown.perdin;
+    breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum;
   breakdown.totalModal = breakdown.kibB + breakdown.kibE;
   if (totalRealisasi === 0) totalRealisasi = breakdown.totalBarangJasa + breakdown.totalModal;
   if (sisaSaldo === 0) sisaSaldo = totalPenerimaan - totalRealisasi;
@@ -383,7 +411,7 @@ export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): Parsed
       lombaBimtek: Number(getCell('N', r)) || 0,
       honorKegiatan: Number(getCell('O', r)) || 0,
       makanMinum: Number(getCell('P', r)) || 0,
-      perdin: Number(getCell('Q', r)) || 0,
+      perdin: 0,
       totalBarangJasa: Number(getCell('Q', r)) || 0,
       kibB: Number(getCell('R', r)) || 0,
       kibE: Number(getCell('S', r)) || 0,
@@ -391,7 +419,7 @@ export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): Parsed
     };
 
     breakdown.totalBarangJasa = breakdown.bhp + breakdown.honor + breakdown.dayaJasa + breakdown.pemeliharaan +
-      breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum + breakdown.perdin;
+      breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum;
     breakdown.totalModal = breakdown.kibB + breakdown.kibE;
 
     const totalRealisasi = Number(getCell('U', r)) || (breakdown.totalBarangJasa + breakdown.totalModal);
