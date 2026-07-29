@@ -1,0 +1,296 @@
+'use client';
+
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+export interface FancySelectOption {
+  value: string;
+  label: string;
+  hint?: string;
+}
+
+interface FancySelectProps {
+  id?: string;
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: FancySelectOption[];
+  placeholder?: string;
+  icon?: string;
+  searchable?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  fullWidth?: boolean;
+  /** Render menu in portal to avoid overflow clipping inside cards */
+  usePortal?: boolean;
+}
+
+const MENU_MAX_HEIGHT = 320;
+
+export default function FancySelect({
+  id: idProp,
+  label,
+  value,
+  onChange,
+  options,
+  placeholder = 'Pilih opsi…',
+  icon,
+  searchable = false,
+  disabled = false,
+  required = false,
+  size = 'md',
+  className = '',
+  fullWidth = true,
+  usePortal = true,
+}: FancySelectProps) {
+  const autoId = useId();
+  const id = idProp ?? autoId;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [highlight, setHighlight] = useState(0);
+  const [menuPos, setMenuPos] = useState<{ top?: number | 'auto'; bottom?: number | 'auto'; left: number; width: number; maxHeight?: number; flip: boolean }>({
+    left: 0,
+    width: 0,
+    flip: false,
+  });
+
+  const selected = options.find((o) => o.value === value);
+  const showSearch = searchable && options.length > 6;
+  const filtered = showSearch
+    ? options.filter((o) => {
+        const q = query.toLowerCase();
+        return o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q);
+      })
+    : options;
+
+  const updateMenuPosition = () => {
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom - 12;
+    const spaceAbove = rect.top - 12;
+    const flip = spaceBelow < Math.min(MENU_MAX_HEIGHT, 260) && spaceAbove > spaceBelow;
+    const availableSpace = flip ? spaceAbove : spaceBelow;
+    const maxHeight = Math.min(MENU_MAX_HEIGHT, Math.max(140, availableSpace));
+
+    setMenuPos({
+      left: Math.max(8, Math.min(rect.left, window.innerWidth - rect.width - 8)),
+      width: rect.width,
+      top: flip ? 'auto' : rect.bottom + 8,
+      bottom: flip ? window.innerHeight - rect.top + 8 : 'auto',
+      maxHeight,
+      flip,
+    });
+  };
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    // Runs before paint, so the menu is never shown at a stale position.
+    updateMenuPosition();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (showSearch) searchRef.current?.focus();
+
+    const onScrollOrResize = () => updateMenuPosition();
+    window.addEventListener('scroll', onScrollOrResize, true);
+    window.addEventListener('resize', onScrollOrResize);
+    return () => {
+      window.removeEventListener('scroll', onScrollOrResize, true);
+      window.removeEventListener('resize', onScrollOrResize);
+    };
+  }, [open, showSearch]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (rootRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
+      setQuery('');
+      setHighlight(0);
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        setQuery('');
+        setHighlight(0);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, []);
+
+  // Resetting the transient menu state lives in the close path instead of an
+  // effect on `open`, avoiding a cascading render after every close.
+  const closeMenu = () => {
+    setOpen(false);
+    setQuery('');
+    setHighlight(0);
+  };
+
+  const openMenu = () => {
+    setQuery('');
+    setHighlight(0);
+    // Measure before opening: otherwise the first render paints the menu at
+    // width 0 and the open animation can finish before the effect corrects it,
+    // which makes the dropdown look like it never appeared.
+    updateMenuPosition();
+    setOpen(true);
+  };
+
+  const pick = (val: string) => {
+    onChange(val);
+    closeMenu();
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        openMenu();
+      }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlight((h) => Math.min(h + 1, filtered.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlight((h) => Math.max(h - 1, 0));
+    } else if (e.key === 'Enter' && filtered[highlight]) {
+      e.preventDefault();
+      pick(filtered[highlight].value);
+    }
+  };
+
+  const menuContent = (
+    <div
+      ref={menuRef}
+      className={`fancy-select-menu ${menuPos.flip ? 'flip-up' : ''}`}
+      role="listbox"
+      aria-labelledby={id}
+      style={
+        usePortal
+          ? {
+              position: 'fixed',
+              left: menuPos.left,
+              width: menuPos.width,
+              // Stay invisible until a real measurement exists; otherwise the
+              // open animation can run while the menu is still 0px wide and
+              // the dropdown looks like it never appeared.
+              visibility: menuPos.width ? 'visible' : 'hidden',
+              top: menuPos.top !== undefined ? menuPos.top : 'auto',
+              bottom: menuPos.bottom !== undefined ? menuPos.bottom : 'auto',
+              maxHeight: menuPos.maxHeight ? `${menuPos.maxHeight}px` : undefined,
+              zIndex: 10050,
+            }
+          : undefined
+      }
+    >
+      {showSearch && (
+        <div className="fancy-select-search">
+          <i className="fa-solid fa-magnifying-glass" aria-hidden="true" />
+          <input
+            ref={searchRef}
+            type="search"
+            placeholder="Cari sekolah…"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setHighlight(0);
+            }}
+            onKeyDown={onKeyDown}
+          />
+        </div>
+      )}
+      <ul
+        className="fancy-select-options"
+        style={usePortal && menuPos.maxHeight ? { maxHeight: `${Math.max(80, menuPos.maxHeight - (showSearch ? 52 : 12))}px` } : undefined}
+      >
+        {filtered.length === 0 ? (
+          <li className="fancy-select-empty">Tidak ditemukan</li>
+        ) : (
+          filtered.map((opt, idx) => (
+            <li key={opt.value || `opt-${idx}`}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={opt.value === value}
+                className={`fancy-select-option ${opt.value === value ? 'is-selected' : ''} ${idx === highlight ? 'is-highlighted' : ''}`}
+                onMouseEnter={() => setHighlight(idx)}
+                onClick={() => pick(opt.value)}
+              >
+                <span className="fancy-select-option-label">{opt.label}</span>
+                {opt.hint && <span className="fancy-select-option-hint">{opt.hint}</span>}
+                {opt.value === value && (
+                  <i className="fa-solid fa-check fancy-select-check" aria-hidden="true" />
+                )}
+              </button>
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
+  );
+
+  return (
+    <div
+      ref={rootRef}
+      className={`fancy-select fancy-select-${size} ${fullWidth ? 'fancy-select-block' : ''} ${open ? 'is-open' : ''} ${disabled ? 'is-disabled' : ''} ${className}`}
+    >
+      {label && (
+        <label htmlFor={id} className="fancy-select-label">
+          {label}
+        </label>
+      )}
+
+      <button
+        ref={triggerRef}
+        id={id}
+        type="button"
+        className="fancy-select-trigger"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        disabled={disabled}
+        onClick={() => !disabled && (open ? closeMenu() : openMenu())}
+        onKeyDown={onKeyDown}
+      >
+        {icon && <i className={`fancy-select-icon ${icon}`} aria-hidden="true" />}
+        <span className={`fancy-select-value ${!selected?.value ? 'is-placeholder' : ''}`}>
+          {selected?.label || placeholder}
+        </span>
+        <i className="fa-solid fa-chevron-down fancy-select-chevron" aria-hidden="true" />
+      </button>
+
+      {required && !value && (
+        <select
+          tabIndex={-1}
+          aria-hidden
+          required
+          value={value}
+          onChange={() => {}}
+          className="fancy-select-native-required"
+        >
+          <option value="">Required</option>
+        </select>
+      )}
+
+      {open &&
+        (usePortal && typeof document !== 'undefined'
+          ? createPortal(menuContent, document.body)
+          : menuContent)}
+    </div>
+  );
+}

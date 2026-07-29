@@ -1,0 +1,501 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import type { School, Category, GugusData } from '@/lib/schoolsData';
+import { getSubmissions, getSchools, getCategories, getGugusData, getSupervisionNotes, addSupervisionNote, deleteSupervisionNote } from '@/lib/db';
+import type { Submission } from '@/lib/db';
+import type { SupervisionNote } from '@/lib/types';
+import { toast } from 'sonner';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import CommandPalette from '@/components/CommandPalette';
+import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
+import { useAuth } from '@/hooks/useAuth';
+import { usePresence } from '@/hooks/usePresence';
+import { toggleThemeWithTransition } from '@/lib/theme';
+import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { todayLocal } from '@/lib/dateUtils';
+import VerificationQueue from '@/components/VerificationQueue';
+
+export default function PengawasDashboard() {
+  const { user, loading, logout } = useAuth('pengawas');
+  usePresence(user, '/pengawas/dashboard');
+  const [schools, setSchools] = useState<School[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [guguses, setGuguses] = useState<GugusData[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterGugus, setFilterGugus] = useState('all');
+
+  const [supervisionNotes, setSupervisionNotes] = useState<SupervisionNote[]>([]);
+  const [isSupervisionModalOpen, setIsSupervisionModalOpen] = useState(false);
+  const [selectedSchoolForNote, setSelectedSchoolForNote] = useState<School | null>(null);
+  const [noteForm, setNoteForm] = useState({
+    visitDate: todayLocal(),
+    category: 'Akademik' as SupervisionNote['category'],
+    score: 5,
+    notes: '',
+    recommendations: '',
+  });
+
+  useEffect(() => {
+    if (loading || !user) return;
+    getSubmissions().then(setSubmissions);
+    getSchools().then(setSchools);
+    getCategories().then(setCategories);
+    getGugusData().then(setGuguses);
+    getSupervisionNotes().then(setSupervisionNotes);
+  }, [loading, user]);
+
+  const handleOpenSupervisionModal = (school: School) => {
+    setSelectedSchoolForNote(school);
+    setNoteForm({
+      visitDate: todayLocal(),
+      category: 'Akademik',
+      score: 5,
+      notes: '',
+      recommendations: '',
+    });
+    setIsSupervisionModalOpen(true);
+  };
+
+  const handleSaveSupervisionNote = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedSchoolForNote || !user) return;
+    if (!noteForm.notes.trim()) {
+      toast.error('Catatan supervisi wajib diisi.');
+      return;
+    }
+
+    try {
+      const created = await addSupervisionNote({
+        schoolNpsn: selectedSchoolForNote.npsn,
+        schoolName: selectedSchoolForNote.name,
+        supervisorId: user.id || 'supervisor',
+        supervisorName: user.name || 'Pengawas Pembina',
+        visitDate: noteForm.visitDate,
+        category: noteForm.category,
+        score: Number(noteForm.score) || 5,
+        notes: noteForm.notes.trim(),
+        recommendations: noteForm.recommendations.trim(),
+      });
+      setSupervisionNotes(prev => [created, ...prev]);
+      setIsSupervisionModalOpen(false);
+      toast.success(`Catatan supervisi untuk ${selectedSchoolForNote.name} berhasil disimpan!`);
+    } catch {
+      toast.error('Gagal menyimpan catatan supervisi.');
+    }
+  };
+
+  const handleDeleteSupervisionNote = async (id: string) => {
+    try {
+      await deleteSupervisionNote(id);
+      setSupervisionNotes(prev => prev.filter(n => n.id !== id));
+      toast.success('Catatan supervisi berhasil dihapus.');
+    } catch {
+      toast.error('Gagal menghapus catatan.');
+    }
+  };
+
+  const filteredSchools = schools.filter(s => {
+    const matchSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.npsn.includes(searchTerm);
+    const matchGugus = filterGugus === 'all' || s.gugus === filterGugus;
+    return matchSearch && matchGugus;
+  });
+
+  const getSchoolProgress = (npsn: string) => {
+    const schoolSubs = submissions.filter(s => s.schoolNpsn === npsn);
+    const approved = schoolSubs.filter(s => s.status === 'approved').length;
+    return categories.length > 0 ? Math.round((approved / categories.length) * 100) : 0;
+  };
+
+  const getSchoolStatusCounts = (npsn: string) => {
+    const schoolSubs = submissions.filter(s => s.schoolNpsn === npsn);
+    return {
+      approved: schoolSubs.filter(s => s.status === 'approved').length,
+      pending: schoolSubs.filter(s => s.status === 'pending').length,
+      rejected: schoolSubs.filter(s => s.status === 'rejected').length,
+      revision: schoolSubs.filter(s => s.status === 'revision').length,
+    };
+  };
+
+  const totalApproved = submissions.filter(s => s.status === 'approved').length;
+  const totalPending = submissions.filter(s => s.status === 'pending').length;
+  const totalRejected = submissions.filter(s => s.status === 'rejected').length;
+  const overallProgress = submissions.length > 0 ? Math.round((totalApproved / submissions.length) * 100) : 0;
+
+  if (!user) return <LoadingScreen />;
+
+  return (
+    <>
+    <DashboardShell
+      user={user}
+      onLogout={logout}
+      headerTitle="Dashboard Pengawas"
+      headerSubtitle={user.name}
+      headerActions={<CommandPalette currentUser={user} onThemeToggle={(e) => toggleThemeWithTransition(e)} />}
+    >
+        <div className="content-area">
+          {/* Stats Grid */}
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}>
+                <i className="fa-solid fa-school" aria-hidden="true"></i>
+              </div>
+              <div className="stat-info">
+                <span className="stat-value">{schools.length.toLocaleString('id-ID')}</span>
+                <span className="stat-label">Total Sekolah</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'var(--success-glow)', color: 'var(--success)' }}>
+                <i className="fa-solid fa-circle-check" aria-hidden="true"></i>
+              </div>
+              <div className="stat-info">
+                <span className="stat-value">{totalApproved.toLocaleString('id-ID')}</span>
+                <span className="stat-label">Berkas Disetujui</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'var(--warning-glow)', color: 'var(--warning)' }}>
+                <i className="fa-solid fa-clock" aria-hidden="true"></i>
+              </div>
+              <div className="stat-info">
+                <span className="stat-value">{totalPending.toLocaleString('id-ID')}</span>
+                <span className="stat-label">Menunggu Review</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon" style={{ background: 'var(--danger-glow)', color: 'var(--danger)' }}>
+                <i className="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+              </div>
+              <div className="stat-info">
+                <span className="stat-value">{totalRejected.toLocaleString('id-ID')}</span>
+                <span className="stat-label">Ditolak</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Overall Progress */}
+          {/* Antrean kerja: pengawas kini dapat memverifikasi langsung,
+              tidak lagi hanya membaca statistik. */}
+          <div id="antrean-verifikasi" style={{ scrollMarginTop: 90 }}>
+          <VerificationQueue
+            submissions={submissions}
+            schools={schools}
+            categories={categories}
+            reviewerName={user?.name || 'Pengawas'}
+            title="Antrean Verifikasi Berkas"
+            onUpdated={(updated) =>
+              setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
+            }
+          />
+          </div>
+
+          <div id="daftar-sekolah" style={{ scrollMarginTop: 90 }} />
+
+          <div className="card animate-fade-in">
+            <div className="card-header">
+              <h2><i className="fa-solid fa-chart-line" aria-hidden="true"></i> Progress Keseluruhan</h2>
+              <span className="badge badge-success">{overallProgress}%</span>
+            </div>
+            <div className="card-body">
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: `${overallProgress}%` }}></div>
+              </div>
+              <p style={{ marginTop: '8px', fontSize: '13px', opacity: 0.7 }}>
+                {totalApproved} dari {submissions.length} berkas telah disetujui
+              </p>
+            </div>
+          </div>
+
+          {/* Recharts Bar Chart - Gugus Comparison */}
+          <div className="card animate-fade-in">
+            <div className="card-header">
+              <h2><i className="fa-solid fa-chart-bar" aria-hidden="true"></i> Perbandingan Progres Berkas per Gugus</h2>
+            </div>
+            <div className="card-body" style={{ height: '300px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={guguses.map(g => {
+                    const gugusSchools = schools.filter(s => s.gugus === g.id);
+                    const gugusNpsns = gugusSchools.map(s => s.npsn);
+                    const gugusSubs = submissions.filter(s => gugusNpsns.includes(s.schoolNpsn));
+                    const approved = gugusSubs.filter(s => s.status === 'approved').length;
+                    const total = gugusSchools.length * categories.length;
+                    const pct = total > 0 ? Math.round((approved / total) * 100) : 0;
+                    return { name: `Gugus ${g.id}`, progres: pct, jumlahSekolah: gugusSchools.length };
+                  })}
+                  margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--card-border)" />
+                  <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                  <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} unit="%" />
+                  <Tooltip
+                    contentStyle={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '10px', fontSize: '12px' }}
+                    formatter={(value?: ValueType) => [`${value ?? 0}%`, 'Progres']}
+                  />
+                  <Bar dataKey="progres" radius={[6, 6, 0, 0]} barSize={50}>
+                    {guguses.map((_, idx) => (
+                      <Cell key={idx} fill={['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ec4899'][idx % 5]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Filter & Search */}
+          <div className="card animate-fade-in">
+            <div className="card-header">
+              <h2><i className="fa-solid fa-school" aria-hidden="true"></i> Monitoring Sekolah Binaan</h2>
+            </div>
+            <div className="card-body">
+              <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                <div className="input-with-icon" style={{ flex: 1, minWidth: '200px' }}>
+                  <i className="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Cari sekolah..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <select
+                  className="form-control"
+                  value={filterGugus}
+                  onChange={(e) => setFilterGugus(e.target.value)}
+                  style={{ width: 'auto', minWidth: '150px' }}
+                >
+                  <option value="all">Semua Gugus</option>
+                  <option value="I">Gugus I</option>
+                  <option value="II">Gugus II</option>
+                  <option value="III">Gugus III</option>
+                  <option value="IV">Gugus IV</option>
+                  <option value="V">Gugus V</option>
+                </select>
+              </div>
+
+              <div className="table-responsive">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Sekolah</th>
+                      <th>NPSN</th>
+                      <th>Gugus</th>
+                      <th>Progress</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredSchools.map((school, idx) => {
+                      const progress = getSchoolProgress(school.npsn);
+                      const counts = getSchoolStatusCounts(school.npsn);
+                      return (
+                        <tr key={school.npsn}>
+                          <td>{idx + 1}</td>
+                          <td>
+                            <strong>{school.name}</strong>
+                            <br />
+                            <small style={{ opacity: 0.6 }}>{school.principalName}</small>
+                          </td>
+                          <td><code>{school.npsn}</code></td>
+                          <td><span className="badge badge-pending">Gugus {school.gugus}</span></td>
+                          <td>
+                            <div className="progress-bar" style={{ width: '100px' }}>
+                              <div
+                                className="progress-fill"
+                                style={{
+                                  width: `${progress}%`,
+                                  background: progress >= 80 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#ef4444',
+                                }}
+                              ></div>
+                            </div>
+                            <small>{progress}%</small>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                              <span className="badge badge-success" style={{ fontSize: '10px' }}>{counts.approved}</span>
+                              <span className="badge badge-warning" style={{ fontSize: '10px' }}>{counts.pending}</span>
+                              <span className="badge badge-danger" style={{ fontSize: '10px' }}>{counts.rejected}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-sm btn-primary"
+                              onClick={() => handleOpenSupervisionModal(school)}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', padding: '6px 12px', borderRadius: '8px' }}
+                            >
+                              <i className="fa-solid fa-clipboard-user" aria-hidden="true"></i> Catat Supervisi
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {filteredSchools.length === 0 && (
+                      <tr>
+                        <td colSpan={7} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                          <i className="fa-solid fa-folder-open" style={{ fontSize: '24px', marginBottom: '8px', display: 'block', opacity: 0.5 }} aria-hidden="true" />
+                          Tidak ada data yang sesuai.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Supervision Notes History */}
+          <div className="card animate-fade-in" style={{ marginTop: '24px' }}>
+            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2><i className="fa-solid fa-clipboard-check" aria-hidden="true"></i> Riwayat Catatan Supervisi Pengawas</h2>
+              <span className="badge badge-info">{supervisionNotes.length} Catatan</span>
+            </div>
+            <div className="card-body">
+              {supervisionNotes.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+                  {supervisionNotes.map((note) => (
+                    <div
+                      key={note.id}
+                      style={{
+                        padding: '16px',
+                        borderRadius: '14px',
+                        background: 'var(--card-glass)',
+                        border: '1px solid var(--card-border)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px',
+                        position: 'relative',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <strong style={{ fontSize: '14px', color: 'var(--text-primary)' }}>{note.schoolName}</strong>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            <i className="fa-solid fa-calendar-day" style={{ marginRight: '4px' }} aria-hidden="true"></i>
+                            {new Date(note.visitDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </div>
+                        </div>
+                        <span className="badge badge-primary" style={{ fontSize: '10px' }}>{note.category}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Penilaian:</span>
+                        <div style={{ display: 'flex', gap: '2px', color: '#f59e0b', fontSize: '12px' }}>
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <i key={star} className={`fa-${star <= note.score ? 'solid' : 'regular'} fa-star`}></i>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.5, background: 'rgba(0,0,0,0.03)', padding: '10px', borderRadius: '8px' }}>
+                        <strong>Catatan:</strong> {note.notes}
+                      </div>
+
+                      {note.recommendations && (
+                        <div style={{ fontSize: '12px', color: '#0284c7', lineHeight: 1.5, background: 'rgba(2,132,199,0.08)', padding: '10px', borderRadius: '8px', borderLeft: '3px solid #0284c7' }}>
+                          <strong>Rekomendasi:</strong> {note.recommendations}
+                        </div>
+                      )}
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                        <small style={{ fontSize: '10px', opacity: 0.6 }}>Oleh: {note.supervisorName}</small>
+                        <button
+                          onClick={() => handleDeleteSupervisionNote(note.id)}
+                          style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}
+                          title="Hapus Catatan"
+                        >
+                          <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '30px', opacity: 0.6 }}>
+                  <i className="fa-solid fa-clipboard-list" style={{ fontSize: '32px', marginBottom: '8px' }} aria-hidden="true"></i>
+                  <p style={{ margin: 0 }}>Belum ada catatan supervisi yang dibuat.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+      {/* Supervision Note Modal */}
+      {isSupervisionModalOpen && selectedSchoolForNote && (
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--modal-backdrop)', backdropFilter: 'blur(var(--modal-blur))', WebkitBackdropFilter: 'blur(var(--modal-blur))', zIndex: 'var(--z-modal)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'var(--card-glass)', border: '1px solid var(--card-border)', borderRadius: '20px', width: '100%', maxWidth: '520px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', margin: 'auto' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--card-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <i className="fa-solid fa-clipboard-user" style={{ color: 'var(--primary)' }} aria-hidden="true"></i> Catat Supervisi Sekolah
+              </h3>
+              <button onClick={() => setIsSupervisionModalOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}>
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
+            </div>
+            <form onSubmit={handleSaveSupervisionNote} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Sekolah Binaan</label>
+                <input type="text" className="form-control" value={`${selectedSchoolForNote.name} (${selectedSchoolForNote.npsn})`} disabled style={{ opacity: 0.8 }} />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Tanggal Kunjungan</label>
+                  <input type="date" className="form-control" value={noteForm.visitDate} onChange={(e) => setNoteForm({ ...noteForm, visitDate: e.target.value })} required />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Bidang Supervisi</label>
+                  <select className="form-control" value={noteForm.category} onChange={(e) => setNoteForm({ ...noteForm, category: e.target.value as SupervisionNote['category'] })}>
+                    <option value="Akademik">Akademik</option>
+                    <option value="Manajerial">Manajerial</option>
+                    <option value="SPJ BOS">SPJ BOS</option>
+                    <option value="Dapodik & ANBK">Dapodik & ANBK</option>
+                    <option value="Sarpras & UKS">Sarpras & UKS</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Penilaian Kesiapan (1 - 5 Bintang)</label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setNoteForm({ ...noteForm, score: star })}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '22px', color: star <= noteForm.score ? '#f59e0b' : 'var(--card-border)', transition: 'transform 0.15s' }}
+                    >
+                      <i className={`fa-${star <= noteForm.score ? 'solid' : 'regular'} fa-star`}></i>
+                    </button>
+                  ))}
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', marginLeft: '8px' }}>{noteForm.score} / 5</span>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Catatan Supervisi & Temuan</label>
+                <textarea className="form-control" rows={3} placeholder="Tuliskan temuan atau catatan evaluasi..." value={noteForm.notes} onChange={(e) => setNoteForm({ ...noteForm, notes: e.target.value })} required></textarea>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Rekomendasi Pembinaan</label>
+                <textarea className="form-control" rows={2} placeholder="Rekomendasi tindak lanjut untuk sekolah..." value={noteForm.recommendations} onChange={(e) => setNoteForm({ ...noteForm, recommendations: e.target.value })}></textarea>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '12px' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setIsSupervisionModalOpen(false)}>Batal</button>
+                <button type="submit" className="btn btn-primary"><i className="fa-solid fa-floppy-disk" aria-hidden="true"></i> Simpan Catatan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </DashboardShell>
+    </>
+  );
+}
