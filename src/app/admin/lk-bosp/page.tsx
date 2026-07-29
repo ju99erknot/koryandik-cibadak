@@ -6,7 +6,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { getLkBospSubmissions, updateLkBospStatus } from '@/lib/db';
-import { schoolsData } from '@/lib/schoolsData';
+import { schoolsData, gugusData } from '@/lib/schoolsData';
 import type { LkBospSubmission } from '@/lib/types';
 import { toast } from 'sonner';
 
@@ -41,6 +41,15 @@ export default function AdminLkBospPage() {
       setLoading(false);
     }
   };
+
+  // Filtered schools according to selected filters
+  const filteredSchools = useMemo(() => {
+    return schoolsData.filter(sc => {
+      const matchGugus = filterGugus === 'all' || sc.gugus === filterGugus;
+      const matchSearch = sc.name.toLowerCase().includes(searchQuery.toLowerCase()) || sc.npsn.includes(searchQuery);
+      return matchGugus && matchSearch;
+    });
+  }, [filterGugus, searchQuery]);
 
   // Filtered submissions according to selected filters
   const filteredSubmissions = useMemo(() => {
@@ -179,9 +188,9 @@ export default function AdminLkBospPage() {
                 onChange={(e) => setFilterGugus(e.target.value)}
                 style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', fontWeight: 700 }}
               >
-                <option value="all">Semua Gugus (1 - 7)</option>
-                {[1, 2, 3, 4, 5, 6, 7].map(g => (
-                  <option key={g} value={String(g)}>Gugus {g}</option>
+                <option value="all">Semua Gugus (Gugus I - V)</option>
+                {gugusData.map(g => (
+                  <option key={g.id} value={g.id}>{g.name}</option>
                 ))}
               </select>
 
@@ -288,7 +297,7 @@ export default function AdminLkBospPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {schoolsData.map((sc) => {
+                  {filteredSchools.map((sc) => {
                     const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
 
                     return (
