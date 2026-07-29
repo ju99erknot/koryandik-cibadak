@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import type { LkBospBreakdown, LkBospBhpItem, LkBospKibItem, LkBospMaintenanceItem } from './types';
+import { schoolsData } from './schoolsData';
 
 export interface ParsedLkBospResult {
   schoolName: string;
@@ -355,10 +356,19 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
   if (totalRealisasi === 0) totalRealisasi = breakdown.totalBarangJasa + breakdown.totalModal;
   if (sisaSaldo === 0) sisaSaldo = totalPenerimaan - totalRealisasi;
 
+  // Auto lookup official Gugus and canonical School Name / NPSN from schoolsData
+  const matchedSchool = schoolsData.find(s => s.npsn === npsn || s.name.toLowerCase() === schoolName.toLowerCase() || s.name.toLowerCase().includes(schoolName.toLowerCase()));
+  let gugusVal = gugus;
+  if (matchedSchool) {
+    npsn = matchedSchool.npsn;
+    schoolName = matchedSchool.name;
+    gugusVal = matchedSchool.gugus;
+  }
+
   return {
     schoolName,
     npsn,
-    gugus,
+    gugus: gugusVal,
     periodYear,
     triwulan,
     saldoAwal,
