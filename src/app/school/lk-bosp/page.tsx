@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
-import { getLkBospSubmissions, saveLkBospSubmission } from '@/lib/db';
+import { getLkBospSubmissions, saveLkBospSubmission, getSchools } from '@/lib/db';
 import { parseLkBospExcel } from '@/lib/lkBospParser';
 import type { School } from '@/lib/schoolsData';
 import type { LkBospSubmission, LkBospBreakdown } from '@/lib/types';
@@ -33,39 +33,43 @@ export default function SchoolLkBospPage() {
   const [rekeningKoranBalanceInput, setRekeningKoranBalanceInput] = useState<number>(0);
   const [parsedBreakdown, setParsedBreakdown] = useState<LkBospBreakdown | null>(null);
 
-  useEffect(() => {
-    loadSubmissions();
-  }, [user]);
+  const [allSchools, setAllSchools] = useState<School[]>([]);
 
   useEffect(() => {
-    if (currentSub) {
-      setExcelFileName(currentSub.excelFileName || '');
-      setRekeningKoranFileName(currentSub.rekeningKoranName || '');
-      setRekeningKoranUrl(currentSub.rekeningKoranUrl || '');
-      setSaldoAwalInput(currentSub.saldoAwal || 0);
-      setTotalPenerimaanInput(currentSub.totalPenerimaan || 0);
-      setRekeningKoranBalanceInput(currentSub.sisaSaldo || 0);
-      setParsedBreakdown(currentSub.breakdown || null);
-    } else {
-      setExcelFileName('');
-      setRekeningKoranFileName('');
-      setRekeningKoranUrl('');
-      setSaldoAwalInput(0);
-      setTotalPenerimaanInput(0);
-      setRekeningKoranBalanceInput(0);
-      setParsedBreakdown(null);
-    }
-  }, [currentSub, activeTw, selectedYear]);
+    loadExistingSubmission();
+  }, [user, selectedYear, activeTw]);
 
-  const loadSubmissions = async () => {
-    if (!user) return;
+  const loadExistingSubmission = async () => {
     setLoadingData(true);
     try {
-      const data = await getLkBospSubmissions();
-      const npsn = school?.npsn || user.npsn;
-      setSubmissions(data.filter(s => s.npsn === npsn));
+      const [subs, schoolList] = await Promise.all([
+        getLkBospSubmissions(),
+        getSchools()
+      ]);
+      setAllSchools(schoolList);
+      setSubmissions(subs);
+      
+      const npsn = school?.npsn || user?.npsn;
+      const found = subs.find(s => s.npsn === npsn && s.periodYear === selectedYear && s.triwulan === activeTw);
+      if (found) {
+        setSaldoAwalInput(found.saldoAwal);
+        setTotalPenerimaanInput(found.totalPenerimaan);
+        setParsedBreakdown(found.breakdown);
+        setExcelFileName(found.excelFileName || '');
+        setRekeningKoranFileName(found.rekeningKoranName || '');
+        setRekeningKoranUrl(found.rekeningKoranUrl || '');
+        setRekeningKoranBalanceInput(found.sisaSaldo || 0);
+      } else {
+        setExcelFileName('');
+        setRekeningKoranFileName('');
+        setRekeningKoranUrl('');
+        setSaldoAwalInput(0);
+        setTotalPenerimaanInput(0);
+        setRekeningKoranBalanceInput(0);
+        setParsedBreakdown(null);
+      }
     } catch {
-      toast.error('Gagal memuat data LK BOSP.');
+      /* ignore */
     } finally {
       setLoadingData(false);
     }
@@ -85,7 +89,7 @@ export default function SchoolLkBospPage() {
         const buffer = event.target?.result as ArrayBuffer;
         if (!buffer) return;
 
-        const parsed = parseLkBospExcel(buffer, school?.npsn || user?.npsn);
+        const parsed = parseLkBospExcel(buffer, school?.npsn || user?.npsn, allSchools);
         if (parsed.saldoAwal > 0) setSaldoAwalInput(parsed.saldoAwal);
         if (parsed.totalPenerimaan > 0) setTotalPenerimaanInput(parsed.totalPenerimaan);
 
@@ -177,7 +181,7 @@ export default function SchoolLkBospPage() {
       });
 
       toast.success(`Laporan LK BOSP Triwulan ${activeTw} Tahun ${selectedYear} berhasil disimpan!`);
-      loadSubmissions();
+      loadExistingSubmission();
     } catch {
       toast.error('Gagal menyimpan laporan LK BOSP.');
     }

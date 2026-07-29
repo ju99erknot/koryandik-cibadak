@@ -5,15 +5,17 @@ import { useAuth } from '@/hooks/useAuth';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
-import { getLkBospSubmissions, updateLkBospStatus } from '@/lib/db';
-import { schoolsData, gugusData } from '@/lib/schoolsData';
+import { getLkBospSubmissions, updateLkBospStatus, getSchools, getGugusData } from '@/lib/db';
 import type { LkBospSubmission } from '@/lib/types';
+import type { School, GugusData } from '@/lib/schoolsData';
 import { toast } from 'sonner';
 
 export default function AdminLkBospPage() {
   const { user, logout } = useAuth('admin');
 
   const [submissions, setSubmissions] = useState<LkBospSubmission[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
+  const [guguses, setGuguses] = useState<GugusData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [selectedTw, setSelectedTw] = useState<number>(1); // 1, 2, 3, 4, 0 (0 = Total 1 Tahun)
@@ -33,8 +35,14 @@ export default function AdminLkBospPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await getLkBospSubmissions();
-      setSubmissions(data);
+      const [subData, schoolData, gugusDataList] = await Promise.all([
+        getLkBospSubmissions(),
+        getSchools(),
+        getGugusData()
+      ]);
+      setSubmissions(subData);
+      setSchools(schoolData);
+      setGuguses(gugusDataList);
     } catch {
       toast.error('Gagal memuat rekapitulasi LK BOSP.');
     } finally {
@@ -44,12 +52,12 @@ export default function AdminLkBospPage() {
 
   // Filtered schools according to selected filters
   const filteredSchools = useMemo(() => {
-    return schoolsData.filter(sc => {
+    return schools.filter(sc => {
       const matchGugus = filterGugus === 'all' || sc.gugus === filterGugus;
       const matchSearch = sc.name.toLowerCase().includes(searchQuery.toLowerCase()) || sc.npsn.includes(searchQuery);
       return matchGugus && matchSearch;
     });
-  }, [filterGugus, searchQuery]);
+  }, [schools, filterGugus, searchQuery]);
 
   // Filtered submissions according to selected filters
   const filteredSubmissions = useMemo(() => {
@@ -188,8 +196,8 @@ export default function AdminLkBospPage() {
                 onChange={(e) => setFilterGugus(e.target.value)}
                 style={{ padding: '8px 14px', borderRadius: '10px', border: '1px solid var(--card-border)', background: 'var(--card-bg-elevated)', fontWeight: 700 }}
               >
-                <option value="all">Semua Gugus (Gugus I - V)</option>
-                {gugusData.map(g => (
+                <option value="all">Semua Wilayah Gugus ({guguses.length} Gugus)</option>
+                {guguses.map(g => (
                   <option key={g.id} value={g.id}>{g.name}</option>
                 ))}
               </select>

@@ -5,16 +5,16 @@ import { useAuth } from '@/hooks/useAuth';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
-import { getLkBospSubmissions } from '@/lib/db';
-import { schoolsData } from '@/lib/schoolsData';
+import { getLkBospSubmissions, getSchools } from '@/lib/db';
 import type { LkBospSubmission } from '@/lib/types';
-import type { GugusData } from '@/lib/schoolsData';
+import type { School, GugusData } from '@/lib/schoolsData';
 
 export default function GugusLkBospPage() {
   const { user, logout } = useAuth('gugus');
   const gugusDetail = (user?.details as GugusData | undefined) ?? null;
 
   const [submissions, setSubmissions] = useState<LkBospSubmission[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
   const [selectedTw, setSelectedTw] = useState<number>(1);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
 
@@ -24,8 +24,12 @@ export default function GugusLkBospPage() {
 
   const loadData = async () => {
     try {
-      const data = await getLkBospSubmissions();
-      setSubmissions(data);
+      const [subData, schoolData] = await Promise.all([
+        getLkBospSubmissions(),
+        getSchools()
+      ]);
+      setSubmissions(subData);
+      setSchools(schoolData);
     } catch {
       /* ignore */
     }
@@ -33,8 +37,8 @@ export default function GugusLkBospPage() {
 
   const gugusSchools = useMemo(() => {
     const gid = gugusDetail?.id || user?.id || '1';
-    return schoolsData.filter(s => s.gugus === gid);
-  }, [gugusDetail, user]);
+    return schools.filter(s => s.gugus === gid);
+  }, [gugusDetail, user, schools]);
 
   if (!user) return <LoadingScreen />;
 

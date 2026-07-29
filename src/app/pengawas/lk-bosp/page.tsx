@@ -5,15 +5,16 @@ import { useAuth } from '@/hooks/useAuth';
 import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
-import { getLkBospSubmissions, updateLkBospStatus } from '@/lib/db';
-import { schoolsData } from '@/lib/schoolsData';
+import { getLkBospSubmissions, updateLkBospStatus, getSchools } from '@/lib/db';
 import type { LkBospSubmission } from '@/lib/types';
+import type { School } from '@/lib/schoolsData';
 import { toast } from 'sonner';
 
 export default function PengawasLkBospPage() {
   const { user, logout } = useAuth('pengawas');
 
   const [submissions, setSubmissions] = useState<LkBospSubmission[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
   const [selectedTw, setSelectedTw] = useState<number>(1);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,14 +26,18 @@ export default function PengawasLkBospPage() {
 
   const loadData = async () => {
     try {
-      const data = await getLkBospSubmissions();
-      setSubmissions(data);
+      const [subData, schoolData] = await Promise.all([
+        getLkBospSubmissions(),
+        getSchools()
+      ]);
+      setSubmissions(subData);
+      setSchools(schoolData);
     } catch {
       /* ignore */
     }
   };
 
-  const filteredSchools = schoolsData.filter(s =>
+  const filteredSchools = schools.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.npsn.includes(searchQuery)
   );
 

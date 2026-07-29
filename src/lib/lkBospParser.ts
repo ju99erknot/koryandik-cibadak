@@ -44,7 +44,7 @@ export interface ParsedLkBospResult {
  * - Col W: Saldo Rekening
  * - Col X: Saldo Kas Tunai
  */
-export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string): ParsedLkBospResult {
+export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string, customSchools?: any[]): ParsedLkBospResult {
   const workbook = XLSX.read(arrayBuffer, { type: 'array' });
   const validationWarnings: string[] = [];
 
@@ -356,8 +356,9 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
   if (totalRealisasi === 0) totalRealisasi = breakdown.totalBarangJasa + breakdown.totalModal;
   if (sisaSaldo === 0) sisaSaldo = totalPenerimaan - totalRealisasi;
 
-  // Auto lookup official Gugus and canonical School Name / NPSN from schoolsData
-  const matchedSchool = schoolsData.find(s => s.npsn === npsn || s.name.toLowerCase() === schoolName.toLowerCase() || s.name.toLowerCase().includes(schoolName.toLowerCase()));
+  // Auto lookup official Gugus and canonical School Name / NPSN from dynamic schools DB / schoolsData
+  const schoolList = (customSchools && customSchools.length > 0) ? customSchools : schoolsData;
+  const matchedSchool = schoolList.find(s => s.npsn === npsn || s.name.toLowerCase() === schoolName.toLowerCase() || s.name.toLowerCase().includes(schoolName.toLowerCase()));
   let gugusVal = gugus;
   if (matchedSchool) {
     npsn = matchedSchool.npsn;
