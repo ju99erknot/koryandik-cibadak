@@ -2559,6 +2559,7 @@ export async function saveLkBospSubmission(sub: Omit<LkBospSubmission, 'id' | 'u
 
   if (isSupabaseConfigured()) {
     try {
+      const b = submission.breakdown || {};
       await supabase
         .from('lk_bosp_submissions')
         .upsert({
@@ -2574,8 +2575,23 @@ export async function saveLkBospSubmission(sub: Omit<LkBospSubmission, 'id' | 'u
           rekening_koran_name: submission.rekeningKoranName,
           saldo_awal: submission.saldoAwal,
           total_penerimaan: submission.totalPenerimaan,
+          bhp: b.bhp || 0,
+          honor: b.honor || 0,
+          daya_jasa: b.dayaJasa || 0,
+          pemeliharaan: b.pemeliharaan || 0,
+          upah_pemeliharaan: b.upahPemeliharaan || 0,
+          lomba_bimtek: b.lombaBimtek || 0,
+          honor_kegiatan: b.honorKegiatan || 0,
+          makan_minum: b.makanMinum || 0,
+          perdin: b.perdin || 0,
+          total_barang_jasa: b.totalBarangJasa || 0,
+          kib_b: b.kibB || 0,
+          kib_e: b.kibE || 0,
+          total_modal: b.totalModal || 0,
           total_realisasi: submission.totalRealisasi,
           sisa_saldo: submission.sisaSaldo,
+          saldo_rekening: submission.sisaSaldo,
+          saldo_kas_tunai: 0,
           is_balance_match: submission.isBalanceMatch,
           breakdown: submission.breakdown,
           status: submission.status,
