@@ -65,11 +65,18 @@ export default function SchoolLkBospPage() {
         setRekeningKoranUrl(found.rekeningKoranUrl || '');
         setRekeningKoranBalanceInput(found.sisaSaldo || 0);
       } else {
+        // Automatically carry over Sisa Saldo from previous Triwulan in same year
+        const prevTw = (activeTw - 1) as 1 | 2 | 3;
+        const prevSub = activeTw > 1 ? subs.find(s => s.npsn === npsn && s.periodYear === selectedYear && s.triwulan === prevTw) : null;
+        
+        const autoSaldoAwal = prevSub ? prevSub.sisaSaldo : 0;
+        const autoPenerimaan = 0; // Dana BOS cair di TW 1 (Tahap I) & TW 3 (Tahap II)
+
         setExcelFileName('');
         setRekeningKoranFileName('');
         setRekeningKoranUrl('');
-        setSaldoAwalInput(0);
-        setTotalPenerimaanInput(0);
+        setSaldoAwalInput(autoSaldoAwal);
+        setTotalPenerimaanInput(autoPenerimaan);
         setRekeningKoranBalanceInput(0);
         setParsedBreakdown(null);
       }
@@ -131,8 +138,9 @@ export default function SchoolLkBospPage() {
     reader.readAsDataURL(file);
   };
 
+  const calcTotalDanaTersedia = saldoAwalInput + totalPenerimaanInput;
   const calcTotalRealisasi = parsedBreakdown ? (parsedBreakdown.totalBarangJasa + parsedBreakdown.totalModal) : 0;
-  const calcSisaSaldo = (saldoAwalInput + totalPenerimaanInput) - calcTotalRealisasi;
+  const calcSisaSaldo = calcTotalDanaTersedia - calcTotalRealisasi;
   const hasRekeningKoran = Boolean(rekeningKoranUrl);
   const isBalanceMatch = hasRekeningKoran && Math.abs(calcSisaSaldo - rekeningKoranBalanceInput) < 100 && (rekeningKoranBalanceInput > 0 || calcSisaSaldo === 0);
 
@@ -371,15 +379,16 @@ export default function SchoolLkBospPage() {
               <h2><i className="fa-solid fa-calculator" aria-hidden="true" /> 3. Ringkasan Kas & Imbangan Saldo Triwulan {activeTw}</h2>
             </div>
             <div className="card-body">
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
                 <div>
-                  <label className="form-label" style={{ fontSize: '12px' }}>Saldo Awal (Rp):</label>
+                  <label className="form-label" style={{ fontSize: '12px' }}>Saldo Awal TW {activeTw} (Rp):</label>
                   <input
                     type="number"
                     className="form-input"
                     value={saldoAwalInput}
                     onChange={(e) => setSaldoAwalInput(Number(e.target.value))}
                   />
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Sisa saldo kas dari TW sebelumnya</span>
                 </div>
                 <div>
                   <label className="form-label" style={{ fontSize: '12px' }}>Total Penerimaan TW {activeTw} (Rp):</label>
@@ -389,6 +398,18 @@ export default function SchoolLkBospPage() {
                     value={totalPenerimaanInput}
                     onChange={(e) => setTotalPenerimaanInput(Number(e.target.value))}
                   />
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Pencairan BOS Tahap I (TW1) / Tahap II (TW3)</span>
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '12px' }}>Total Dana Tersedia (Rp):</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={calcTotalDanaTersedia}
+                    readOnly
+                    style={{ background: 'var(--card-bg-elevated)', fontWeight: 700 }}
+                  />
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Saldo Awal + Penerimaan Baru</span>
                 </div>
                 <div>
                   <label className="form-label" style={{ fontSize: '12px' }}>Total Realisasi Belanja (Rp):</label>
@@ -399,6 +420,7 @@ export default function SchoolLkBospPage() {
                     readOnly
                     style={{ background: 'var(--card-bg-elevated)', fontWeight: 700, color: 'var(--primary)' }}
                   />
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Otomatis dari Rincian Belanja</span>
                 </div>
                 <div>
                   <label className="form-label" style={{ fontSize: '12px' }}>Sisa Saldo Kas Buku (Rp):</label>
@@ -407,17 +429,19 @@ export default function SchoolLkBospPage() {
                     className="form-input"
                     value={calcSisaSaldo}
                     readOnly
-                    style={{ background: 'var(--card-bg-elevated)', fontWeight: 700 }}
+                    style={{ background: 'var(--card-bg-elevated)', fontWeight: 700, color: calcSisaSaldo >= 0 ? 'var(--success)' : 'var(--danger)' }}
                   />
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Dana Tersedia - Total Realisasi</span>
                 </div>
                 <div>
-                  <label className="form-label" style={{ fontSize: '12px' }}>Nominal Saldo Rekening Koran (Rp):</label>
+                  <label className="form-label" style={{ fontSize: '12px' }}>Saldo Rekening Koran (Rp):</label>
                   <input
                     type="number"
                     className="form-input"
                     value={rekeningKoranBalanceInput}
                     onChange={(e) => setRekeningKoranBalanceInput(Number(e.target.value))}
                   />
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>Nominal cetakan kas bank resmi</span>
                 </div>
               </div>
 

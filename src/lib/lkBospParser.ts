@@ -145,7 +145,7 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string, 
 
       // Extract EXACT verified BPK columns:
       saldoAwal = Number(getCell('F', r)) || 0;
-      totalPenerimaan = Number(getCell('G', r)) || saldoAwal;
+      totalPenerimaan = Number(getCell('G', r)) || 0;
 
       breakdown.bhp = Number(getCell('H', r)) || 0;
       breakdown.honor = Number(getCell('J', r)) || 0;
@@ -173,8 +173,8 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string, 
 
       // Col U: Total Realisasi Dana BOS (Sum Q+T)
       totalRealisasi = Number(getCell('U', r)) || (breakdown.totalBarangJasa + breakdown.totalModal);
-      // Col V: Sisa Dana BOS (G - U)
-      sisaSaldo = Number(getCell('V', r)) || (totalPenerimaan - totalRealisasi);
+      // Col V: Sisa Dana BOS ((F + G) - U)
+      sisaSaldo = Number(getCell('V', r)) || ((saldoAwal + totalPenerimaan) - totalRealisasi);
       // Col W: Saldo Rekening
       saldoRekening = Number(getCell('W', r)) || sisaSaldo;
       // Col X: Saldo Kas Tunai
@@ -354,7 +354,7 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string, 
     breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum;
   breakdown.totalModal = breakdown.kibB + breakdown.kibE;
   if (totalRealisasi === 0) totalRealisasi = breakdown.totalBarangJasa + breakdown.totalModal;
-  if (sisaSaldo === 0) sisaSaldo = totalPenerimaan - totalRealisasi;
+  if (sisaSaldo === 0) sisaSaldo = (saldoAwal + totalPenerimaan) - totalRealisasi;
 
   // Auto lookup official Gugus and canonical School Name / NPSN from dynamic schools DB / schoolsData
   const schoolList = (customSchools && customSchools.length > 0) ? customSchools : schoolsData;
@@ -411,7 +411,7 @@ export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): Parsed
     if (!npsn || npsn.length < 7 || npsn.toLowerCase().includes('npsn')) continue;
 
     const saldoAwal = Number(getCell('F', r)) || 0;
-    const totalPenerimaan = Number(getCell('G', r)) || saldoAwal;
+    const totalPenerimaan = Number(getCell('G', r)) || 0;
 
     const breakdown: LkBospBreakdown = {
       bhp: Number(getCell('H', r)) || 0,
@@ -434,7 +434,7 @@ export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): Parsed
     breakdown.totalModal = breakdown.kibB + breakdown.kibE;
 
     const totalRealisasi = Number(getCell('U', r)) || (breakdown.totalBarangJasa + breakdown.totalModal);
-    const sisaSaldo = Number(getCell('V', r)) || (totalPenerimaan - totalRealisasi);
+    const sisaSaldo = Number(getCell('V', r)) || ((saldoAwal + totalPenerimaan) - totalRealisasi);
     const saldoRekening = Number(getCell('W', r)) || sisaSaldo;
     const saldoKasTunai = Number(getCell('X', r)) || 0;
 
