@@ -2,20 +2,29 @@ import * as XLSX from 'xlsx';
 import type { LkBospBreakdown, LkBospBhpItem, LkBospKibItem, LkBospMaintenanceItem } from './types';
 
 export interface ParsedLkBospResult {
-  schoolName?: string;
-  npsn?: string;
-  gugus?: string;
+  schoolName: string;
+  npsn: string;
+  gugus: string;
   periodYear: number;
   triwulan: 1 | 2 | 3 | 4;
   saldoAwal: number;
   totalPenerimaan: number;
   totalRealisasi: number;
   sisaSaldo: number;
+  saldoRekening: number;
+  saldoKasTunai: number;
   breakdown: LkBospBreakdown;
+  validationWarnings?: string[];
 }
 
+/**
+ * Single Source of Truth Parser for LK BOSP Excel Workbooks.
+ * Primary Master Sheet: 'Realisasi BOS - BPK Format'
+ * Sub-Sheets: 'BHP', 'peralatan dan Mesin (B)', 'Asset Tetap Lainnya (E)', 'Rincian pemelihraan', 'Rincian Jasa Upah Pemelihraan'
+ */
 export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string): ParsedLkBospResult {
   const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+  const validationWarnings: string[] = [];
 
   // Default empty breakdown
   const breakdown: LkBospBreakdown = {
@@ -47,60 +56,107 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
   let totalPenerimaan = 0;
   let totalRealisasi = 0;
   let sisaSaldo = 0;
+  let saldoRekening = 0;
+  let saldoKasTunai = 0;
 
-  // 1. Parse 'Realisasi BOS - BPK Format' Sheet
+  // ============================================================
+  // STEP 1: PARSE MASTER SHEET 'Realisasi BOS - BPK Format' (UTAMA)
+  // ============================================================
   const masterSheetName = workbook.SheetNames.find(s => s.toLowerCase().includes('realisasi bos'));
   if (masterSheetName) {
     const sheet = workbook.Sheets[masterSheetName];
-    const data: (string | number | null)[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    // Read raw cells with column letters
+    const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:Z500');
 
-    // Search for target row by NPSN or school name, or first data row
-    let targetRow: (string | number | null)[] | null = null;
-    for (let r = 8; r < data.length; r++) {
-      const row = data[r];
-      if (!row || row.length === 0) continue;
-      const rNpsn = String(row[2] || '').trim();
-      const rName = String(row[1] || row[3] || '').trim();
+    // Helper to get cell value by column letter and row number (1-based)
+    const getCell = (colLetter: string, rowNum: number): string | number | null => {
+      const cellAddress = `${colLetter}${rowNum}`;
+      const cell = sheet[cellAddress];
+      if (!cell || cell.v === undefined || cell.v === null) return null;
+      return cell.v;
+    };
 
-      if (npsnTarget && (rNpsn === npsnTarget || rNpsn.includes(npsnTarget))) {
-        targetRow = row;
-        schoolName = rName || schoolName;
-        npsn = rNpsn;
+    let targetRowIndex = -1;
+
+    // Scan data rows (starting row 8 up to max row)
+    for (let r = 8; r <= range.e.r + 1; r++) {
+      const rowNpsn = String(getCell('C', r) || '').trim();
+      const rowName = String(getCell('B', r) || getCell('D', r) || '').trim();
+
+      if (!rowName || rowName.toLowerCase().includes('jumlah') || rowName.toLowerCase().includes('total')) continue;
+
+      if (npsnTarget && (rowNpsn === npsnTarget || rowNpsn.includes(npsnTarget))) {
+        targetRowIndex = r;
+        schoolName = rowName;
+        npsn = rowNpsn;
         break;
       }
-      if (!targetRow && rNpsn && rNpsn.length >= 7 && !rNpsn.toLowerCase().includes('npsn')) {
-        targetRow = row;
-        schoolName = rName;
-        npsn = rNpsn;
+
+      // If no npsnTarget specified, grab the first valid school row that has non-zero values
+      if (!targetRowIndex && rowNpsn && rowNpsn.length >= 7 && !rowNpsn.toLowerCase().includes('npsn')) {
+        const valU = Number(getCell('U', r)) || 0;
+        const valH = Number(getCell('H', r)) || 0;
+        if (valU > 0 || valH > 0 || !npsnTarget) {
+          targetRowIndex = r;
+          schoolName = rowName;
+          npsn = rowNpsn;
+        }
       }
     }
 
-    if (targetRow) {
-      saldoAwal = Number(targetRow[5]) || 0;
-      totalPenerimaan = Number(targetRow[6]) || 0;
-      breakdown.bhp = Number(targetRow[7]) || 0;
-      breakdown.honor = Number(targetRow[8]) || 0;
-      breakdown.dayaJasa = Number(targetRow[9]) || 0;
-      breakdown.pemeliharaan = Number(targetRow[10]) || 0;
-      breakdown.upahPemeliharaan = Number(targetRow[11]) || 0;
-      breakdown.lombaBimtek = Number(targetRow[12]) || 0;
-      breakdown.honorKegiatan = Number(targetRow[13]) || 0;
-      breakdown.makanMinum = Number(targetRow[14]) || 0;
-      breakdown.perdin = Number(targetRow[15]) || 0;
-      breakdown.totalBarangJasa = Number(targetRow[16]) || (
+    // Fallback: search by school name if NPSN match failed
+    if (targetRowIndex === -1) {
+      for (let r = 8; r <= range.e.r + 1; r++) {
+        const rowName = String(getCell('B', r) || '').trim();
+        const valH = Number(getCell('H', r)) || 0;
+        if (rowName && valH > 0) {
+          targetRowIndex = r;
+          schoolName = rowName;
+          npsn = String(getCell('C', r) || npsnTarget || '');
+          break;
+        }
+      }
+    }
+
+    if (targetRowIndex !== -1) {
+      const r = targetRowIndex;
+
+      // Extract EXACT columns according to BPK Master format:
+      saldoAwal = Number(getCell('F', r)) || 0;
+      totalPenerimaan = Number(getCell('G', r)) || saldoAwal;
+
+      breakdown.bhp = Number(getCell('H', r)) || 0;
+      breakdown.honor = Number(getCell('J', r)) || 0;
+      breakdown.dayaJasa = Number(getCell('K', r)) || 0;
+      breakdown.pemeliharaan = Number(getCell('L', r)) || 0;
+      breakdown.upahPemeliharaan = Number(getCell('M', r)) || 0;
+      breakdown.lombaBimtek = Number(getCell('N', r)) || 0;
+      breakdown.honorKegiatan = Number(getCell('O', r)) || 0;
+      breakdown.makanMinum = Number(getCell('P', r)) || 0;
+      breakdown.perdin = Number(getCell('Q', r)) || 0;
+
+      breakdown.totalBarangJasa = Number(getCell('Q', r)) || (
         breakdown.bhp + breakdown.honor + breakdown.dayaJasa + breakdown.pemeliharaan +
         breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan +
         breakdown.makanMinum + breakdown.perdin
       );
-      breakdown.kibB = Number(targetRow[17]) || 0;
-      breakdown.kibE = Number(targetRow[18]) || 0;
-      breakdown.totalModal = Number(targetRow[19]) || (breakdown.kibB + breakdown.kibE);
-      totalRealisasi = Number(targetRow[20] || targetRow[21]) || (breakdown.totalBarangJasa + breakdown.totalModal);
-      sisaSaldo = Number(targetRow[22] || targetRow[23]) || (saldoAwal + totalPenerimaan - totalRealisasi);
+
+      breakdown.kibB = Number(getCell('R', r)) || 0;
+      breakdown.kibE = Number(getCell('S', r)) || 0;
+      breakdown.totalModal = Number(getCell('T', r)) || (breakdown.kibB + breakdown.kibE);
+
+      totalRealisasi = Number(getCell('U', r)) || (breakdown.totalBarangJasa + breakdown.totalModal);
+      sisaSaldo = Number(getCell('V', r)) || (totalPenerimaan - totalRealisasi);
+      saldoRekening = Number(getCell('W', r)) || sisaSaldo;
+      saldoKasTunai = Number(getCell('X', r)) || 0;
     }
   }
 
-  // 2. Parse 'BHP' Sheet
+  // ============================================================
+  // STEP 2: PARSE SUB-SHEETS FOR ITEMIZED LINE BREAKDOWN
+  // ============================================================
+
+  // 2a. Sheet 'BHP'
   const bhpSheetName = workbook.SheetNames.find(s => s.toLowerCase() === 'bhp' || s.toLowerCase().includes('barang habis pakai'));
   if (bhpSheetName) {
     const sheet = workbook.Sheets[bhpSheetName];
@@ -141,9 +197,14 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     }
     breakdown.itemsBhp = items;
     if (breakdown.bhp === 0 && sumBhp > 0) breakdown.bhp = sumBhp;
+
+    // Cross-validation check
+    if (breakdown.bhp > 0 && sumBhp > 0 && Math.abs(breakdown.bhp - sumBhp) > 100) {
+      validationWarnings.push(`Selisih BHP: Total Master (${breakdown.bhp.toLocaleString('id-ID')}) != Sum Sheet BHP (${sumBhp.toLocaleString('id-ID')})`);
+    }
   }
 
-  // 3. Parse KIB B Sheet
+  // 2b. Sheet 'peralatan dan Mesin (B)' (KIB B)
   const kibBSheetName = workbook.SheetNames.find(s => s.toLowerCase().includes('peralatan') || s.toLowerCase().includes('kib b'));
   if (kibBSheetName) {
     const sheet = workbook.Sheets[kibBSheetName];
@@ -154,7 +215,7 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     for (let r = 5; r < data.length; r++) {
       const row = data[r];
       if (!row || row.length < 5) continue;
-      const namaBarang = String(row[32] || row[18] || row[4] || '').trim();
+      const namaBarang = String(row[23] || row[18] || row[4] || '').trim();
       if (!namaBarang || namaBarang.toLowerCase().includes('total')) continue;
 
       const volume = Number(row[20] || row[6]) || 0;
@@ -183,7 +244,7 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     if (breakdown.kibB === 0 && sumKibB > 0) breakdown.kibB = sumKibB;
   }
 
-  // 4. Parse KIB E Sheet
+  // 2c. Sheet 'Asset Tetap Lainnya (E)' (KIB E)
   const kibESheetName = workbook.SheetNames.find(s => s.toLowerCase().includes('asset tet') || s.toLowerCase().includes('kib e'));
   if (kibESheetName) {
     const sheet = workbook.Sheets[kibESheetName];
@@ -194,8 +255,8 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     for (let r = 5; r < data.length; r++) {
       const row = data[r];
       if (!row || row.length < 5) continue;
-      const spesifikasiJudul = String(row[33] || row[18] || row[4] || '').trim();
-      const namaBarang = String(row[32] || row[17] || spesifikasiJudul || '').trim();
+      const spesifikasiJudul = String(row[23] || row[18] || row[4] || '').trim();
+      const namaBarang = String(row[22] || row[17] || spesifikasiJudul || '').trim();
       if (!namaBarang || namaBarang.toLowerCase().includes('total')) continue;
 
       const volume = Number(row[20] || row[6]) || 0;
@@ -223,7 +284,7 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     if (breakdown.kibE === 0 && sumKibE > 0) breakdown.kibE = sumKibE;
   }
 
-  // 5. Parse Rincian Pemeliharaan Sheet
+  // 2d. Sheet 'Rincian pemelihraan' & 'Rincian Jasa Upah Pemelihraan'
   const maintSheetName = workbook.SheetNames.find(s => s.toLowerCase().includes('rincian pemelihraan'));
   if (maintSheetName) {
     const sheet = workbook.Sheets[maintSheetName];
@@ -259,11 +320,12 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     if (breakdown.pemeliharaan === 0 && sumMaint > 0) breakdown.pemeliharaan = sumMaint;
   }
 
-  // Recalculate totals
+  // Final totals recalculation if master sheet missing
   breakdown.totalBarangJasa = breakdown.bhp + breakdown.honor + breakdown.dayaJasa + breakdown.pemeliharaan +
     breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum + breakdown.perdin;
   breakdown.totalModal = breakdown.kibB + breakdown.kibE;
   if (totalRealisasi === 0) totalRealisasi = breakdown.totalBarangJasa + breakdown.totalModal;
+  if (sisaSaldo === 0) sisaSaldo = totalPenerimaan - totalRealisasi;
 
   return {
     schoolName,
@@ -275,6 +337,83 @@ export function parseLkBospExcel(arrayBuffer: ArrayBuffer, npsnTarget?: string):
     totalPenerimaan,
     totalRealisasi,
     sisaSaldo,
+    saldoRekening,
+    saldoKasTunai,
     breakdown,
+    validationWarnings,
   };
+}
+
+/**
+ * Bulk Extractor for Admin to import all 49 schools from Master Excel file at once.
+ */
+export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): ParsedLkBospResult[] {
+  const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+  const results: ParsedLkBospResult[] = [];
+
+  const masterSheetName = workbook.SheetNames.find(s => s.toLowerCase().includes('realisasi bos'));
+  if (!masterSheetName) return results;
+
+  const sheet = workbook.Sheets[masterSheetName];
+  const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:Z500');
+
+  const getCell = (colLetter: string, rowNum: number): string | number | null => {
+    const cellAddress = `${colLetter}${rowNum}`;
+    const cell = sheet[cellAddress];
+    if (!cell || cell.v === undefined || cell.v === null) return null;
+    return cell.v;
+  };
+
+  for (let r = 8; r <= range.e.r + 1; r++) {
+    const npsn = String(getCell('C', r) || '').trim();
+    const schoolName = String(getCell('B', r) || getCell('D', r) || '').trim();
+
+    if (!schoolName || schoolName.toLowerCase().includes('jumlah') || schoolName.toLowerCase().includes('total')) continue;
+    if (!npsn || npsn.length < 7 || npsn.toLowerCase().includes('npsn')) continue;
+
+    const saldoAwal = Number(getCell('F', r)) || 0;
+    const totalPenerimaan = Number(getCell('G', r)) || saldoAwal;
+
+    const breakdown: LkBospBreakdown = {
+      bhp: Number(getCell('H', r)) || 0,
+      honor: Number(getCell('J', r)) || 0,
+      dayaJasa: Number(getCell('K', r)) || 0,
+      pemeliharaan: Number(getCell('L', r)) || 0,
+      upahPemeliharaan: Number(getCell('M', r)) || 0,
+      lombaBimtek: Number(getCell('N', r)) || 0,
+      honorKegiatan: Number(getCell('O', r)) || 0,
+      makanMinum: Number(getCell('P', r)) || 0,
+      perdin: Number(getCell('Q', r)) || 0,
+      totalBarangJasa: Number(getCell('Q', r)) || 0,
+      kibB: Number(getCell('R', r)) || 0,
+      kibE: Number(getCell('S', r)) || 0,
+      totalModal: Number(getCell('T', r)) || 0,
+    };
+
+    breakdown.totalBarangJasa = breakdown.bhp + breakdown.honor + breakdown.dayaJasa + breakdown.pemeliharaan +
+      breakdown.upahPemeliharaan + breakdown.lombaBimtek + breakdown.honorKegiatan + breakdown.makanMinum + breakdown.perdin;
+    breakdown.totalModal = breakdown.kibB + breakdown.kibE;
+
+    const totalRealisasi = Number(getCell('U', r)) || (breakdown.totalBarangJasa + breakdown.totalModal);
+    const sisaSaldo = Number(getCell('V', r)) || (totalPenerimaan - totalRealisasi);
+    const saldoRekening = Number(getCell('W', r)) || sisaSaldo;
+    const saldoKasTunai = Number(getCell('X', r)) || 0;
+
+    results.push({
+      schoolName,
+      npsn,
+      gugus: '',
+      periodYear: 2026,
+      triwulan: 1,
+      saldoAwal,
+      totalPenerimaan,
+      totalRealisasi,
+      sisaSaldo,
+      saldoRekening,
+      saldoKasTunai,
+      breakdown,
+    });
+  }
+
+  return results;
 }

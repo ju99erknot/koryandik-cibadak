@@ -457,55 +457,71 @@ export default function SchoolLkBospPage() {
                       <tr>
                         <td>2</td>
                         <td><span className="badge badge-outline">Barang & Jasa</span></td>
-                        <td>Jasa Tenaga Pendidik & Kependidikan (Honor)</td>
+                        <td>Jasa Tenaga Pendidik dan Kependidikan (Honor Guru/Tenaga Kerja)</td>
                         <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.honor.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr>
                         <td>3</td>
                         <td><span className="badge badge-outline">Barang & Jasa</span></td>
-                        <td>Daya dan Jasa (Listrik/Air/Internet)</td>
+                        <td>Daya dan Jasa (Listrik, Air, Telepon, Internet)</td>
                         <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.dayaJasa.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr>
                         <td>4</td>
                         <td><span className="badge badge-outline">Barang & Jasa</span></td>
-                        <td>Bahan Pemeliharaan Fisik Ruang Kelas/Gedung</td>
+                        <td>Bahan Pemeliharaan Sarana & Gedung Sekolah</td>
                         <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.pemeliharaan.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr>
                         <td>5</td>
                         <td><span className="badge badge-outline">Barang & Jasa</span></td>
-                        <td>Upah Kerja Pemeliharaan (Jasa Tukang)</td>
+                        <td>Upah Pemeliharaan (Jasa Tukang Perbaikan Fisik)</td>
                         <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.upahPemeliharaan.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr>
                         <td>6</td>
                         <td><span className="badge badge-outline">Barang & Jasa</span></td>
-                        <td>Makan & Minum, Perdin, Bimtek, & Honor Kegiatan</td>
-                        <td style={{ textAlign: 'right', fontWeight: 700 }}>
-                          {(parsedBreakdown.makanMinum + parsedBreakdown.perdin + parsedBreakdown.honorKegiatan + parsedBreakdown.lombaBimtek).toLocaleString('id-ID')}
-                        </td>
+                        <td>Biaya Pendaftaran Lomba / Bimtek / Rakor / Workshop</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.lombaBimtek.toLocaleString('id-ID')}</td>
+                      </tr>
+                      <tr>
+                        <td>7</td>
+                        <td><span className="badge badge-outline">Barang & Jasa</span></td>
+                        <td>Honorarium Kegiatan / Panitia</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.honorKegiatan.toLocaleString('id-ID')}</td>
+                      </tr>
+                      <tr>
+                        <td>8</td>
+                        <td><span className="badge badge-outline">Barang & Jasa</span></td>
+                        <td>Makan dan Minum Kegiatan Rapat / Acara</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.makanMinum.toLocaleString('id-ID')}</td>
+                      </tr>
+                      <tr>
+                        <td>9</td>
+                        <td><span className="badge badge-outline">Barang & Jasa</span></td>
+                        <td>Perjalanan Dinas / Transport Kegiatan</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.perdin.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr style={{ background: 'var(--primary-glow)' }}>
-                        <td colSpan={3}><strong>SUBTOTAL BELANJA BARANG & JASA</strong></td>
+                        <td colSpan={3}><strong>TOTAL BELANJA BARANG DAN JASA</strong></td>
                         <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--primary)' }}>
                           {parsedBreakdown.totalBarangJasa.toLocaleString('id-ID')}
                         </td>
                       </tr>
                       <tr>
-                        <td>7</td>
+                        <td>10</td>
                         <td><span className="badge badge-primary">Belanja Modal</span></td>
-                        <td>Belanja Modal Peralatan & Mesin (KIB B - Laptop/Printer/Mesin)</td>
+                        <td>Peralatan dan Mesin (KIB B - Laptop, Printer, Sound, AC, dll)</td>
                         <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.kibB.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr>
-                        <td>8</td>
+                        <td>11</td>
                         <td><span className="badge badge-primary">Belanja Modal</span></td>
-                        <td>Belanja Modal Aset Tetap Lainnya (KIB E - Buku Teks/Olahraga)</td>
+                        <td>Aset Tetap Lainnya (KIB E - Buku Utama/Pendamping, Olahraga, Kesenian)</td>
                         <td style={{ textAlign: 'right', fontWeight: 700 }}>{parsedBreakdown.kibE.toLocaleString('id-ID')}</td>
                       </tr>
                       <tr style={{ background: 'var(--success-glow)' }}>
-                        <td colSpan={3}><strong>SUBTOTAL BELANJA MODAL (KIB B + KIB E)</strong></td>
+                        <td colSpan={3}><strong>TOTAL BELANJA MODAL (KIB B + KIB E)</strong></td>
                         <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--success)' }}>
                           {parsedBreakdown.totalModal.toLocaleString('id-ID')}
                         </td>
@@ -513,7 +529,7 @@ export default function SchoolLkBospPage() {
                     </tbody>
                     <tfoot>
                       <tr style={{ fontSize: '15px', background: 'var(--card-bg-elevated)' }}>
-                        <th colSpan={3}>TOTAL REALISASI BOSP TRIWULAN {activeTw}</th>
+                        <th colSpan={3}>TOTAL REALISASI DANA BOS TRIWULAN {activeTw}</th>
                         <th style={{ textAlign: 'right', color: 'var(--primary)', fontWeight: 900 }}>
                           {calcTotalRealisasi.toLocaleString('id-ID')}
                         </th>
