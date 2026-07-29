@@ -305,63 +305,72 @@ export default function AdminLkBospPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredSchools.map((sc) => {
-                    const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
+                  {filteredSchools.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                        <i className="fa-solid fa-folder-open" style={{ fontSize: '24px', marginBottom: '8px', display: 'block', opacity: 0.5 }} aria-hidden="true" />
+                        Belum ada data laporan LK BOSP yang sesuai dengan kriteria pencarian.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredSchools.map((sc) => {
+                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
 
-                    return (
-                      <tr key={sc.npsn}>
-                        <td>
-                          <div style={{ fontWeight: 700 }}>{sc.name}</div>
-                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>NPSN: {sc.npsn}</span>
-                        </td>
-                        <td><span className="badge badge-outline">Gugus {sc.gugus}</span></td>
-                        <td>{sub ? `TW ${sub.triwulan} / ${sub.periodYear}` : '-'}</td>
-                        <td style={{ textAlign: 'right', fontWeight: 700 }}>
-                          {sub ? `Rp ${sub.totalRealisasi.toLocaleString('id-ID')}` : '-'}
-                        </td>
-                        <td style={{ textAlign: 'right', fontWeight: 700, color: sub?.isBalanceMatch ? 'var(--success)' : 'var(--danger)' }}>
-                          {sub ? `Rp ${sub.sisaSaldo.toLocaleString('id-ID')}` : '-'}
-                        </td>
-                        <td>
-                          {sub?.rekeningKoranUrl ? (
-                            <button
-                              type="button"
-                              onClick={() => setSelectedRekeningKoran({ schoolName: sc.name, fileUrl: sub.rekeningKoranUrl!, fileName: sub.rekeningKoranName || 'Rekening Koran' })}
-                              className="btn btn-sm btn-secondary"
-                              style={{ fontSize: '11px' }}
-                            >
-                              <i className="fa-solid fa-file-pdf" style={{ color: '#f59e0b', marginRight: '4px' }} /> Pratinjau
-                            </button>
-                          ) : (
-                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Belum Unggah</span>
-                          )}
-                        </td>
-                        <td>
-                          {sub ? (
-                            <span className={`badge ${sub.status === 'approved' ? 'badge-success' : sub.status === 'revision' ? 'badge-danger' : 'badge-warning'}`}>
-                              {sub.status === 'approved' ? 'Disetujui' : sub.status === 'revision' ? 'Perlu Revisi' : 'Menunggu Review'}
-                            </span>
-                          ) : (
-                            <span className="badge" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>Belum Kirim</span>
-                          )}
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          {sub ? (
-                            <button
-                              type="button"
-                              onClick={() => setReviewModal({ id: sub.id, schoolName: sc.name, status: sub.status === 'approved' ? 'approved' : 'approved', notes: sub.notes || '' })}
-                              className="btn btn-sm btn-primary"
-                              style={{ fontSize: '11px' }}
-                            >
-                              <i className="fa-solid fa-pen-to-square" style={{ marginRight: '4px' }} /> Verifikasi
-                            </button>
-                          ) : (
-                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>-</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                      return (
+                        <tr key={sc.npsn}>
+                          <td>
+                            <div style={{ fontWeight: 700 }}>{sc.name}</div>
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>NPSN: {sc.npsn}</span>
+                          </td>
+                          <td><span className="badge badge-outline">Gugus {sc.gugus}</span></td>
+                          <td>{sub ? `TW ${sub.triwulan} / ${sub.periodYear}` : '-'}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 700 }}>
+                            {sub ? `Rp ${sub.totalRealisasi.toLocaleString('id-ID')}` : '-'}
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 700, color: sub?.isBalanceMatch ? 'var(--success)' : 'var(--danger)' }}>
+                            {sub ? `Rp ${sub.sisaSaldo.toLocaleString('id-ID')}` : '-'}
+                          </td>
+                          <td>
+                            {sub?.rekeningKoranUrl ? (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedRekeningKoran({ schoolName: sc.name, fileUrl: sub.rekeningKoranUrl!, fileName: sub.rekeningKoranName || 'Rekening Koran' })}
+                                className="btn btn-sm btn-secondary"
+                                style={{ fontSize: '11px' }}
+                              >
+                                <i className="fa-solid fa-file-pdf" style={{ color: 'var(--warning)', marginRight: '4px' }} /> Pratinjau
+                              </button>
+                            ) : (
+                              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Belum Unggah</span>
+                            )}
+                          </td>
+                          <td>
+                            {sub ? (
+                              <span className={`badge ${sub.status === 'approved' ? 'badge-success' : sub.status === 'revision' ? 'badge-danger' : 'badge-warning'}`}>
+                                {sub.status === 'approved' ? 'Disetujui' : sub.status === 'revision' ? 'Perlu Revisi' : 'Menunggu Review'}
+                              </span>
+                            ) : (
+                              <span className="badge" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>Belum Kirim</span>
+                            )}
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            {sub ? (
+                              <button
+                                type="button"
+                                onClick={() => setReviewModal({ id: sub.id, schoolName: sc.name, status: sub.status === 'approved' ? 'approved' : 'approved', notes: sub.notes || '' })}
+                                className="btn btn-sm btn-primary"
+                                style={{ fontSize: '11px' }}
+                              >
+                                <i className="fa-solid fa-pen-to-square" style={{ marginRight: '4px' }} /> Verifikasi
+                              </button>
+                            ) : (
+                              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>-</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -371,20 +380,22 @@ export default function AdminLkBospPage() {
         {/* Modal Pratinjau Rekening Koran Inline */}
         {selectedRekeningKoran && (
           <div style={{
-            position: 'fixed', inset: 0, zIndex: 10000,
-            background: 'var(--modal-backdrop)', backdropFilter: 'blur(var(--modal-blur))',
+            position: 'fixed', inset: 0, zIndex: 'var(--z-modal)',
+            background: 'var(--modal-backdrop)',
+            backdropFilter: 'blur(var(--modal-blur))',
+            WebkitBackdropFilter: 'blur(var(--modal-blur))',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
           }}>
             <div className="card glass-card animate-scale-in" style={{ width: '100%', maxWidth: '800px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
               <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3><i className="fa-solid fa-file-pdf" style={{ color: '#f59e0b', marginRight: '8px' }} /> Pratinjau Bukti Rekening Koran - {selectedRekeningKoran.schoolName}</h3>
-                <button type="button" onClick={() => setSelectedRekeningKoran(null)} className="btn btn-sm btn-secondary">
-                  <i className="fa-solid fa-xmark" />
+                <h3><i className="fa-solid fa-file-pdf" style={{ color: 'var(--warning)', marginRight: '8px' }} /> Pratinjau Bukti Rekening Koran - {selectedRekeningKoran.schoolName}</h3>
+                <button type="button" onClick={() => setSelectedRekeningKoran(null)} className="btn btn-sm btn-secondary" aria-label="Tutup">
+                  <i className="fa-solid fa-xmark" aria-hidden="true" />
                 </button>
               </div>
               <div className="card-body" style={{ flex: 1, overflow: 'auto', padding: '16px', textAlign: 'center' }}>
                 {selectedRekeningKoran.fileUrl.startsWith('data:application/pdf') || selectedRekeningKoran.fileUrl.endsWith('.pdf') ? (
-                  <iframe src={selectedRekeningKoran.fileUrl} style={{ width: '100%', height: '500px', border: 'none', borderRadius: '12px' }} />
+                  <iframe src={selectedRekeningKoran.fileUrl} style={{ width: '100%', height: '500px', border: 'none', borderRadius: '12px' }} title="Rekening Koran PDF Viewer" />
                 ) : (
                   <img src={selectedRekeningKoran.fileUrl} alt={selectedRekeningKoran.fileName} style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain', borderRadius: '12px' }} />
                 )}
@@ -396,15 +407,17 @@ export default function AdminLkBospPage() {
         {/* Modal Review Status */}
         {reviewModal && (
           <div style={{
-            position: 'fixed', inset: 0, zIndex: 10000,
-            background: 'var(--modal-backdrop)', backdropFilter: 'blur(var(--modal-blur))',
+            position: 'fixed', inset: 0, zIndex: 'var(--z-modal)',
+            background: 'var(--modal-backdrop)',
+            backdropFilter: 'blur(var(--modal-blur))',
+            WebkitBackdropFilter: 'blur(var(--modal-blur))',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
           }}>
             <div className="card glass-card animate-scale-in" style={{ width: '100%', maxWidth: '500px' }}>
               <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>Verifikasi Laporan LK BOSP - {reviewModal.schoolName}</h3>
-                <button type="button" onClick={() => setReviewModal(null)} className="btn btn-sm btn-secondary">
-                  <i className="fa-solid fa-xmark" />
+                <button type="button" onClick={() => setReviewModal(null)} className="btn btn-sm btn-secondary" aria-label="Tutup">
+                  <i className="fa-solid fa-xmark" aria-hidden="true" />
                 </button>
               </div>
               <div className="card-body">

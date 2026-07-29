@@ -289,7 +289,7 @@ export default function SchoolLkBospPage() {
             {/* Box 1: File Excel LK BOSP */}
             <div className="card glass-card">
               <div className="card-header">
-                <h2><i className="fa-solid fa-file-excel" aria-hidden="true" style={{ color: '#10b981' }} /> 1. Unggah File Excel LK BOSP</h2>
+                <h2><i className="fa-solid fa-file-excel" aria-hidden="true" style={{ color: 'var(--success)' }} /> 1. Unggah File Excel LK BOSP</h2>
               </div>
               <div className="card-body">
                 <div style={{
@@ -322,14 +322,14 @@ export default function SchoolLkBospPage() {
             {/* Box 2: Bukti Rekening Koran Bank */}
             <div className="card glass-card">
               <div className="card-header">
-                <h2><i className="fa-solid fa-receipt" aria-hidden="true" style={{ color: '#f59e0b' }} /> 2. Unggah Bukti Rekening Koran</h2>
+                <h2><i className="fa-solid fa-receipt" aria-hidden="true" style={{ color: 'var(--warning)' }} /> 2. Unggah Bukti Rekening Koran</h2>
               </div>
               <div className="card-body">
                 <div style={{
                   padding: '24px', borderRadius: '16px', border: '2px dashed var(--card-border)',
                   background: 'var(--card-bg-elevated)', textAlign: 'center', cursor: 'pointer'
                 }}>
-                  <i className="fa-solid fa-file-pdf" style={{ fontSize: '32px', color: '#f59e0b', marginBottom: '12px', display: 'block' }} aria-hidden="true" />
+                  <i className="fa-solid fa-file-pdf" style={{ fontSize: '32px', color: 'var(--warning)', marginBottom: '12px', display: 'block' }} aria-hidden="true" />
                   <p style={{ fontSize: '13px', fontWeight: 700, marginBottom: '4px' }}>
                     {rekeningKoranFileName ? rekeningKoranFileName : 'Unggah Rekening Koran PDF / Foto (JPG/PNG)'}
                   </p>
