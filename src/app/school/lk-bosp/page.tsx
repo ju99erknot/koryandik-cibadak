@@ -124,7 +124,15 @@ export default function SchoolLkBospPage() {
 
   const calcTotalRealisasi = parsedBreakdown ? (parsedBreakdown.totalBarangJasa + parsedBreakdown.totalModal) : 0;
   const calcSisaSaldo = (saldoAwalInput + totalPenerimaanInput) - calcTotalRealisasi;
-  const isBalanceMatch = Math.abs(calcSisaSaldo - rekeningKoranBalanceInput) < 100;
+  const hasRekeningKoran = Boolean(rekeningKoranUrl);
+  const isBalanceMatch = hasRekeningKoran && Math.abs(calcSisaSaldo - rekeningKoranBalanceInput) < 100 && (rekeningKoranBalanceInput > 0 || calcSisaSaldo === 0);
+
+  // Auto fill rekening koran balance input from parsed excel if not set
+  useEffect(() => {
+    if (parsedBreakdown && rekeningKoranBalanceInput === 0 && calcSisaSaldo > 0) {
+      setRekeningKoranBalanceInput(calcSisaSaldo);
+    }
+  }, [parsedBreakdown, calcSisaSaldo]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -404,29 +412,51 @@ export default function SchoolLkBospPage() {
               </div>
 
               {/* Balance Verification Indicator */}
-              <div style={{
-                padding: '14px 20px', borderRadius: '12px',
-                background: isBalanceMatch ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                border: `1px solid ${isBalanceMatch ? 'var(--success)' : 'var(--danger)'}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <i className={`fa-solid ${isBalanceMatch ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'}`} style={{ fontSize: '20px' }} aria-hidden="true" />
-                  <div>
-                    <strong style={{ fontSize: '13px', color: isBalanceMatch ? 'var(--success)' : 'var(--danger)' }}>
-                      {isBalanceMatch ? 'Keseimbangan Saldo Cocok (Match)' : 'Peringatan: Selisih Saldo Terdeteksi'}
-                    </strong>
-                    <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                      {isBalanceMatch
-                        ? 'Sisa saldo di laporan Excel LK BOS tepat sesuai dengan saldo akhir di Rekening Koran Bank.'
-                        : `Terdapat selisih Rp ${(calcSisaSaldo - rekeningKoranBalanceInput).toLocaleString('id-ID')} antara saldo laporan dan Rekening Koran.`}
-                    </p>
+              {!hasRekeningKoran ? (
+                <div style={{
+                  padding: '14px 20px', borderRadius: '12px',
+                  background: 'rgba(245,158,11,0.1)',
+                  border: '1px solid var(--warning)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '20px', color: 'var(--warning)' }} aria-hidden="true" />
+                    <div>
+                      <strong style={{ fontSize: '13px', color: 'var(--warning)' }}>
+                        Menunggu Bukti Rekening Koran
+                      </strong>
+                      <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                        Silakan unggah berkas Rekening Koran PDF / Foto di Box 2 untuk memverifikasi kesesuaian saldo kas bank.
+                      </p>
+                    </div>
                   </div>
+                  <span className="badge badge-warning">MENUNGGU REKENING KORAN</span>
                 </div>
-                <span className={`badge ${isBalanceMatch ? 'badge-success' : 'badge-danger'}`}>
-                  {isBalanceMatch ? 'BALANCE OK' : 'MISMATCH'}
-                </span>
-              </div>
+              ) : (
+                <div style={{
+                  padding: '14px 20px', borderRadius: '12px',
+                  background: isBalanceMatch ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                  border: `1px solid ${isBalanceMatch ? 'var(--success)' : 'var(--danger)'}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <i className={`fa-solid ${isBalanceMatch ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'}`} style={{ fontSize: '20px' }} aria-hidden="true" />
+                    <div>
+                      <strong style={{ fontSize: '13px', color: isBalanceMatch ? 'var(--success)' : 'var(--danger)' }}>
+                        {isBalanceMatch ? 'Keseimbangan Saldo Cocok (Match)' : 'Peringatan: Selisih Saldo Terdeteksi'}
+                      </strong>
+                      <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                        {isBalanceMatch
+                          ? 'Sisa saldo di laporan Excel LK BOS tepat sesuai dengan saldo akhir di Rekening Koran Bank.'
+                          : `Terdapat selisih Rp ${Math.abs(calcSisaSaldo - rekeningKoranBalanceInput).toLocaleString('id-ID')} antara saldo laporan dan Rekening Koran.`}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`badge ${isBalanceMatch ? 'badge-success' : 'badge-danger'}`}>
+                    {isBalanceMatch ? 'BALANCE OK' : 'MISMATCH'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
