@@ -6,6 +6,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { getLkBospSubmissions, updateLkBospStatus, getSchools, getGugusData } from '@/lib/db';
+import { getSchoolSummaryForPeriod } from '@/lib/lkBospParser';
 import type { LkBospSubmission, LkBospBreakdown } from '@/lib/types';
 import type { School, GugusData } from '@/lib/schoolsData';
 import { toast } from 'sonner';
@@ -324,7 +325,7 @@ export default function AdminLkBospPage() {
                     </tr>
                   ) : (
                     filteredSchools.map((sc) => {
-                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
+                      const sub = getSchoolSummaryForPeriod(submissions, sc.npsn, selectedYear, selectedTw);
 
                       return (
                         <tr key={sc.npsn}>
@@ -333,7 +334,7 @@ export default function AdminLkBospPage() {
                             <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>NPSN: {sc.npsn}</span>
                           </td>
                           <td><span className="badge badge-outline">Gugus {sc.gugus}</span></td>
-                          <td>{sub ? `TW ${sub.triwulan} / ${sub.periodYear}` : '-'}</td>
+                          <td>{sub ? (selectedTw === 0 ? `Akumulasi 1 Thn / ${selectedYear}` : `TW ${sub.triwulan} / ${sub.periodYear}`) : '-'}</td>
                           <td style={{ textAlign: 'right', fontWeight: 700 }}>
                             {sub ? `Rp ${sub.totalRealisasi.toLocaleString('id-ID')}` : '-'}
                           </td>

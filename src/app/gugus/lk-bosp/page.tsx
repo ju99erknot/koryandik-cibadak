@@ -6,6 +6,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { getLkBospSubmissions, getSchools } from '@/lib/db';
+import { getSchoolSummaryForPeriod } from '@/lib/lkBospParser';
 import type { LkBospSubmission, LkBospBreakdown } from '@/lib/types';
 import type { School, GugusData } from '@/lib/schoolsData';
 
@@ -132,14 +133,14 @@ export default function GugusLkBospPage() {
                     </tr>
                   ) : (
                     gugusSchools.map(sc => {
-                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
+                      const sub = getSchoolSummaryForPeriod(submissions, sc.npsn, selectedYear, selectedTw);
                       return (
                         <tr key={sc.npsn}>
                           <td>
                             <div style={{ fontWeight: 700 }}>{sc.name}</div>
                             <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>NPSN: {sc.npsn}</span>
                           </td>
-                          <td>{selectedTw === 0 ? `Total 1 Thn / ${selectedYear}` : `TW ${selectedTw} / ${selectedYear}`}</td>
+                          <td>{sub ? (selectedTw === 0 ? `Akumulasi 1 Thn / ${selectedYear}` : `TW ${sub.triwulan} / ${sub.periodYear}`) : '-'}</td>
                           <td style={{ textAlign: 'right', fontWeight: 700 }}>
                             {sub ? `Rp ${sub.totalRealisasi.toLocaleString('id-ID')}` : '-'}
                           </td>

@@ -6,6 +6,7 @@ import DashboardShell, { LoadingScreen } from '@/components/DashboardShell';
 import CommandPalette from '@/components/CommandPalette';
 import { toggleThemeWithTransition } from '@/lib/theme';
 import { getLkBospSubmissions, updateLkBospStatus, getSchools, getGugusData } from '@/lib/db';
+import { getSchoolSummaryForPeriod } from '@/lib/lkBospParser';
 import type { LkBospSubmission, LkBospBreakdown } from '@/lib/types';
 import type { School, GugusData } from '@/lib/schoolsData';
 import { toast } from 'sonner';
@@ -159,7 +160,7 @@ export default function PengawasLkBospPage() {
                     </tr>
                   ) : (
                     filteredSchools.map((sc: School) => {
-                      const sub = submissions.find(s => s.npsn === sc.npsn && s.periodYear === selectedYear && (selectedTw === 0 || s.triwulan === selectedTw));
+                      const sub = getSchoolSummaryForPeriod(submissions, sc.npsn, selectedYear, selectedTw);
                       return (
                         <tr key={sc.npsn}>
                           <td>

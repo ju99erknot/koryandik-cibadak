@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import type { LkBospBreakdown, LkBospBhpItem, LkBospKibItem, LkBospMaintenanceItem } from './types';
+import type { LkBospSubmission, LkBospBreakdown, LkBospBhpItem, LkBospKibItem, LkBospMaintenanceItem } from './types';
 import { schoolsData } from './schoolsData';
 
 export interface ParsedLkBospResult {
@@ -456,3 +456,59 @@ export function parseAllSchoolsFromMasterExcel(arrayBuffer: ArrayBuffer): Parsed
 
   return results;
 }
+
+/**
+ * Single Source of Truth accumulator for LK BOSP submissions for a school in a given year & period (TW 1..4 or 0 for 1-Year Accumulation).
+ */
+export function getSchoolSummaryForPeriod(
+  allSubmissions: LkBospSubmission[],
+  npsn: string,
+  year: number,
+  tw: number
+): LkBospSubmission | null {
+  const schoolSubs = allSubmissions.filter(s => s.npsn === npsn && s.periodYear === year);
+  if (schoolSubs.length === 0) return null;
+
+  if (tw > 0) {
+    return schoolSubs.find(s => s.triwulan === tw) || null;
+  }
+
+  // When tw === 0 (Akumulasi Total 1 Tahun):
+  const sortedAsc = [...schoolSubs].sort((a, b) => a.triwulan - b.triwulan);
+  const sortedDesc = [...schoolSubs].sort((a, b) => b.triwulan - a.triwulan);
+
+  const firstSub = sortedAsc[0];
+  const latestSub = sortedDesc[0];
+
+  const totalRealisasiYear = schoolSubs.reduce((sum, s) => sum + (s.totalRealisasi || 0), 0);
+  const totalPenerimaanYear = schoolSubs.reduce((sum, s) => sum + (s.totalPenerimaan || 0), 0);
+  const saldoAwalYear = firstSub.saldoAwal;
+
+  const combinedBreakdown: LkBospBreakdown = {
+    bhp: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.bhp || 0), 0),
+    honor: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.honor || 0), 0),
+    dayaJasa: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.dayaJasa || 0), 0),
+    pemeliharaan: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.pemeliharaan || 0), 0),
+    upahPemeliharaan: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.upahPemeliharaan || 0), 0),
+    lombaBimtek: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.lombaBimtek || 0), 0),
+    honorKegiatan: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.honorKegiatan || 0), 0),
+    makanMinum: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.makanMinum || 0), 0),
+    perdin: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.perdin || 0), 0),
+    kibB: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.kibB || 0), 0),
+    kibE: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.kibE || 0), 0),
+    totalBarangJasa: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.totalBarangJasa || 0), 0),
+    totalModal: schoolSubs.reduce((sum, s) => sum + (s.breakdown?.totalModal || 0), 0),
+  };
+
+  return {
+    ...latestSub,
+    id: `accumulated-${npsn}-${year}`,
+    triwulan: 1 as any,
+    saldoAwal: saldoAwalYear,
+    totalPenerimaan: totalPenerimaanYear,
+    totalRealisasi: totalRealisasiYear,
+    sisaSaldo: latestSub.sisaSaldo,
+    breakdown: combinedBreakdown,
+  };
+}
+
