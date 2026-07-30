@@ -1682,9 +1682,6 @@ export default function LandingPage() {
         )}
       </section>
 
-      {/* Map Lokasi Koryandik */}
-      <LandingLocationMap schoolCount={schools.length} gugusCount={guguses.length} profileSettings={profileSettings} />
-
       <LandingFooter
         schoolCount={schools.length}
         onScrollTo={scrollToSection}
