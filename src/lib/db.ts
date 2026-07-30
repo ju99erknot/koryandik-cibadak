@@ -381,10 +381,11 @@ export async function updateSchool(npsn: string, updates: Partial<School>): Prom
 
       const { data, error } = await supabase
         .from('schools')
-        .upsert({ npsn: cleanNpsn, ...dbUpdates })
+        .update(dbUpdates)
+        .eq('npsn', cleanNpsn)
         .select();
       if (error) {
-        console.error('[Supabase Error] Gagal upsert school profile:', error);
+        console.error('[Supabase Error] Gagal update school profile:', error);
       } else if (data && data.length > 0) {
         return mapSchoolRow(data[0] as Record<string, unknown>);
       }
@@ -397,9 +398,7 @@ export async function updateSchool(npsn: string, updates: Partial<School>): Prom
   const idx = schools.findIndex((s) => String(s.npsn).trim() === cleanNpsn);
   if (idx === -1) return null;
   schools[idx] = { ...schools[idx], ...updates };
-  if (!isSupabaseConfigured()) {
-    setStorageItem('koryandik_custom_schools', schools);
-  }
+  setStorageItem('koryandik_custom_schools', schools);
   return schools[idx];
 }
 

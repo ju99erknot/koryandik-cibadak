@@ -140,20 +140,22 @@ export default function DashboardShell({
           const parsed = JSON.parse(stored) as SessionUser;
           setCurrentUser(parsed);
           
-          // Load fresh data from database for avatar
+          // Load fresh data from session or database for avatar
           let avatar = parsed.avatar || '';
-          if (parsed.role === 'school' && parsed.npsn) {
-            const { getSchoolByNpsn } = await import('@/lib/db');
-            const school = await getSchoolByNpsn(parsed.npsn);
-            if (school?.operatorAvatarUrl) {
-              avatar = school.operatorAvatarUrl;
-            }
-          } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(parsed.role) && parsed.id) {
-            const { getSupervisors } = await import('@/lib/db');
-            const supervisors = await getSupervisors();
-            const sup = supervisors.find(s => s.id === parsed.id);
-            if (sup?.photoUrl) {
-              avatar = sup.photoUrl;
+          if (!avatar) {
+            if (parsed.role === 'school' && parsed.npsn) {
+              const { getSchoolByNpsn } = await import('@/lib/db');
+              const school = await getSchoolByNpsn(parsed.npsn);
+              if (school?.operatorAvatarUrl) {
+                avatar = school.operatorAvatarUrl;
+              }
+            } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(parsed.role)) {
+              const { getSupervisors } = await import('@/lib/db');
+              const supervisors = await getSupervisors();
+              const sup = supervisors.find(s => (parsed.id && s.id === parsed.id) || s.role === parsed.role);
+              if (sup?.photoUrl) {
+                avatar = sup.photoUrl;
+              }
             }
           }
 
