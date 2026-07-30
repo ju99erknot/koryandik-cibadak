@@ -140,42 +140,63 @@ export default function DashboardShell({
           const parsed = JSON.parse(stored) as SessionUser;
           setCurrentUser(parsed);
           
-          // Load fresh data from session or database for avatar
+          // Load fresh data from session or database for avatar & name
           let avatar = parsed.avatar || '';
-          if (!avatar) {
-            if (parsed.role === 'school' && parsed.npsn) {
-              const { getSchoolByNpsn } = await import('@/lib/db');
-              const school = await getSchoolByNpsn(parsed.npsn);
-              if (school?.operatorAvatarUrl) {
+          let freshName = parsed.name || '';
+          let freshDetails = parsed.details;
+
+          if (parsed.role === 'school' && parsed.npsn) {
+            const { getSchoolByNpsn } = await import('@/lib/db');
+            const school = await getSchoolByNpsn(parsed.npsn);
+            if (school) {
+              if (!avatar && school.operatorAvatarUrl) {
                 avatar = school.operatorAvatarUrl;
               }
-            } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(parsed.role)) {
-              const { getSupervisors } = await import('@/lib/db');
-              const supervisors = await getSupervisors();
-              const sup = supervisors.find(s => (parsed.id && s.id === parsed.id) || s.role === parsed.role);
-              if (sup?.photoUrl) {
+              if (school.operatorName) {
+                freshName = school.operatorName;
+              }
+              freshDetails = school;
+            }
+          } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(parsed.role)) {
+            const { getSupervisors } = await import('@/lib/db');
+            const supervisors = await getSupervisors();
+            const sup = supervisors.find(s => (parsed.id && s.id === parsed.id) || s.role === parsed.role);
+            if (sup) {
+              if (!avatar && sup.photoUrl) {
                 avatar = sup.photoUrl;
               }
+              if (sup.name) {
+                freshName = sup.name;
+              }
+            }
+          } else if (parsed.role === 'gugus' && parsed.id) {
+            const { getGugusData } = await import('@/lib/db');
+            const allGugus = await getGugusData();
+            const g = allGugus.find(item => item.id === parsed.id);
+            if (g?.koordinator) {
+              freshName = g.koordinator;
             }
           }
 
-          const initialName = parsed.role === 'school'
-            ? (getOperatorName(parsed.details) || parsed.name || 'Operator Sekolah')
-            : (parsed.name || '');
+          const initialName = freshName || parsed.name || 'Pengguna';
           
           setEditName(initialName);
           setEditAvatar(avatar);
           
-          // Update localStorage with fresh avatar if needed
-          if (avatar && avatar !== parsed.avatar) {
-            const updatedUser = { ...parsed, avatar };
-            try {
-              localStorage.setItem('koryandik_current_user', JSON.stringify(updatedUser));
-            } catch (err) {
-              console.error('Failed to update avatar in storage:', err);
-            }
-            setCurrentUser(updatedUser);
+          // Update localStorage & session state with fresh data
+          const updatedUser: SessionUser = {
+            ...parsed,
+            name: initialName,
+            avatar,
+            details: freshDetails,
+          };
+
+          try {
+            localStorage.setItem('koryandik_current_user', JSON.stringify(updatedUser));
+          } catch (err) {
+            console.error('Failed to update avatar/name in storage:', err);
           }
+          setCurrentUser(updatedUser);
         }
       } catch (e) {
         console.error('Failed to parse current user:', e);
