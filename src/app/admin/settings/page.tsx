@@ -479,6 +479,26 @@ export default function AdminSettingsPage() {
   };
 
 
+  const [syncingLocal, setSyncingLocal] = useState(false);
+
+  const handleSyncLocalToSupabase = async () => {
+    try {
+      setSyncingLocal(true);
+      const { syncLocalEditsToSupabase } = await import('@/lib/db');
+      const res = await syncLocalEditsToSupabase();
+      if (res.success) {
+        toast.success(res.message);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Gagal menyinkronkan data editan lokal.');
+    } finally {
+      setSyncingLocal(false);
+    }
+  };
+
   if (!user) return <LoadingScreen />;
 
   return (
@@ -532,6 +552,38 @@ export default function AdminSettingsPage() {
               </h2>
             </div>
             <div className="card-body" style={{ display: 'grid', gap: '20px' }}>
+              <div
+                style={{
+                  background: 'var(--card-glass)',
+                  border: '1px solid var(--primary)',
+                  borderRadius: '16px',
+                  padding: '16px 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '16px',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'var(--primary)' }}>
+                    <i className="fa-solid fa-cloud-arrow-up" style={{ marginRight: '8px' }} aria-hidden="true" />
+                    Sinkronkan Data Editan Browser ke Supabase Baru
+                  </h4>
+                  <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    Jika Anda pernah mengubah nama/foto/data di browser ini sebelumnya, klik tombol ini untuk mengunggah semua perubahan tersebut ke database Supabase yang baru secara otomatis.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={handleSyncLocalToSupabase}
+                  disabled={syncingLocal}
+                >
+                  <i className={`fa-solid ${syncingLocal ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'}`} aria-hidden="true" style={{ marginRight: '6px' }} />
+                  {syncingLocal ? 'Menyinkronkan...' : 'Unggah Data Editan ke Supabase Baru'}
+                </button>
+              </div>
               {INITIAL_SETTINGS.map((item) => {
                 const isRaw = !!showRawJson[item.key];
                 return (

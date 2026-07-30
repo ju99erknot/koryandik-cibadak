@@ -2679,3 +2679,47 @@ export async function updateLkBospStatus(id: string, status: 'pending' | 'approv
   emitNotificationsUpdated();
 }
 
+export async function syncLocalEditsToSupabase(): Promise<{ success: boolean; count: number; message: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: false, count: 0, message: 'Supabase belum terkonfigurasi di .env.local' };
+  }
+
+  try {
+    let syncedCount = 0;
+
+    // 1. Sync custom schools
+    const localSchools = getStorageItem<School[]>('koryandik_custom_schools', []);
+    if (localSchools.length > 0) {
+      for (const s of localSchools) {
+        await updateSchool(s.npsn, s);
+        syncedCount++;
+      }
+    }
+
+    // 2. Sync supervisors
+    const localSupervisors = getStorageItem<PengawasData[]>('koryandik_supervisors', []);
+    if (localSupervisors.length > 0) {
+      await saveSupervisors(localSupervisors);
+      syncedCount += localSupervisors.length;
+    }
+
+    // 3. Sync gugus
+    const localGugus = getStorageItem<GugusData[]>('koryandik_custom_gugus', []);
+    if (localGugus.length > 0) {
+      for (const g of localGugus) {
+        await updateGugus(g.id, g);
+        syncedCount++;
+      }
+    }
+
+    return {
+      success: true,
+      count: syncedCount,
+      message: `Berhasil mengunggah ${syncedCount} item data editan dari browser Anda ke Supabase baru!`
+    };
+  } catch (err) {
+    console.error('Error syncing local edits to Supabase:', err);
+    return { success: false, count: 0, message: 'Gagal menyinkronkan data ke Supabase.' };
+  }
+}
+
