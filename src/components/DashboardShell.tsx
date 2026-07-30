@@ -222,24 +222,70 @@ export default function DashboardShell({
 
   const userInitial = displayName[0].toUpperCase();
 
+  // Compress uploaded avatar image using HTML5 Canvas to WebP format (~25-50KB)
+  const compressAvatar = (file: File, maxDim = 400, quality = 0.85): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const rawData = event.target?.result as string;
+        if (!rawData) {
+          resolve('');
+          return;
+        }
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/webp', quality));
+          } else {
+            resolve(rawData);
+          }
+        };
+        img.onerror = () => resolve(rawData);
+        img.src = rawData;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Handling file uploads for avatar change
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Ukuran file foto maksimal adalah 2MB.');
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ukuran file foto maksimal adalah 5MB.');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      if (event.target?.result) {
-        setEditAvatar(event.target.result as string);
-        toast.success('Foto berhasil dimuat.');
+    try {
+      const compressed = await compressAvatar(file, 400, 0.85);
+      if (compressed) {
+        setEditAvatar(compressed);
+        toast.success('Foto berhasil dimuat & dioptimalkan.');
+      } else {
+        toast.error('Gagal memuat foto.');
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Error compressing image:', err);
+      toast.error('Gagal memuat file foto.');
+    }
   };
 
   // Handling Save Profile changes
@@ -251,17 +297,22 @@ export default function DashboardShell({
     }
 
     try {
-      // Save to database based on role
+      // 1. Save to database based on role
       if (currentUser.role === 'school' && currentUser.npsn) {
-        // For school users, save operator avatar
+        // For school users, save operator avatar & operator name if changed
+        const { updateSchool } = await import('@/lib/db');
         await updateSchool(currentUser.npsn, {
           operatorAvatarUrl: editAvatar,
+          operatorName: editName.trim(),
         });
-      } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(currentUser.role) && currentUser.id) {
+      } else if (['admin', 'pengawas', 'kkks', 'pgri'].includes(currentUser.role)) {
         // For supervisor/admin users, save to supervisors table
+        const { getSupervisors, saveSupervisors } = await import('@/lib/db');
         const supervisors = await getSupervisors();
+        let matched = false;
         const updatedSupervisors = supervisors.map(s => {
-          if (s.id === currentUser.id) {
+          if ((currentUser.id && s.id === currentUser.id) || s.role === currentUser.role) {
+            matched = true;
             return {
               ...s,
               name: editName.trim(),
@@ -270,26 +321,57 @@ export default function DashboardShell({
           }
           return s;
         });
+
+        // Fallback for Admin account if no supervisor row found
+        if (!matched && currentUser.role === 'admin') {
+          updatedSupervisors.push({
+            id: currentUser.id || 'admin-1',
+            name: editName.trim(),
+            nip: '-',
+            role: 'admin',
+            title: 'Super Administrator',
+            wilayah: 'Kecamatan Cibadak',
+            photoUrl: editAvatar,
+            phone: '-'
+          });
+        }
+
         await saveSupervisors(updatedSupervisors);
+      } else if (currentUser.role === 'gugus' && currentUser.id) {
+        // For gugus coordinators, save koordinator name
+        const { updateGugus } = await import('@/lib/db');
+        await updateGugus(currentUser.id, {
+          koordinator: editName.trim(),
+        });
       }
 
-      // Update local state and localStorage
+      // 2. Update local state and localStorage safely
+      const updatedDetails = currentUser.role === 'school' && currentUser.details
+        ? { ...currentUser.details, operatorAvatarUrl: editAvatar, operatorName: editName.trim() }
+        : currentUser.details;
+
       const updatedUser: SessionUser = {
         ...currentUser,
         name: editName.trim(),
         avatar: editAvatar,
+        details: updatedDetails,
       };
 
-      localStorage.setItem('koryandik_current_user', JSON.stringify(updatedUser));
+      try {
+        localStorage.setItem('koryandik_current_user', JSON.stringify(updatedUser));
+      } catch (storageErr) {
+        console.warn('LocalStorage quota warning:', storageErr);
+      }
+
       setCurrentUser(updatedUser);
       setIsEditModalOpen(false);
       toast.success('Profil berhasil diperbarui!');
-      
-      // Dispatch custom event to notify other components if any
+
+      // Dispatch custom event to notify other components across portal
       window.dispatchEvent(new Event('koryandik_user_profile_updated'));
     } catch (error) {
       console.error('Failed to save profile:', error);
-      toast.error('Gagal menyimpan profil.');
+      toast.error('Gagal menyimpan profil. Silakan coba lagi.');
     }
   };
 

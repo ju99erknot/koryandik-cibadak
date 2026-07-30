@@ -357,6 +357,52 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handleSupervisorPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editingSupervisor) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ukuran foto maksimal 5MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const raw = event.target?.result as string;
+      if (!raw) return;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 400;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          setEditingSupervisor({ ...editingSupervisor, photoUrl: canvas.toDataURL('image/webp', 0.85) });
+        } else {
+          setEditingSupervisor({ ...editingSupervisor, photoUrl: raw });
+        }
+        toast.success('Foto berhasil dimuat & dioptimalkan.');
+      };
+      img.onerror = () => {
+        setEditingSupervisor({ ...editingSupervisor, photoUrl: raw });
+        toast.success('Foto berhasil dimuat.');
+      };
+      img.src = raw;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleDeleteSupervisor = async (id: string) => {
     const confirmed = await confirmAction({
       title: 'Hapus Pengawas',
@@ -1361,14 +1407,25 @@ export default function AdminSettingsPage() {
                       />
                     </div>
                     <div className="form-group">
-                      <label className="form-label" htmlFor="sup-photo">URL Foto</label>
-                      <input
-                        id="sup-photo"
-                        className="form-input"
-                        value={editingSupervisor.photoUrl || ''}
-                        onChange={(e) => setEditingSupervisor({ ...editingSupervisor, photoUrl: e.target.value })}
-                        placeholder="/pengawas.png"
-                      />
+                      <label className="form-label" htmlFor="sup-photo">Foto Profil (URL / Upload)</label>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <input
+                          id="sup-photo"
+                          className="form-input"
+                          value={editingSupervisor.photoUrl || ''}
+                          onChange={(e) => setEditingSupervisor({ ...editingSupervisor, photoUrl: e.target.value })}
+                          placeholder="/pengawas.png atau data:image/..."
+                        />
+                        <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <i className="fa-solid fa-upload" aria-hidden="true"></i> Unggah
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleSupervisorPhotoUpload}
+                            style={{ display: 'none' }}
+                          />
+                        </label>
+                      </div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>

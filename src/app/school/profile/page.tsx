@@ -302,6 +302,9 @@ export default function SchoolProfile() {
         const parsed = JSON.parse(stored);
         parsed.details = updatedSchool;
         parsed.name = updatedSchool.name;
+        if (operatorAvatarUrl) {
+          parsed.avatar = operatorAvatarUrl;
+        }
         localStorage.setItem('koryandik_current_user', JSON.stringify(parsed));
       } catch (err) {
         console.error('Failed to parse current user session in profile:', err);
