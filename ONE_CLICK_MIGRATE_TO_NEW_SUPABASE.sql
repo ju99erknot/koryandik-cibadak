@@ -1,7 +1,7 @@
 -- ============================================================
 -- KORYANDIK CIBADAK — ONE-CLICK MASTER MIGRATION & DATA RESTORE
 -- Dibuat otomatis untuk migrasi ke Akun/Project Supabase Baru
--- Waktu Pembuatan: 2026-07-30T07:26:25.643Z
+-- Waktu Pembuatan: 2026-07-30T07:45:01.942Z
 -- ============================================================
 
 -- BAGIAN 1: STRUKTUR SKEMA TABEL & KEAMANAN
