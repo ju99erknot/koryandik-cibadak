@@ -104,7 +104,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`${inter.variable} ${plusJakartaSans.variable}`}>
+      <body className={`${inter.variable} ${plusJakartaSans.variable}`} suppressHydrationWarning>
         <ThemeProvider>
           <ToastProvider>
             <CustomCursor />
