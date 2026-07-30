@@ -86,8 +86,11 @@ CREATE TABLE IF NOT EXISTS supervisors (
   wilayah TEXT,
   photo_url TEXT,
   phone TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE supervisors ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Alter existing check constraint to include admin role (for existing tables)
 ALTER TABLE supervisors DROP CONSTRAINT IF EXISTS supervisors_role_check;

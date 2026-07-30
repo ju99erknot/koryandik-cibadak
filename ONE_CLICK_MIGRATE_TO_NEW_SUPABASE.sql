@@ -1,7 +1,7 @@
 -- ============================================================
 -- KORYANDIK CIBADAK — ONE-CLICK MASTER MIGRATION & DATA RESTORE
 -- Dibuat otomatis untuk migrasi ke Akun/Project Supabase Baru
--- Waktu Pembuatan: 2026-07-30T07:22:37.074Z
+-- Waktu Pembuatan: 2026-07-30T07:26:25.643Z
 -- ============================================================
 
 -- BAGIAN 1: STRUKTUR SKEMA TABEL & KEAMANAN
@@ -93,8 +93,11 @@ CREATE TABLE IF NOT EXISTS supervisors (
   wilayah TEXT,
   photo_url TEXT,
   phone TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE supervisors ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Alter existing check constraint to include admin role (for existing tables)
 ALTER TABLE supervisors DROP CONSTRAINT IF EXISTS supervisors_role_check;
@@ -400,6 +403,12 @@ CREATE POLICY "Allow all for anon" ON gallery FOR ALL USING (true) WITH CHECK (t
 
 
 
+
+-- ========== SKEMA ALTER TABEL & KOLOM UPDATED_AT ==========
+ALTER TABLE supervisors ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE gugus ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- ========== TABEL TAMBAHAN (Supervision Notes, LK BOSP, Facilities, Achievements, Credentials) ==========
 
