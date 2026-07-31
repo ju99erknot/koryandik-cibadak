@@ -80,6 +80,9 @@ export default function LandingFooter({ schoolCount = 49, onScrollTo, onOpenLogi
         {/* ─── 1. CALLOUT PRE-FOOTER BANNER ─── */}
         <div className="ftx-banner-card">
           <div className="ftx-banner-glow" aria-hidden="true" />
+          <div className="ftx-banner-watermark" aria-hidden="true">
+            <i className="fa-solid fa-graduation-cap" />
+          </div>
           <div className="ftx-banner-content">
             <div className="ftx-banner-text">
               <span className="ftx-banner-badge">
