@@ -94,6 +94,7 @@ export interface ProfileSettings {
   mission: string[];
   lat: number;
   lng: number;
+  logoUrl?: string;
 }
 
 export const GALLERY_CATEGORIES = [

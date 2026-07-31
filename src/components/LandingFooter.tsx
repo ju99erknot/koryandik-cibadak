@@ -64,6 +64,7 @@ export default function LandingFooter({ schoolCount = 49, onScrollTo, onOpenLogi
   const emailAddress = profile?.email || 'koryandik.cibadak@sukabumi.go.id';
   const phoneNumber = profile?.phone || '0812-3456-7890';
   const addressText = profile?.address || 'Koryandik Cibadak, Kec. Cibadak, Kab. Sukabumi, Jawa Barat';
+  const logoSrc = profile?.logoUrl || '/logo.png';
   const waNumber = formatPhoneForWhatsApp(phoneNumber);
   const waUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Admin Koryandik Cibadak, saya ingin bertanya terkait portal layanan administrasi.')}` : '#';
 
@@ -81,7 +82,11 @@ export default function LandingFooter({ schoolCount = 49, onScrollTo, onOpenLogi
         <div className="ftx-banner-card">
           <div className="ftx-banner-glow" aria-hidden="true" />
           <div className="ftx-banner-watermark" aria-hidden="true">
-            <i className="fa-solid fa-graduation-cap" />
+            <img
+              src={logoSrc}
+              alt="Logo Watermark"
+              className="ftx-banner-watermark-img"
+            />
           </div>
           <div className="ftx-banner-content">
             <div className="ftx-banner-text">
@@ -131,7 +136,7 @@ export default function LandingFooter({ schoolCount = 49, onScrollTo, onOpenLogi
           <div className="ftx-col ftx-col-brand">
             <div className="ftx-brand-header">
               <div className="ftx-brand-logo">
-                <i className="fa-solid fa-graduation-cap" aria-hidden="true" />
+                <img src={logoSrc} alt="Logo Koryandik" className="ftx-brand-logo-img" />
               </div>
               <div className="ftx-brand-titles">
                 <span className="ftx-brand-title">Koryandik</span>
