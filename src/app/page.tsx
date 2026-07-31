@@ -2038,7 +2038,8 @@ function FeatureStageShowcase() {
   const categories = [
     {
       id: 'monitoring',
-      label: 'Live Monitoring',
+      label: 'Monitoring SPJ',
+      tag: '49 Sekolah',
       icon: 'fa-solid fa-chart-line',
       accent: '#3b82f6',
       title: 'Monitoring Kepatuhan & Progres Berkas Real-Time',
@@ -2066,7 +2067,8 @@ function FeatureStageShowcase() {
     },
     {
       id: 'drive',
-      label: 'Cloud & Keamanan',
+      label: 'Cloud & QR Code',
+      tag: 'Drive Sync',
       icon: 'fa-brands fa-google-drive',
       accent: '#10b981',
       title: 'Integrasi Google Drive & Otentikasi Berkas Resmi',
@@ -2094,7 +2096,8 @@ function FeatureStageShowcase() {
     },
     {
       id: 'community',
-      label: 'Agenda & Dokumen',
+      label: 'Agenda & Galeri',
+      tag: '11 Kategori',
       icon: 'fa-solid fa-calendar-days',
       accent: '#ec4899',
       title: 'Kalender Pendidikan & Galeri Kegiatan Terpadu',
@@ -2122,7 +2125,8 @@ function FeatureStageShowcase() {
     },
     {
       id: 'ai',
-      label: 'Asisten AI & Helpdesk',
+      label: 'Koryandik AI',
+      tag: 'Aktif 24/7',
       icon: 'fa-solid fa-robot',
       accent: '#8b5cf6',
       title: 'Koryandik AI Assistant & Helpdesk Digital',
@@ -2160,7 +2164,7 @@ function FeatureStageShowcase() {
 
   return (
     <div className="feature-stage-container">
-      {/* ── Pill Tab Navigation ── */}
+      {/* ── Segmented Pill Tab Navigation ── */}
       <div className="feature-pill-tabs" role="tablist">
         {categories.map((cat) => {
           const isActive = cat.id === activeTabId;
@@ -2173,8 +2177,13 @@ function FeatureStageShowcase() {
               style={{ '--pill-accent': cat.accent } as React.CSSProperties}
               onClick={() => handleTabChange(cat.id)}
             >
-              <i className={cat.icon} aria-hidden="true" />
-              <span>{cat.label}</span>
+              <span className="tab-icon-box">
+                <i className={cat.icon} aria-hidden="true" />
+              </span>
+              <div className="tab-label-group">
+                <span className="tab-title-text">{cat.label}</span>
+                <span className="tab-sub-badge">{cat.tag}</span>
+              </div>
               {isActive && <div className="pill-active-glow" aria-hidden="true" />}
             </button>
           );
