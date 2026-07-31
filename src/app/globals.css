@@ -4820,15 +4820,21 @@ select.form-control:focus {
 
 .ftx-root {
   position: relative;
-  margin-top: 100px;
+  margin-top: 60px;
+  padding-top: 20px;
   background: var(--bg-space-dark, #0b0f19);
   color: var(--text-primary, #f3f4f6);
+  border-top: 1px solid var(--card-border, rgba(255, 255, 255, 0.08));
   overflow: hidden;
   font-family: var(--font-body);
 }
 
 /* Top gradient accent line */
 .ftx-accent-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 2px;
   background: linear-gradient(90deg,
     transparent 0%,
@@ -4837,6 +4843,7 @@ select.form-control:focus {
     rgba(6, 182, 212, 0.6) 80%,
     transparent 100%
   );
+  z-index: 2;
 }
 
 /* Ambient blur orbs */
@@ -4850,7 +4857,7 @@ select.form-control:focus {
   width: 600px;
   height: 600px;
   background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
-  top: -120px;
+  top: -100px;
   left: -100px;
 }
 .ftx-orb-2 {
@@ -4870,12 +4877,12 @@ select.form-control:focus {
   z-index: 1;
 }
 
-/* ─── 1. CALLOUT PRE-FOOTER BANNER ─── */
+/* ─── 1. CALLOUT PRE-FOOTER BANNER (FIXED CLIPPING & LIGHT/DARK ADAPTIVE) ─── */
 .ftx-banner-card {
   position: relative;
-  margin-top: -50px;
-  margin-bottom: 60px;
-  background: rgba(17, 24, 39, 0.75);
+  margin-top: 24px;
+  margin-bottom: 50px;
+  background: rgba(17, 24, 39, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -4883,10 +4890,17 @@ select.form-control:focus {
   padding: 36px 44px;
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
+
+html:not(.dark) .ftx-banner-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  box-shadow: 0 16px 40px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
 .ftx-banner-card:hover {
-  border-color: rgba(59, 130, 246, 0.35);
+  border-color: rgba(59, 130, 246, 0.4);
   transform: translateY(-2px);
 }
 .ftx-banner-glow {
@@ -4914,31 +4928,43 @@ select.form-control:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 100px;
   background: rgba(59, 130, 246, 0.12);
   border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #60a5fa;
+  color: #3b82f6;
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
   margin-bottom: 12px;
   text-transform: uppercase;
 }
+html.dark .ftx-banner-badge {
+  color: #60a5fa;
+}
+
 .ftx-banner-text h2 {
   font-size: clamp(1.4rem, 2.8vw, 1.95rem);
   font-weight: 900;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--text-primary, #ffffff);
   margin: 0 0 10px;
 }
+html:not(.dark) .ftx-banner-text h2 {
+  color: #0f172a;
+}
+
 .ftx-banner-text p {
   font-size: 14px;
   line-height: 1.65;
-  color: #9ca3af;
+  color: var(--text-secondary, #9ca3af);
   margin: 0;
 }
+html:not(.dark) .ftx-banner-text p {
+  color: #475569;
+}
+
 .ftx-banner-actions {
   display: flex;
   align-items: center;
@@ -4954,7 +4980,7 @@ select.form-control:focus {
   display: grid;
   grid-template-columns: 1.35fr 0.95fr 1.05fr 1.2fr;
   gap: 48px;
-  padding-bottom: 50px;
+  padding-bottom: 48px;
 }
 
 .ftx-col {
@@ -4967,7 +4993,7 @@ select.form-control:focus {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #60a5fa;
+  color: var(--primary, #3b82f6);
   margin: 0 0 20px;
   display: flex;
   align-items: center;
@@ -4975,7 +5001,7 @@ select.form-control:focus {
 }
 .ftx-col-title i {
   font-size: 13px;
-  color: #3b82f6;
+  color: var(--primary, #3b82f6);
 }
 
 /* Column 1: Brand */
@@ -5009,7 +5035,7 @@ select.form-control:focus {
   font-size: 22px;
   font-weight: 900;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
+  background: linear-gradient(135deg, var(--text-primary, #ffffff) 0%, var(--primary, #3b82f6) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -5018,12 +5044,12 @@ select.form-control:focus {
 .ftx-brand-subtitle {
   font-size: 12.5px;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--text-muted, #9ca3af);
 }
 .ftx-brand-desc {
   font-size: 13px;
   line-height: 1.7;
-  color: #9ca3af;
+  color: var(--text-secondary, #9ca3af);
   margin: 0 0 20px;
 }
 
@@ -5085,11 +5111,20 @@ select.form-control:focus {
   cursor: pointer;
   transition: all 0.25s ease;
 }
+html:not(.dark) .ftx-chip {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #334155;
+}
 .ftx-chip:hover {
   background: rgba(59, 130, 246, 0.15);
   border-color: rgba(59, 130, 246, 0.4);
   color: #60a5fa;
   transform: translateY(-2px);
+}
+html:not(.dark) .ftx-chip:hover {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
 }
 
 /* Column 2: Nav List */
@@ -5117,6 +5152,9 @@ select.form-control:focus {
   transition: all 0.22s ease;
   text-align: left;
 }
+html:not(.dark) .ftx-menu-btn {
+  color: #475569;
+}
 .ftx-menu-icon {
   font-size: 12px;
   color: #6b7280;
@@ -5136,12 +5174,20 @@ select.form-control:focus {
   color: #ffffff;
   padding-left: 16px;
 }
+html:not(.dark) .ftx-menu-btn:hover {
+  color: #1e40af;
+  background: rgba(59, 130, 246, 0.1);
+}
 .ftx-menu-btn:hover .ftx-menu-icon { color: #60a5fa; }
 .ftx-menu-btn:hover .ftx-menu-arrow { opacity: 1; transform: translateX(0); }
 .ftx-menu-btn.is-active {
   background: rgba(59, 130, 246, 0.12);
   color: #60a5fa;
   font-weight: 700;
+}
+html:not(.dark) .ftx-menu-btn.is-active {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
 }
 .ftx-menu-btn.is-active .ftx-menu-icon { color: #60a5fa; }
 
@@ -5165,6 +5211,11 @@ select.form-control:focus {
   text-align: left;
   width: 100%;
 }
+html:not(.dark) .ftx-role-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #1e293b;
+}
 .ftx-role-card:hover {
   background: rgba(59, 130, 246, 0.1);
   border-color: rgba(59, 130, 246, 0.3);
@@ -5182,6 +5233,10 @@ select.form-control:focus {
   font-size: 13px;
   flex-shrink: 0;
 }
+html:not(.dark) .ftx-role-icon {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+}
 .ftx-role-info {
   display: flex;
   flex-direction: column;
@@ -5192,10 +5247,16 @@ select.form-control:focus {
   color: #f3f4f6;
   line-height: 1.2;
 }
+html:not(.dark) .ftx-role-title {
+  color: #0f172a;
+}
 .ftx-role-badge {
   font-size: 10.5px;
   color: #9ca3af;
   margin-top: 2px;
+}
+html:not(.dark) .ftx-role-badge {
+  color: #64748b;
 }
 
 /* Column 4: Contact List & Socials */
@@ -5226,6 +5287,9 @@ select.form-control:focus {
   flex-shrink: 0;
   margin-top: 2px;
 }
+html:not(.dark) .ftx-contact-icon {
+  color: #2563eb;
+}
 .ftx-contact-info {
   display: flex;
   flex-direction: column;
@@ -5244,6 +5308,9 @@ select.form-control:focus {
   line-height: 1.5;
   margin-top: 1px;
 }
+html:not(.dark) .ftx-contact-val {
+  color: #334155;
+}
 .ftx-contact-link {
   font-size: 12.5px;
   color: #60a5fa;
@@ -5252,6 +5319,9 @@ select.form-control:focus {
   margin-top: 1px;
   word-break: break-all;
   transition: color 0.2s;
+}
+html:not(.dark) .ftx-contact-link {
+  color: #2563eb;
 }
 .ftx-contact-link:hover {
   color: #93c5fd;
@@ -5269,6 +5339,9 @@ select.form-control:focus {
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+html:not(.dark) .ftx-social-label {
+  color: #64748b;
 }
 .ftx-social-chips {
   display: flex;
@@ -5289,6 +5362,11 @@ select.form-control:focus {
   font-size: 14px;
   text-decoration: none;
   transition: all 0.25s ease;
+}
+html:not(.dark) .ftx-social-chip {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #475569;
 }
 .ftx-social-chip:hover {
   background: var(--soc-color, #3b82f6);
@@ -5311,6 +5389,11 @@ select.form-control:focus {
   flex-wrap: wrap;
   gap: 16px;
 }
+html:not(.dark) .ftx-stats-strip {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
 .ftx-stat-box {
   display: flex;
   flex-direction: column;
@@ -5327,16 +5410,27 @@ select.form-control:focus {
   background-clip: text;
   line-height: 1;
 }
+html:not(.dark) .ftx-stat-number {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .ftx-stat-title {
   font-size: 11px;
   font-weight: 600;
   color: #9ca3af;
   margin-top: 4px;
 }
+html:not(.dark) .ftx-stat-title {
+  color: #64748b;
+}
 .ftx-stat-divider {
   width: 1px;
   height: 30px;
   background: rgba(255, 255, 255, 0.08);
+}
+html:not(.dark) .ftx-stat-divider {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 /* ─── 4. BOTTOM BAR ─── */
@@ -5349,12 +5443,21 @@ select.form-control:focus {
   gap: 16px;
   flex-wrap: wrap;
 }
+html:not(.dark) .ftx-bottom-bar {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
 .ftx-copy-text {
   font-size: 12.5px;
   color: #9ca3af;
 }
+html:not(.dark) .ftx-copy-text {
+  color: #475569;
+}
 .ftx-copy-text strong {
   color: #f3f4f6;
+}
+html:not(.dark) .ftx-copy-text strong {
+  color: #0f172a;
 }
 .ftx-made-text {
   font-size: 12.5px;
@@ -5362,6 +5465,9 @@ select.form-control:focus {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+html:not(.dark) .ftx-made-text {
+  color: #475569;
 }
 .ftx-heart-icon {
   color: #ef4444;
@@ -5388,6 +5494,11 @@ select.form-control:focus {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s ease;
+}
+html:not(.dark) .ftx-backtop-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #334155;
 }
 .ftx-backtop-btn:hover {
   background: rgba(59, 130, 246, 0.2);
