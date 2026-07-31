@@ -80,7 +80,7 @@ export interface CalendarEvent {
   description: string;
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
-  category: 'submission' | 'meeting' | 'exam' | 'holiday' | 'event' | 'reporting' | 'admission' | 'national';
+  category: 'submission' | 'meeting' | 'exam' | 'holiday' | 'event' | 'reporting' | 'admission' | 'national' | 'training' | 'competition';
   targetAudience: 'all' | 'school' | 'teacher' | 'gugus' | 'principal' | 'supervisor' | 'kkks' | 'pgri';
   location?: string;
   accent?: string;
@@ -96,7 +96,19 @@ export interface ProfileSettings {
   lng: number;
 }
 
-export const GALLERY_CATEGORIES = ['Rapat Ops', 'KKKS', 'Pelatihan', 'Kunjungan', 'Upacara', 'Lainnya'] as const;
+export const GALLERY_CATEGORIES = [
+  'KKKS',
+  'KKG',
+  'PGRI',
+  'Supervisi & Pengawasan',
+  'Rakor & Rapat',
+  'Bimtek & Pelatihan',
+  'Kegiatan Gugus',
+  'Lomba & Prestasi',
+  'Hari Besar & Upacara',
+  'Dokumentasi Sekolah',
+  'Lainnya',
+] as const;
 export type GalleryCategory = (typeof GALLERY_CATEGORIES)[number];
 
 export interface GalleryItem {

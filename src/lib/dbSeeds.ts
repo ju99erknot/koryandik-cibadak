@@ -271,10 +271,10 @@ export const DEFAULT_PROFILE: ProfileSettings = {
 export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
   {
     id: 'evt-1',
-    title: 'Pengumpulan Laporan Bulanan Juni 2026',
-    description: 'Batas akhir pengunggahan dokumen laporan bulanan sekolah binaan untuk diverifikasi oleh pengawas bina.',
-    startDate: '2026-06-25',
-    endDate: '2026-06-30',
+    title: 'Batas Pengumpulan SPJ BOS & Laporan Bulanan',
+    description: 'Batas akhir pengunggahan dokumen SPJ BOS dan laporan bulanan sekolah binaan untuk diverifikasi oleh pengawas bina.',
+    startDate: '2026-07-25',
+    endDate: '2026-07-31',
     category: 'submission',
     targetAudience: 'school',
     location: 'Portal Koryandik Cibadak',
@@ -283,20 +283,20 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
   {
     id: 'evt-2',
     title: 'Rapat Pleno KKKS Kecamatan Cibadak',
-    description: 'Pertemuan bulanan Kepala Sekolah se-Kecamatan Cibadak untuk membahas evaluasi kurikulum dan SPJ BOS.',
-    startDate: '2026-07-08',
-    endDate: '2026-07-08',
+    description: 'Pertemuan bulanan Kepala Sekolah se-Kecamatan Cibadak untuk membahas evaluasi Kurikulum Merdeka dan RKAS.',
+    startDate: '2026-08-05',
+    endDate: '2026-08-05',
     category: 'meeting',
-    targetAudience: 'school',
+    targetAudience: 'principal',
     location: 'Aula SDN 01 Cibadak',
     accent: '#10b981'
   },
   {
     id: 'evt-3',
-    title: 'Evaluasi Semester Genap T.A. 2025/2026',
-    description: 'Pelaksanaan ujian akhir semester genap serentak untuk tingkat SD se-Kecamatan Cibadak.',
-    startDate: '2026-06-08',
-    endDate: '2026-06-13',
+    title: 'Pelaksanaan Asesmen Nasional (ANBK) SD',
+    description: 'Simulasi dan pelaksanaan Asesmen Nasional Berbasis Komputer (ANBK) serentak tingkat SD se-Kecamatan Cibadak.',
+    startDate: '2026-10-19',
+    endDate: '2026-10-24',
     category: 'exam',
     targetAudience: 'all',
     location: 'Sekolah Masing-Masing',
@@ -304,21 +304,76 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
   },
   {
     id: 'evt-4',
-    title: 'Rapat Kerja Pengawas & PGRI Cibadak',
-    description: 'Penyusunan program kerja tahunan pengawas sekolah dan pengurus PGRI cabang Cibadak.',
-    startDate: '2026-07-15',
-    endDate: '2026-07-15',
-    category: 'meeting',
-    targetAudience: 'gugus',
-    location: 'Kantor PGRI Cibadak',
-    accent: '#8b5cf6'
+    title: 'Bimtek Peningkatan Kompetensi Guru (KKG)',
+    description: 'Pelatihan pengembangan modul ajar dan asesmen pembelajaran bagi guru kelas SD se-Kecamatan Cibadak.',
+    startDate: '2026-08-12',
+    endDate: '2026-08-13',
+    category: 'training',
+    targetAudience: 'teacher',
+    location: 'Sekolah Inti Gugus I',
+    accent: '#6366f1'
   },
   {
     id: 'evt-5',
-    title: 'Libur Akhir Semester Genap',
-    description: 'Masa libur sekolah akhir tahun pelajaran 2025/2026 bagi seluruh siswa dan tenaga pendidik.',
-    startDate: '2026-06-22',
-    endDate: '2026-07-04',
+    title: 'Seleksi O2SN & FLS2N Tingkat Kecamatan',
+    description: 'Kompetisi seni dan olahraga antar siswa SD se-Kecamatan Cibadak persiapan tingkat Kabupaten.',
+    startDate: '2026-09-15',
+    endDate: '2026-09-17',
+    category: 'competition',
+    targetAudience: 'all',
+    location: 'Gelanggang Olahraga Cibadak',
+    accent: '#14b8a6'
+  },
+  {
+    id: 'evt-6',
+    title: 'Supervisi Klinis & Pembinaan Pengawas',
+    description: 'Monitoring administrasi dan supervisi akademik oleh Pengawas Bina ke sekolah-sekolah di Gugus I s.d. V.',
+    startDate: '2026-09-01',
+    endDate: '2026-09-10',
+    category: 'meeting',
+    targetAudience: 'supervisor',
+    location: 'Sekolah Binaan Gugus I - V',
+    accent: '#8b5cf6'
+  },
+  {
+    id: 'evt-7',
+    title: 'Upacara Peringatan Hari Kemerdekaan RI (HUT RI)',
+    description: 'Upacara bendera HUT Kemerdekaan Republik Indonesia bersama jajaran PGRI, KKKS, dan Koryandik Cibadak.',
+    startDate: '2026-08-17',
+    endDate: '2026-08-17',
+    category: 'national',
+    targetAudience: 'all',
+    location: 'Lapang Alun-Alun Cibadak',
+    accent: '#ec4899'
+  },
+  {
+    id: 'evt-8',
+    title: 'Pendaftaran PPDB Tahun Ajaran Baru',
+    description: 'Pelaksanaan Penerimaan Peserta Didik Baru (PPDB) tingkat Sekolah Dasar se-Kecamatan Cibadak.',
+    startDate: '2026-07-01',
+    endDate: '2026-07-11',
+    category: 'admission',
+    targetAudience: 'school',
+    location: 'Sekolah Masing-Masing',
+    accent: '#06b6d4'
+  },
+  {
+    id: 'evt-9',
+    title: 'Penyerahan Rapor Semester Ganjil T.A. 2026/2027',
+    description: 'Pembagian Buku Laporan Hasil Belajar (Rapor) peserta didik semester ganjil.',
+    startDate: '2026-12-18',
+    endDate: '2026-12-19',
+    category: 'reporting',
+    targetAudience: 'all',
+    location: 'Sekolah Masing-Masing',
+    accent: '#eab308'
+  },
+  {
+    id: 'evt-10',
+    title: 'Libur Semester Ganjil T.A. 2026/2027',
+    description: 'Masa libur sekolah akhir semester ganjil bagi peserta didik dan pendidik.',
+    startDate: '2026-12-21',
+    endDate: '2027-01-02',
     category: 'holiday',
     targetAudience: 'all',
     location: 'Kecamatan Cibadak',
@@ -329,21 +384,75 @@ export const DEFAULT_CALENDAR_EVENTS: CalendarEvent[] = [
 export const DEFAULT_GALLERY: GalleryItem[] = [
   {
     id: 'gal-1',
-    title: 'Rapat Koordinasi Operator Sekolah',
+    title: 'Rakor Operator Sekolah se-Kecamatan Cibadak',
     description: 'Pelaksanaan rapat koordinasi operator sekolah se-Kecamatan Cibadak untuk sosialisasi penggunaan portal Koryandik dan tata kelola berkas administrasi pendidikan.',
-    imageUrl: '',
-    category: 'Rapat Ops',
+    imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
+    category: 'Rakor & Rapat',
     date: '2026-06-15',
     createdAt: '2026-06-15T10:00:00Z'
   },
   {
     id: 'gal-2',
-    title: 'Pertemuan KKKS Kecamatan Cibadak',
-    description: 'Pertemuan Kelompok Kerja Kepala Sekolah (KKKS) membahas evaluasi program semester genap dan persiapan tahun pelajaran baru.',
-    imageUrl: '',
+    title: 'Musyawarah KKKS Kecamatan Cibadak',
+    description: 'Pertemuan Kelompok Kerja Kepala Sekolah (KKKS) membahas evaluasi kurikulum, persiapan SPJ BOS, dan program kerja semester baru.',
+    imageUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80',
     category: 'KKKS',
     date: '2026-06-20',
     createdAt: '2026-06-20T08:00:00Z'
+  },
+  {
+    id: 'gal-3',
+    title: 'Kegiatan Kolektif KKG Guru Kelas',
+    description: 'Kegiatan rutin Kelompok Kerja Guru (KKG) dalam penyusunan perangkat pembelajaran dan modul ajar Kurikulum Merdeka.',
+    imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
+    category: 'KKG',
+    date: '2026-06-25',
+    createdAt: '2026-06-25T09:00:00Z'
+  },
+  {
+    id: 'gal-4',
+    title: 'Supervisi Pembinaan Pengawas Bina',
+    description: 'Kunjungan pengawas bina ke sekolah-sekolah untuk monev administrasi dan proses pembelajaran di kelas.',
+    imageUrl: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1200&q=80',
+    category: 'Supervisi & Pengawasan',
+    date: '2026-07-02',
+    createdAt: '2026-07-02T10:00:00Z'
+  },
+  {
+    id: 'gal-5',
+    title: 'Peringatan Hari Pendidikan Nasional (Hardiknas)',
+    description: 'Upacara bendera dan kegiatan perayaan Hardiknas bersama pengurus PGRI, KKKS, dan perwakilan sekolah se-Kecamatan.',
+    imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=1200&q=80',
+    category: 'Hari Besar & Upacara',
+    date: '2026-05-02',
+    createdAt: '2026-05-02T08:00:00Z'
+  },
+  {
+    id: 'gal-6',
+    title: 'Bimtek Peningkatan Kompetensi Digital Guru',
+    description: 'Pelatihan pembuatan media pembelajaran interaktif dan pengelolaan RPP digital bagi guru SD se-Cibadak.',
+    imageUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
+    category: 'Bimtek & Pelatihan',
+    date: '2026-07-10',
+    createdAt: '2026-07-10T11:00:00Z'
+  },
+  {
+    id: 'gal-7',
+    title: 'Seleksi Lomba O2SN & FLS2N Tingkat Kecamatan',
+    description: 'Pelaksanaan seleksi Olimpiade Olahraga Siswa Nasional (O2SN) dan FLS2N antar SD se-Kecamatan Cibadak.',
+    imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80',
+    category: 'Lomba & Prestasi',
+    date: '2026-04-18',
+    createdAt: '2026-04-18T09:00:00Z'
+  },
+  {
+    id: 'gal-8',
+    title: 'Rapat Koordinasi Gugus I Cibadak',
+    description: 'Musyawarah kerja sekolah anggota Gugus I bertempat di SD Negeri Inti untuk penyelarasan kalender akademik.',
+    imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80',
+    category: 'Kegiatan Gugus',
+    date: '2026-07-14',
+    createdAt: '2026-07-14T08:30:00Z'
   }
 ];
 

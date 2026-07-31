@@ -21,15 +21,17 @@ const ACADEMIC_YEARS = Array.from({ length: 11 }, (_, i) => {
 
 function getCategoryMeta(cat: CalendarEvent['category']) {
   switch (cat) {
-    case 'submission': return { label: 'Tenggat Berkas', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)', icon: 'fa-file-arrow-up' };
-    case 'meeting':    return { label: 'Rapat Koordinasi', color: '#10b981', bg: 'rgba(16,185,129,0.12)', icon: 'fa-handshake' };
-    case 'exam':       return { label: 'Ujian/Evaluasi', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', icon: 'fa-file-pen' };
-    case 'holiday':    return { label: 'Hari Libur', color: '#ef4444', bg: 'rgba(239,68,68,0.12)', icon: 'fa-umbrella-beach' };
-    case 'event':      return { label: 'Kegiatan Guru', color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)', icon: 'fa-chalkboard-user' };
-    case 'reporting':  return { label: 'Pembagian Rapor', color: '#eab308', bg: 'rgba(234,179,8,0.12)', icon: 'fa-book-open' };
-    case 'admission':  return { label: 'Pendaftaran PPDB', color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', icon: 'fa-user-plus' };
-    case 'national':   return { label: 'Hari Besar / Upacara', color: '#ec4899', bg: 'rgba(236,72,153,0.12)', icon: 'fa-flag' };
-    default:           return { label: 'Agenda', color: 'var(--primary)', bg: 'var(--primary-glow)', icon: 'fa-calendar' };
+    case 'submission':  return { label: 'Tenggat Berkas', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)', icon: 'fa-file-arrow-up' };
+    case 'meeting':     return { label: 'Rapat & Musyawarah', color: '#10b981', bg: 'rgba(16,185,129,0.12)', icon: 'fa-handshake' };
+    case 'exam':        return { label: 'Ujian / Asesmen', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', icon: 'fa-file-pen' };
+    case 'holiday':     return { label: 'Hari Libur / Cuti', color: '#ef4444', bg: 'rgba(239,68,68,0.12)', icon: 'fa-umbrella-beach' };
+    case 'event':       return { label: 'Kegiatan Sekolah', color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)', icon: 'fa-chalkboard-user' };
+    case 'reporting':   return { label: 'Pembagian Rapor', color: '#eab308', bg: 'rgba(234,179,8,0.12)', icon: 'fa-book-open' };
+    case 'admission':   return { label: 'Pendaftaran PPDB', color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', icon: 'fa-user-plus' };
+    case 'national':    return { label: 'Upacara / Hari Besar', color: '#ec4899', bg: 'rgba(236,72,153,0.12)', icon: 'fa-flag' };
+    case 'training':    return { label: 'Bimtek & Pelatihan', color: '#6366f1', bg: 'rgba(99,102,241,0.12)', icon: 'fa-graduation-cap' };
+    case 'competition': return { label: 'Lomba & Prestasi', color: '#14b8a6', bg: 'rgba(20,184,166,0.12)', icon: 'fa-trophy' };
+    default:            return { label: 'Agenda Umum', color: 'var(--primary)', bg: 'var(--primary-glow)', icon: 'fa-calendar' };
   }
 }
 

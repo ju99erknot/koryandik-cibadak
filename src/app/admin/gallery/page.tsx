@@ -15,20 +15,30 @@ type ViewMode = 'grid' | 'list';
 type GalleryCat = GalleryItem['category'] | 'Semua';
 
 const CAT_COLORS: Record<string, string> = {
-  'Rapat Ops': '#3b82f6',
   'KKKS': '#8b5cf6',
-  'Pelatihan': '#f59e0b',
-  'Kunjungan': '#22c55e',
-  'Upacara': '#ef4444',
+  'KKG': '#06b6d4',
+  'PGRI': '#ec4899',
+  'Supervisi & Pengawasan': '#10b981',
+  'Rakor & Rapat': '#3b82f6',
+  'Bimtek & Pelatihan': '#f59e0b',
+  'Kegiatan Gugus': '#6366f1',
+  'Lomba & Prestasi': '#eab308',
+  'Hari Besar & Upacara': '#ef4444',
+  'Dokumentasi Sekolah': '#14b8a6',
   'Lainnya': '#6b7280',
 };
 
 const CAT_ICONS: Record<string, string> = {
-  'Rapat Ops': 'fa-users-rectangle',
-  'KKKS': 'fa-people-group',
-  'Pelatihan': 'fa-chalkboard-user',
-  'Kunjungan': 'fa-building-flag',
-  'Upacara': 'fa-flag',
+  'KKKS': 'fa-chalkboard-teacher',
+  'KKG': 'fa-user-group',
+  'PGRI': 'fa-award',
+  'Supervisi & Pengawasan': 'fa-user-check',
+  'Rakor & Rapat': 'fa-users',
+  'Bimtek & Pelatihan': 'fa-graduation-cap',
+  'Kegiatan Gugus': 'fa-sitemap',
+  'Lomba & Prestasi': 'fa-trophy',
+  'Hari Besar & Upacara': 'fa-flag',
+  'Dokumentasi Sekolah': 'fa-school',
   'Lainnya': 'fa-ellipsis',
 };
 
@@ -306,7 +316,7 @@ export default function AdminGallery() {
               </div>
 
               {/* Add button */}
-              <button className="btn btn-primary btn-sm" onClick={() => setEditModal({ category: 'Rapat Ops', date: new Date().toISOString().slice(0, 10) })}>
+              <button className="btn btn-primary btn-sm" onClick={() => setEditModal({ category: 'Rakor & Rapat', date: new Date().toISOString().slice(0, 10) })}>
                 <i className="fa-solid fa-plus"  aria-hidden="true"/> Tambah Foto
               </button>
             </div>
@@ -349,7 +359,7 @@ export default function AdminGallery() {
                 {searchQuery || filterCat !== 'Semua' ? 'Coba ubah kata kunci atau kategori filter.' : 'Klik tombol "Tambah Foto" untuk mulai mengarsipkan dokumentasi kegiatan.'}
               </div>
               {!searchQuery && filterCat === 'Semua' && (
-                <button className="btn btn-primary btn-sm" onClick={() => setEditModal({ category: 'Rapat Ops', date: new Date().toISOString().slice(0, 10) })}>
+                <button className="btn btn-primary btn-sm" onClick={() => setEditModal({ category: 'Rakor & Rapat', date: new Date().toISOString().slice(0, 10) })}>
                   <i className="fa-solid fa-plus"  aria-hidden="true"/> Tambah Foto Pertama
                 </button>
               )}

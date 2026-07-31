@@ -23,12 +23,17 @@ function toDirectImageUrl(url: string): string {
 }
 
 const CAT_META: Record<string, { color: string; gradient: string; icon: string }> = {
-  'Rapat Ops': { color: '#3b82f6', gradient: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', icon: 'fa-users' },
-  'KKKS':      { color: '#8b5cf6', gradient: 'linear-gradient(135deg,#8b5cf6,#6d28d9)', icon: 'fa-chalkboard-teacher' },
-  'Pelatihan': { color: '#f59e0b', gradient: 'linear-gradient(135deg,#f59e0b,#d97706)', icon: 'fa-graduation-cap' },
-  'Kunjungan': { color: '#10b981', gradient: 'linear-gradient(135deg,#10b981,#15803d)', icon: 'fa-map-location-dot' },
-  'Upacara':   { color: '#ef4444', gradient: 'linear-gradient(135deg,#ef4444,#b91c1c)', icon: 'fa-flag' },
-  'Lainnya':   { color: '#6b7280', gradient: 'linear-gradient(135deg,#6b7280,#374151)', icon: 'fa-ellipsis' },
+  'KKKS':                   { color: '#8b5cf6', gradient: 'linear-gradient(135deg,#8b5cf6,#6d28d9)', icon: 'fa-chalkboard-teacher' },
+  'KKG':                    { color: '#06b6d4', gradient: 'linear-gradient(135deg,#06b6d4,#0891b2)', icon: 'fa-user-group' },
+  'PGRI':                   { color: '#ec4899', gradient: 'linear-gradient(135deg,#ec4899,#be185d)', icon: 'fa-award' },
+  'Supervisi & Pengawasan': { color: '#10b981', gradient: 'linear-gradient(135deg,#10b981,#047857)', icon: 'fa-user-check' },
+  'Rakor & Rapat':          { color: '#3b82f6', gradient: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', icon: 'fa-users' },
+  'Bimtek & Pelatihan':     { color: '#f59e0b', gradient: 'linear-gradient(135deg,#f59e0b,#d97706)', icon: 'fa-graduation-cap' },
+  'Kegiatan Gugus':         { color: '#6366f1', gradient: 'linear-gradient(135deg,#6366f1,#4338ca)', icon: 'fa-sitemap' },
+  'Lomba & Prestasi':       { color: '#eab308', gradient: 'linear-gradient(135deg,#eab308,#ca8a04)', icon: 'fa-trophy' },
+  'Hari Besar & Upacara':   { color: '#ef4444', gradient: 'linear-gradient(135deg,#ef4444,#b91c1c)', icon: 'fa-flag' },
+  'Dokumentasi Sekolah':    { color: '#14b8a6', gradient: 'linear-gradient(135deg,#14b8a6,#0f766e)', icon: 'fa-school' },
+  'Lainnya':                { color: '#6b7280', gradient: 'linear-gradient(135deg,#6b7280,#374151)', icon: 'fa-ellipsis' },
 };
 
 function getCatColor(cat: GalleryCategory) { return CAT_META[cat]?.color ?? 'var(--primary)'; }
