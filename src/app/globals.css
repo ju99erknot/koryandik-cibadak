@@ -2055,290 +2055,640 @@ html:not(.dark) .landing-nav--scrolled {
   left: -50px;
   pointer-events: none;
 }
-/* ── Bento Features Grid — Modern Asymmetric Layout ── */
-.bento-features-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-
-@media (min-width: 640px) {
-  .bento-features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .bento-features-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .bento-hero {
-    grid-column: span 2;
-  }
-}
-
-@media (min-width: 1280px) {
-  .bento-features-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .bento-hero {
-    grid-column: span 2;
-  }
-}
-
-/* ── Bento Card Base ── */
-.bento-card {
-  --bento-accent: #3b82f6;
-  position: relative;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease, box-shadow 0.4s ease;
-  animation: bentoFadeIn 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  opacity: 0;
-}
-
-@keyframes bentoFadeIn {
-  from { opacity: 0; transform: translateY(24px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.bento-card:hover {
-  transform: translateY(-6px);
-  border-color: color-mix(in srgb, var(--bento-accent) 35%, transparent);
-  box-shadow:
-    0 24px 48px color-mix(in srgb, var(--bento-accent) 10%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--bento-accent) 18%, transparent);
-}
-
-/* ── Card Glow (ambient accent blob) ── */
-.bento-card-glow {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--bento-accent) 20%, transparent), transparent 70%);
-  top: -60px;
-  right: -60px;
-  pointer-events: none;
-  filter: blur(30px);
-  opacity: 0.5;
-  transition: opacity 0.4s ease, transform 0.5s ease;
-  z-index: 0;
-}
-
-.bento-card:hover .bento-card-glow {
-  opacity: 1;
-  transform: scale(1.3);
-}
-
-/* ── Card Inner ── */
-.bento-card-inner {
-  position: relative;
-  z-index: 1;
-  padding: 28px;
+/* ═════════════════════════════════════════════════════════════════════
+   FEATURE STAGE SHOWCASE — Interactive Non-Box Feature Stage CSS
+   ═════════════════════════════════════════════════════════════════════ */
+.feature-stage-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  height: 100%;
+  gap: 24px;
+  width: 100%;
 }
 
-.bento-card-inner h3 {
-  font-size: 16px;
-  font-weight: 800;
-  margin: 0;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-}
-
-.bento-card-inner p {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin: 0;
-  font-weight: 500;
-}
-
-/* ── Top Row (icon + tag) ── */
-.bento-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-/* ── Icon Ring ── */
-.bento-icon-ring {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+/* ── Pill Tab Navigation Bar ── */
+.feature-pill-tabs {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  color: var(--bento-accent);
-  background: color-mix(in srgb, var(--bento-accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--bento-accent) 18%, transparent);
-  flex-shrink: 0;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, box-shadow 0.3s ease;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
-.bento-card:hover .bento-icon-ring {
-  transform: scale(1.08) rotate(4deg);
-  background: color-mix(in srgb, var(--bento-accent) 18%, transparent);
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--bento-accent) 25%, transparent);
-}
-
-/* ── Tag Badge ── */
-.bento-tag {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 4px 10px;
-  border-radius: 8px;
-  color: var(--bento-accent);
-  background: color-mix(in srgb, var(--bento-accent) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--bento-accent) 15%, transparent);
+.feature-pill-tab {
+  --pill-accent: var(--primary);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 40px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  outline: none;
   white-space: nowrap;
 }
 
-/* ── Label (for hero card) ── */
-.bento-label {
-  font-size: 11px;
+.feature-pill-tab i {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.feature-pill-tab:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--pill-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--pill-accent) 20%, transparent);
+}
+
+.feature-pill-tab:hover i {
+  transform: scale(1.15);
+}
+
+.feature-pill-tab.is-active {
+  color: #ffffff;
+  background: color-mix(in srgb, var(--pill-accent) 85%, #000000);
+  border-color: color-mix(in srgb, var(--pill-accent) 50%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--pill-accent) 30%, transparent);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--bento-accent);
-  margin-bottom: -4px;
 }
 
-/* ═══════════════════════════════════════════
-   BENTO HERO CARD — Extra Wide
-   ═══════════════════════════════════════════ */
-.bento-hero .bento-card-inner {
-  flex-direction: row;
-  align-items: center;
-  gap: 32px;
+.feature-pill-tab.is-active i {
+  color: #ffffff;
+}
+
+/* ── Main Stage Canvas Container ── */
+.feature-stage-canvas {
+  --stage-accent: #3b82f6;
+  position: relative;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 36px;
+  overflow: hidden;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
-.bento-hero .bento-icon-ring {
-  width: 64px;
-  height: 64px;
-  font-size: 26px;
-  border-radius: 18px;
-  flex-shrink: 0;
+.stage-glow-effect {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--stage-accent) 18%, transparent), transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.6s ease;
 }
 
-.bento-hero .bento-card-text {
-  flex: 1;
+.stage-content-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 36px;
+}
+
+@media (min-width: 1024px) {
+  .stage-content-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+}
+
+/* ── Stage Left Panel ── */
+.stage-header {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
-.bento-hero .bento-card-text h3 {
-  font-size: 20px;
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--stage-accent);
+  background: color-mix(in srgb, var(--stage-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--stage-accent) 22%, transparent);
+  width: fit-content;
+}
+
+.stage-header h3 {
+  font-size: 24px;
   font-weight: 800;
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
 }
 
-.bento-hero .bento-card-text p {
+.stage-header p {
   font-size: 14px;
-  max-width: 480px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
 }
 
-/* ── Mini Chart Visual ── */
-.bento-hero-visual {
-  position: absolute;
-  bottom: 0;
-  right: 36px;
-  width: 200px;
-  height: 100px;
+/* ── Item Node Selector List ── */
+.stage-item-list {
   display: flex;
-  align-items: flex-end;
-  z-index: 0;
-  opacity: 0.15;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.bento-hero:hover .bento-hero-visual {
-  opacity: 0.3;
-}
-
-.bento-mini-chart {
+.stage-item-node {
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  width: 100%;
-  height: 100%;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.bento-bar {
+.stage-item-node:hover {
+  background: color-mix(in srgb, var(--stage-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--stage-accent) 20%, transparent);
+  transform: translateX(4px);
+}
+
+.stage-item-node.is-selected {
+  background: color-mix(in srgb, var(--stage-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--stage-accent) 35%, transparent);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--stage-accent) 12%, transparent);
+}
+
+.node-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--stage-accent) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--stage-accent) 25%, transparent);
+  color: var(--stage-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.stage-item-node.is-selected .node-icon-wrap {
+  transform: scale(1.1) rotate(4deg);
+  background: var(--stage-accent);
+  color: #ffffff;
+}
+
+.node-text {
   flex: 1;
-  border-radius: 6px 6px 0 0;
-  transition: height 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* ── Mobile Hero adjustments ── */
-@media (max-width: 639px) {
-  .bento-hero .bento-card-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px;
-    gap: 16px;
-  }
-  .bento-hero .bento-card-text h3 {
-    font-size: 17px;
-  }
-  .bento-hero-visual {
-    display: none;
-  }
+.node-top-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.node-top-title h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.node-pill-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--stage-accent) 15%, transparent);
+  color: var(--stage-accent);
+  white-space: nowrap;
+}
+
+.node-text p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Stage Right Preview Frame ── */
+.stage-right-preview {
+  position: relative;
+  width: 100%;
+}
+
+.preview-card-frame {
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid color-mix(in srgb, var(--stage-accent) 25%, transparent);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px color-mix(in srgb, var(--stage-accent) 15%, transparent);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-frame-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.preview-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot-red { background: #ef4444; }
+.dot-yellow { background: #f59e0b; }
+.dot-green { background: #10b981; }
+
+.preview-address-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.preview-frame-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 280px;
+  justify-content: space-between;
+}
+
+/* ── Interactive Visual Widgets ── */
+.widget-stat-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.widget-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.widget-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+
+.widget-status-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.widget-bars-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widget-bar-item {
+  display: grid;
+  grid-template-columns: 100px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.widget-bar-bg {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.widget-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.widget-live-feed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.pulse-icon {
+  color: #f59e0b;
+  animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* ── Drive & QR Widget ── */
+.qr-receipt-card {
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.qr-receipt-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.qr-icon {
+  font-size: 28px;
+  color: #10b981;
+}
+
+.qr-receipt-top h5 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+.qr-receipt-top p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.qr-receipt-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.qr-box-mini {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.qr-meta {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* ── Event & AI Widgets ── */
+.widget-event-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(236, 72, 153, 0.08);
+  border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.event-date-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #ec4899;
+  color: #ffffff;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.event-date-badge .month { font-size: 10px; text-transform: uppercase; }
+.event-date-badge .day { font-size: 18px; }
+
+.event-details h5 { margin: 0; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.event-details p { margin: 4px 0 0; font-size: 11px; color: var(--text-secondary); }
+.event-tag { font-size: 10px; font-weight: 700; color: #ec4899; }
+
+.widget-gallery-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mini-thumb {
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-widget-ai {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-chat-bubble {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 85%;
+}
+
+.ai-chat-bubble.bot {
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: var(--text-primary);
+  align-self: flex-start;
+  display: flex;
+  gap: 10px;
+}
+
+.ai-chat-bubble.bot i { color: #8b5cf6; font-size: 16px; margin-top: 2px; }
+
+.ai-chat-bubble.user {
+  background: #8b5cf6;
+  color: #ffffff;
+  align-self: flex-end;
+  border-radius: 14px 14px 2px 14px;
+}
+
+.ai-chat-input-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.active-feature-highlight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.highlight-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--stage-accent) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--stage-accent) 25%, transparent);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--stage-accent);
 }
 
 /* ═══════════════════════════════════════════
-   LIGHT MODE OVERRIDES
+   LIGHT MODE OVERRIDES FOR FEATURE STAGE
    ═══════════════════════════════════════════ */
-html:not(.dark) .bento-card {
-  background: rgba(255, 255, 255, 0.75);
+html:not(.dark) .feature-pill-tabs {
+  background: rgba(0, 0, 0, 0.03);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
-html:not(.dark) .bento-card:hover {
-  box-shadow:
-    0 20px 40px color-mix(in srgb, var(--bento-accent) 10%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--bento-accent) 20%, transparent);
-  border-color: color-mix(in srgb, var(--bento-accent) 30%, transparent);
+html:not(.dark) .feature-stage-canvas {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
 }
 
-html:not(.dark) .bento-card-glow {
-  opacity: 0.25;
+html:not(.dark) .stage-item-node {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.05);
 }
 
-html:not(.dark) .bento-card:hover .bento-card-glow {
-  opacity: 0.45;
+html:not(.dark) .preview-card-frame {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--stage-accent) 30%, transparent);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
-html:not(.dark) .bento-icon-ring {
-  background: color-mix(in srgb, var(--bento-accent) 8%, white);
-  border-color: color-mix(in srgb, var(--bento-accent) 15%, transparent);
+html:not(.dark) .preview-frame-header {
+  background: #f8fafc;
+  border-bottom-color: #e2e8f0;
 }
 
-html:not(.dark) .bento-tag {
-  background: color-mix(in srgb, var(--bento-accent) 8%, white);
-  border-color: color-mix(in srgb, var(--bento-accent) 12%, transparent);
+html:not(.dark) .preview-address-bar {
+  background: #edf2f7;
+  color: #4a5568;
 }
 
-html:not(.dark) .bento-hero-visual {
-  opacity: 0.1;
-}
-
-html:not(.dark) .bento-hero:hover .bento-hero-visual {
-  opacity: 0.2;
+/* ═══════════════════════════════════════════
+   MOBILE RESPONSIVE ADJUSTMENTS FOR STAGE
+   ═══════════════════════════════════════════ */
+@media (max-width: 639px) {
+  .feature-stage-canvas {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .feature-pill-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 6px;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  .feature-pill-tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .stage-header h3 {
+    font-size: 19px;
+  }
+  .stage-item-node {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .widget-bar-item {
+    grid-template-columns: 80px 1fr 35px;
+    font-size: 11px;
+  }
 }
 /* ── Gugus Progress Grid – Premium Redesign ── */
 .gugus-progress-grid {

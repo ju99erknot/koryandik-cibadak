@@ -743,7 +743,7 @@ export default function LandingPage() {
 
       </section>
 
-      {/* Feature Highlights — Bento Grid */}
+      {/* Feature Showcase — Non-Box Interactive Stage */}
       <section className="landing-section landing-features-section">
         <RevealOnScroll direction="up">
           <div className="section-header-premium">
@@ -756,64 +756,7 @@ export default function LandingPage() {
           </div>
         </RevealOnScroll>
 
-        <div className="bento-features-grid">
-          {/* ── Hero Card (spans 2 cols) ── */}
-          <div className="bento-card bento-hero" style={{ '--bento-accent': '#3b82f6' } as React.CSSProperties}>
-            <div className="bento-card-glow" aria-hidden="true" />
-            <div className="bento-card-inner">
-              <div className="bento-icon-ring">
-                <i className="fa-solid fa-chart-line" aria-hidden="true" />
-              </div>
-              <div className="bento-card-text">
-                <span className="bento-label">Fitur Andalan</span>
-                <h3>Dashboard Monitoring Real-Time</h3>
-                <p>Pantau progres pengumpulan berkas SPJ BOS, LK-BOSP, dan laporan bulanan dari 49 sekolah binaan se-Kecamatan Cibadak secara langsung — dilengkapi grafik interaktif, ringkasan statistik, dan indikator kepatuhan.</p>
-              </div>
-            </div>
-            <div className="bento-hero-visual" aria-hidden="true">
-              <div className="bento-mini-chart">
-                <div className="bento-bar" style={{ height: '55%', background: '#3b82f6' }} />
-                <div className="bento-bar" style={{ height: '80%', background: '#06b6d4' }} />
-                <div className="bento-bar" style={{ height: '65%', background: '#8b5cf6' }} />
-                <div className="bento-bar" style={{ height: '90%', background: '#10b981' }} />
-                <div className="bento-bar" style={{ height: '72%', background: '#f59e0b' }} />
-              </div>
-            </div>
-          </div>
-
-          {/* ── Regular Cards ── */}
-          {[
-            { icon: 'fa-brands fa-google-drive', title: 'Integrasi Google Drive', desc: 'Setiap berkas terhubung langsung ke Google Drive — unggah, akses, dan kelola dokumen dengan mudah tanpa berpindah platform.', accent: '#10b981', tag: 'Cloud Storage' },
-            { icon: 'fa-solid fa-user-lock', title: '6 Peran Akses Terintegrasi', desc: 'Sekolah, Gugus, Pengawas, KKKS, PGRI, dan Admin — masing-masing memiliki dashboard khusus dengan hak akses berbeda.', accent: '#8b5cf6', tag: 'Multi-Role' },
-            { icon: 'fa-solid fa-bell', title: 'Notifikasi & Pengumuman', desc: 'Pemberitahuan otomatis ketika berkas disetujui, ditolak, atau membutuhkan revisi — ditambah fitur pengumuman untuk seluruh sekolah binaan.', accent: '#f59e0b', tag: 'Alert System' },
-            { icon: 'fa-solid fa-file-shield', title: 'Bukti Tanda Terima Ber-QR', desc: 'Cetak bukti tanda terima berkas resmi ber-QR Code yang bisa dipindai untuk verifikasi otentikasi arsip.', accent: '#14b8a6', tag: 'Digital Receipt' },
-            { icon: 'fa-solid fa-calendar-days', title: 'Kalender Akademik Digital', desc: 'Jadwal lengkap agenda KKKS, KKG, PGRI, supervisi, bimtek, dan event pendidikan lainnya yang terintegrasi dan selalu up-to-date.', accent: '#ec4899', tag: 'Kalender' },
-            { icon: 'fa-solid fa-images', title: 'Galeri Dokumentasi Kegiatan', desc: 'Arsip foto kegiatan KKKS, KKG, Supervisi, Rakor, dan hari besar pendidikan dengan 11 kategori komprehensif.', accent: '#06b6d4', tag: 'Gallery' },
-            { icon: 'fa-solid fa-trophy', title: 'Leaderboard Kepatuhan', desc: 'Papan peringkat sekolah paling responsif dan terlengkap dalam pengiriman berkas laporan per periode.', accent: '#f97316', tag: 'Gamification' },
-            { icon: 'fa-solid fa-robot', title: 'Asisten AI Koryandik', desc: 'Chatbot AI bawaan yang siap menjawab pertanyaan seputar tata kelola berkas administrasi dan penggunaan portal.', accent: '#a855f7', tag: 'AI-Powered' },
-          ].map((feat, idx) => (
-            <div
-              key={feat.title}
-              className="bento-card"
-              style={{
-                '--bento-accent': feat.accent,
-                animationDelay: `${0.08 * (idx + 1)}s`,
-              } as React.CSSProperties}
-            >
-              <div className="bento-card-glow" aria-hidden="true" />
-              <div className="bento-card-inner">
-                <div className="bento-top-row">
-                  <div className="bento-icon-ring">
-                    <i className={feat.icon} aria-hidden="true" />
-                  </div>
-                  <span className="bento-tag">{feat.tag}</span>
-                </div>
-                <h3>{feat.title}</h3>
-                <p>{feat.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <FeatureStageShowcase />
       </section>
 
       {/* Status Tracker Section */}
@@ -2084,3 +2027,328 @@ export default function LandingPage() {
     </div>
   );
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   FEATURE STAGE SHOWCASE — Interactive Non-Box Feature Stage
+   ═════════════════════════════════════════════════════════════════════ */
+function FeatureStageShowcase() {
+  const [activeTabId, setActiveTabId] = useState('monitoring');
+  const [activeItemIdx, setActiveItemIdx] = useState(0);
+
+  const categories = [
+    {
+      id: 'monitoring',
+      label: 'Live Monitoring',
+      icon: 'fa-solid fa-chart-line',
+      accent: '#3b82f6',
+      title: 'Monitoring Kepatuhan & Progres Berkas Real-Time',
+      subtitle: 'Visibilitas lengkap terhadap 49 sekolah binaan & 8 gugus se-Kecamatan Cibadak.',
+      items: [
+        {
+          icon: 'fa-solid fa-gauge-high',
+          title: 'Dashboard Progres Real-Time',
+          desc: 'Pantau pengumpulan berkas SPJ BOS, LK-BOSP, dan laporan bulanan secara instan dengan indikator persentase otomatis per sekolah.',
+          badge: 'Live Tracker'
+        },
+        {
+          icon: 'fa-solid fa-trophy',
+          title: 'Leaderboard Kepatuhan Sekolah',
+          desc: 'Papan pemeringkatan otomatis untuk mengapresiasi sekolah yang paling cepat dan terlengkap dalam mengirimkan laporan.',
+          badge: 'Gamifikasi'
+        },
+        {
+          icon: 'fa-solid fa-satellite-dish',
+          title: 'Radar Aktivitas Pengunggahan',
+          desc: 'Pantau log aktivitas pengiriman dokumen terkini dari seluruh gugus secara berurutan dengan notifikasi waktu nyata.',
+          badge: 'Cockpit View'
+        }
+      ]
+    },
+    {
+      id: 'drive',
+      label: 'Cloud & Keamanan',
+      icon: 'fa-brands fa-google-drive',
+      accent: '#10b981',
+      title: 'Integrasi Google Drive & Otentikasi Berkas Resmi',
+      subtitle: 'Penyimpanan terpusat yang aman dengan bukti penyerahan digital ber-QR Code.',
+      items: [
+        {
+          icon: 'fa-brands fa-google-drive',
+          title: 'Integrasi Direct Google Drive',
+          desc: 'Setiap dokumen terhubung langsung ke Google Drive resmi — buka & kelola berkas tanpa membebani penyimpanan lokal.',
+          badge: 'Cloud Sync'
+        },
+        {
+          icon: 'fa-solid fa-file-shield',
+          title: 'Bukti Tanda Terima Ber-QR Code',
+          desc: 'Sistem menerbitkan bukti tanda terima resmi ber-QR Code otomatis yang bisa dipindai untuk otentikasi arsip.',
+          badge: 'Digital Stamp'
+        },
+        {
+          icon: 'fa-solid fa-user-shield',
+          title: '6 Peran Hak Akses Terintegrasi',
+          desc: 'Pengaturan otorisasi ketat untuk Sekolah, Gugus, Pengawas, KKKS, PGRI, dan Super Admin sesuai wewenang.',
+          badge: 'Multi-Role'
+        }
+      ]
+    },
+    {
+      id: 'community',
+      label: 'Agenda & Dokumen',
+      icon: 'fa-solid fa-calendar-days',
+      accent: '#ec4899',
+      title: 'Kalender Pendidikan & Galeri Kegiatan Terpadu',
+      subtitle: 'Pusat agenda kegiatan KKKS, KKG, PGRI, serta pengumuman resmi dinas.',
+      items: [
+        {
+          icon: 'fa-solid fa-calendar-check',
+          title: 'Kalender Akademik Digital',
+          desc: 'Jadwal rakor, bimtek, supervisi, hingga hari besar pendidikan tersusun teratur dan selalu sinkron.',
+          badge: 'Up-to-Date'
+        },
+        {
+          icon: 'fa-solid fa-images',
+          title: 'Galeri 11 Kategori Dokumentasi',
+          desc: 'Arsip foto dokumentasi kegiatan pendidikan se-Kecamatan Cibadak dikelompokkan dalam 11 kategori komprehensif.',
+          badge: 'High Res'
+        },
+        {
+          icon: 'fa-solid fa-bullhorn',
+          title: 'Pengumuman Kedinasan Instan',
+          desc: 'Penyampaian pengumuman dan edaran dinas secara terstruktur ke seluruh kepala sekolah & guru binaan.',
+          badge: 'Broadcaster'
+        }
+      ]
+    },
+    {
+      id: 'ai',
+      label: 'Asisten AI & Helpdesk',
+      icon: 'fa-solid fa-robot',
+      accent: '#8b5cf6',
+      title: 'Koryandik AI Assistant & Helpdesk Digital',
+      subtitle: 'Bantuan cerdas 24 jam untuk mendampingi pengguna dalam tata kelola administrasi.',
+      items: [
+        {
+          icon: 'fa-solid fa-comments',
+          title: 'Chatbot Konsultasi AI',
+          desc: 'Asisten kecerdasan buatan yang siap menjawab pertanyaan juknis, format laporan, maupun panduan penggunaan portal.',
+          badge: 'Smart AI'
+        },
+        {
+          icon: 'fa-solid fa-circle-question',
+          title: 'Pusat FAQ Terstruktur',
+          desc: 'Jawaban langsung untuk pertanyaan umum seputar batas waktu pengiriman dan cara penyelesaian kendala.',
+          badge: 'Self-Help'
+        },
+        {
+          icon: 'fa-solid fa-download',
+          title: 'Pusat Unduhan Template Document',
+          desc: 'Unduh format SPJ, surat tugas, dan dokumen administrasi resmi dalam satu pintu.',
+          badge: 'Templates'
+        }
+      ]
+    }
+  ];
+
+  const activeCategory = categories.find((c) => c.id === activeTabId) || categories[0];
+  const activeItem = activeCategory.items[activeItemIdx] || activeCategory.items[0];
+
+  const handleTabChange = (id: string) => {
+    setActiveTabId(id);
+    setActiveItemIdx(0);
+  };
+
+  return (
+    <div className="feature-stage-container">
+      {/* ── Pill Tab Navigation ── */}
+      <div className="feature-pill-tabs" role="tablist">
+        {categories.map((cat) => {
+          const isActive = cat.id === activeTabId;
+          return (
+            <button
+              key={cat.id}
+              role="tab"
+              aria-selected={isActive}
+              className={`feature-pill-tab ${isActive ? 'is-active' : ''}`}
+              style={{ '--pill-accent': cat.accent } as React.CSSProperties}
+              onClick={() => handleTabChange(cat.id)}
+            >
+              <i className={cat.icon} aria-hidden="true" />
+              <span>{cat.label}</span>
+              {isActive && <div className="pill-active-glow" aria-hidden="true" />}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Feature Main Stage Canvas ── */}
+      <div className="feature-stage-canvas" style={{ '--stage-accent': activeCategory.accent } as React.CSSProperties}>
+        <div className="stage-glow-effect" aria-hidden="true" />
+
+        <div className="stage-content-grid">
+          {/* Left Column: Feature Selector Items */}
+          <div className="stage-left-panel">
+            <div className="stage-header">
+              <span className="stage-badge">
+                <i className={activeCategory.icon} aria-hidden="true" /> {activeCategory.label}
+              </span>
+              <h3>{activeCategory.title}</h3>
+              <p>{activeCategory.subtitle}</p>
+            </div>
+
+            <div className="stage-item-list">
+              {activeCategory.items.map((item, idx) => {
+                const isSelected = idx === activeItemIdx;
+                return (
+                  <div
+                    key={item.title}
+                    className={`stage-item-node ${isSelected ? 'is-selected' : ''}`}
+                    onClick={() => setActiveItemIdx(idx)}
+                  >
+                    <div className="node-icon-wrap">
+                      <i className={item.icon} aria-hidden="true" />
+                    </div>
+                    <div className="node-text">
+                      <div className="node-top-title">
+                        <h4>{item.title}</h4>
+                        <span className="node-pill-badge">{item.badge}</span>
+                      </div>
+                      <p>{item.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right Column: Live Interactive Visual Stage */}
+          <div className="stage-right-preview">
+            <div className="preview-card-frame">
+              <div className="preview-frame-header">
+                <div className="preview-dots">
+                  <span className="dot dot-red" />
+                  <span className="dot dot-yellow" />
+                  <span className="dot dot-green" />
+                </div>
+                <div className="preview-address-bar">
+                  <i className="fa-solid fa-lock" aria-hidden="true" />
+                  <span>koryandik-cibadak.id/feature/{activeCategory.id}</span>
+                </div>
+              </div>
+
+              <div className="preview-frame-body">
+                {/* Visual Widget per Tab */}
+                {activeCategory.id === 'monitoring' && (
+                  <div className="preview-widget-monitoring">
+                    <div className="widget-stat-banner">
+                      <div>
+                        <span className="widget-label">Kepatuhan Total</span>
+                        <div className="widget-val">94.8%</div>
+                      </div>
+                      <span className="widget-status-badge"><i className="fa-solid fa-circle-check" /> Optimal</span>
+                    </div>
+
+                    <div className="widget-bars-container">
+                      <div className="widget-bar-item">
+                        <span>SPJ BOS Q3</span>
+                        <div className="widget-bar-bg"><div className="widget-bar-fill" style={{ width: '92%', background: '#3b82f6' }} /></div>
+                        <span>92%</span>
+                      </div>
+                      <div className="widget-bar-item">
+                        <span>LK-BOSP</span>
+                        <div className="widget-bar-bg"><div className="widget-bar-fill" style={{ width: '98%', background: '#10b981' }} /></div>
+                        <span>98%</span>
+                      </div>
+                      <div className="widget-bar-item">
+                        <span>Laporan Bulanan</span>
+                        <div className="widget-bar-bg"><div className="widget-bar-fill" style={{ width: '88%', background: '#f59e0b' }} /></div>
+                        <span>88%</span>
+                      </div>
+                    </div>
+
+                    <div className="widget-live-feed">
+                      <i className="fa-solid fa-bolt pulse-icon" />
+                      <span><strong>SDN 1 Cibadak</strong> baru saja mengunggah Laporan SPJ BOS</span>
+                    </div>
+                  </div>
+                )}
+
+                {activeCategory.id === 'drive' && (
+                  <div className="preview-widget-drive">
+                    <div className="qr-receipt-card">
+                      <div className="qr-receipt-top">
+                        <i className="fa-solid fa-shield-halved qr-icon" />
+                        <div>
+                          <h5>BUKTI TANDA TERIMA DIGITAL</h5>
+                          <p>NPSN 20201234 • SDN 2 Sekarwangi</p>
+                        </div>
+                      </div>
+                      <div className="qr-receipt-body">
+                        <div className="qr-box-mini">
+                          <i className="fa-solid fa-qrcode" />
+                        </div>
+                        <div className="qr-meta">
+                          <div><small>Status:</small> <span className="text-success">TERVERIFIKASI</span></div>
+                          <div><small>Tgl Upload:</small> 31 Juli 2026</div>
+                          <div><small>Otentikasi:</small> Google Drive Sync ✅</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeCategory.id === 'community' && (
+                  <div className="preview-widget-community">
+                    <div className="widget-event-card">
+                      <div className="event-date-badge">
+                        <span className="month">AGU</span>
+                        <span className="day">05</span>
+                      </div>
+                      <div className="event-details">
+                        <span className="event-tag">KKKS &amp; KKG</span>
+                        <h5>Rakor Evaluasi Serapan Dana BOS Tahap 2</h5>
+                        <p><i className="fa-solid fa-location-dot" /> Aula Koryandik Cibadak • 08:30 WIB</p>
+                      </div>
+                    </div>
+                    <div className="widget-gallery-mini">
+                      <div className="mini-thumb thumb-1"><i className="fa-solid fa-image" /> Dokumentasi Rakor</div>
+                      <div className="mini-thumb thumb-2"><i className="fa-solid fa-image" /> Supervisi Sekolah</div>
+                    </div>
+                  </div>
+                )}
+
+                {activeCategory.id === 'ai' && (
+                  <div className="preview-widget-ai">
+                    <div className="ai-chat-bubble bot">
+                      <i className="fa-solid fa-robot" />
+                      <div>
+                        <strong>Asisten AI Koryandik</strong>
+                        <p>Halo! Ada yang bisa saya bantu terkait berkas SPJ BOS atau jadwal supervisi sekolah Anda?</p>
+                      </div>
+                    </div>
+                    <div className="ai-chat-bubble user">
+                      <p>Kapan batas waktu pengumpulan laporan SPJ BOS Triwulan 3?</p>
+                    </div>
+                    <div className="ai-chat-input-preview">
+                      <span>Tanyakan sesuatu...</span>
+                      <i className="fa-solid fa-paper-plane" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Active Highlight Summary */}
+                <div className="active-feature-highlight">
+                  <div className="highlight-pill">
+                    <i className={activeItem.icon} aria-hidden="true" />
+                    <span>{activeItem.title}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
