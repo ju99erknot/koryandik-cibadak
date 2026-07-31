@@ -2037,16 +2037,13 @@ export default function LandingPage() {
 
         {/* FAB Menu Items - Always Visible */}
         {!chatOpen && (
-          <>
-            <BackToTop />
-            <button 
-              className="fab-menu-item visible"
-              onClick={() => setChatOpen(true)}
-              title="Chat Asisten"
-            >
-              <i className="fa-solid fa-comments" aria-hidden="true"></i>
-            </button>
-          </>
+          <button 
+            className="fab-menu-item visible"
+            onClick={() => setChatOpen(true)}
+            title="Chat Asisten AI"
+          >
+            <i className="fa-solid fa-comments" aria-hidden="true"></i>
+          </button>
         )}
       </div>
 

@@ -27,11 +27,11 @@
 /* Floating Action Button Container */
 .fab-container {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
   display: flex;
   flex-direction: column-reverse;
-  gap: 12px;
+  gap: 10px;
   z-index: 9998;
   align-items: flex-end;
 }
