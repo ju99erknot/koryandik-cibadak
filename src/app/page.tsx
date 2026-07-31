@@ -743,7 +743,7 @@ export default function LandingPage() {
 
       </section>
 
-      {/* Feature Highlights */}
+      {/* Feature Highlights — Bento Grid */}
       <section className="landing-section landing-features-section">
         <RevealOnScroll direction="up">
           <div className="section-header-premium">
@@ -755,32 +755,63 @@ export default function LandingPage() {
             <p>Infrastruktur digital terpadu Koordinator Layanan Administrasi Pendidikan se-Kecamatan Cibadak.</p>
           </div>
         </RevealOnScroll>
-        <div className="landing-features-grid">
-          {[
-            { icon: 'fa-brands fa-google-drive', title: 'Integrasi Google Drive', desc: 'Link langsung ke Google Drive untuk setiap berkas yang diunggah, mudah diakses dan dikelola.', accent: '#3b82f6' },
-            { icon: 'fa-solid fa-chart-line', title: 'Monitoring Live Progres', desc: 'Pantau progres pengumpulan berkas secara real-time dengan visualisasi grafik interaktif.', accent: '#10b981' },
-            { icon: 'fa-solid fa-bell', title: 'Notifikasi Instan', desc: 'Pemberitahuan otomatis ketika berkas disetujui, ditolak, atau membutuhkan revisi.', accent: '#f59e0b' },
-            { icon: 'fa-solid fa-shield-halved', title: 'Keamanan Data Terjamin', desc: 'Akses terkontrol per peran dengan autentikasi berbasis NIP/NPSN dan enkripsi data.', accent: '#8b5cf6' },
-            { icon: 'fa-solid fa-map-location-dot', title: 'Peta Lokasi Sekolah', desc: 'Visualisasi lokasi GPS seluruh sekolah binaan untuk memudahkan koordinasi wilayah.', accent: '#06b6d4' },
-            { icon: 'fa-solid fa-trophy', title: 'Leaderboard Kepatuhan', desc: 'Papan peringkat sekolah yang paling responsif dan lengkap mengirimkan berkas laporan.', accent: '#f97316' },
-            { icon: 'fa-solid fa-satellite-dish', title: 'Radar Aktivitas', desc: 'Memantau aktivitas pengunggahan dan verifikasi berkas secara real-time di seluruh kecamatan.', accent: '#ec4899' },
-            { icon: 'fa-solid fa-file-shield', title: 'Bukti Tanda Terima', desc: 'Menerbitkan bukti tanda terima berkas resmi ber-QR Code untuk keperluan arsip.', accent: '#14b8a6' },
-          ].map((feat) => (
-            <SpotlightCard
-              key={feat.title}
-              className="landing-feature-card"
-              style={{ '--feature-accent': feat.accent } as React.CSSProperties}
-            >
-              <div className="landing-feature-icon-wrapper">
-                <div className="landing-feature-icon">
-                  <i className={feat.icon} aria-hidden="true" />
-                </div>
+
+        <div className="bento-features-grid">
+          {/* ── Hero Card (spans 2 cols) ── */}
+          <div className="bento-card bento-hero" style={{ '--bento-accent': '#3b82f6' } as React.CSSProperties}>
+            <div className="bento-card-glow" aria-hidden="true" />
+            <div className="bento-card-inner">
+              <div className="bento-icon-ring">
+                <i className="fa-solid fa-chart-line" aria-hidden="true" />
               </div>
-              <div className="landing-feature-content">
+              <div className="bento-card-text">
+                <span className="bento-label">Fitur Andalan</span>
+                <h3>Dashboard Monitoring Real-Time</h3>
+                <p>Pantau progres pengumpulan berkas SPJ BOS, LK-BOSP, dan laporan bulanan dari 49 sekolah binaan se-Kecamatan Cibadak secara langsung — dilengkapi grafik interaktif, ringkasan statistik, dan indikator kepatuhan.</p>
+              </div>
+            </div>
+            <div className="bento-hero-visual" aria-hidden="true">
+              <div className="bento-mini-chart">
+                <div className="bento-bar" style={{ height: '55%', background: '#3b82f6' }} />
+                <div className="bento-bar" style={{ height: '80%', background: '#06b6d4' }} />
+                <div className="bento-bar" style={{ height: '65%', background: '#8b5cf6' }} />
+                <div className="bento-bar" style={{ height: '90%', background: '#10b981' }} />
+                <div className="bento-bar" style={{ height: '72%', background: '#f59e0b' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* ── Regular Cards ── */}
+          {[
+            { icon: 'fa-brands fa-google-drive', title: 'Integrasi Google Drive', desc: 'Setiap berkas terhubung langsung ke Google Drive — unggah, akses, dan kelola dokumen dengan mudah tanpa berpindah platform.', accent: '#10b981', tag: 'Cloud Storage' },
+            { icon: 'fa-solid fa-user-lock', title: '6 Peran Akses Terintegrasi', desc: 'Sekolah, Gugus, Pengawas, KKKS, PGRI, dan Admin — masing-masing memiliki dashboard khusus dengan hak akses berbeda.', accent: '#8b5cf6', tag: 'Multi-Role' },
+            { icon: 'fa-solid fa-bell', title: 'Notifikasi & Pengumuman', desc: 'Pemberitahuan otomatis ketika berkas disetujui, ditolak, atau membutuhkan revisi — ditambah fitur pengumuman untuk seluruh sekolah binaan.', accent: '#f59e0b', tag: 'Alert System' },
+            { icon: 'fa-solid fa-file-shield', title: 'Bukti Tanda Terima Ber-QR', desc: 'Cetak bukti tanda terima berkas resmi ber-QR Code yang bisa dipindai untuk verifikasi otentikasi arsip.', accent: '#14b8a6', tag: 'Digital Receipt' },
+            { icon: 'fa-solid fa-calendar-days', title: 'Kalender Akademik Digital', desc: 'Jadwal lengkap agenda KKKS, KKG, PGRI, supervisi, bimtek, dan event pendidikan lainnya yang terintegrasi dan selalu up-to-date.', accent: '#ec4899', tag: 'Kalender' },
+            { icon: 'fa-solid fa-images', title: 'Galeri Dokumentasi Kegiatan', desc: 'Arsip foto kegiatan KKKS, KKG, Supervisi, Rakor, dan hari besar pendidikan dengan 11 kategori komprehensif.', accent: '#06b6d4', tag: 'Gallery' },
+            { icon: 'fa-solid fa-trophy', title: 'Leaderboard Kepatuhan', desc: 'Papan peringkat sekolah paling responsif dan terlengkap dalam pengiriman berkas laporan per periode.', accent: '#f97316', tag: 'Gamification' },
+            { icon: 'fa-solid fa-robot', title: 'Asisten AI Koryandik', desc: 'Chatbot AI bawaan yang siap menjawab pertanyaan seputar tata kelola berkas administrasi dan penggunaan portal.', accent: '#a855f7', tag: 'AI-Powered' },
+          ].map((feat, idx) => (
+            <div
+              key={feat.title}
+              className="bento-card"
+              style={{
+                '--bento-accent': feat.accent,
+                animationDelay: `${0.08 * (idx + 1)}s`,
+              } as React.CSSProperties}
+            >
+              <div className="bento-card-glow" aria-hidden="true" />
+              <div className="bento-card-inner">
+                <div className="bento-top-row">
+                  <div className="bento-icon-ring">
+                    <i className={feat.icon} aria-hidden="true" />
+                  </div>
+                  <span className="bento-tag">{feat.tag}</span>
+                </div>
                 <h3>{feat.title}</h3>
                 <p>{feat.desc}</p>
               </div>
-            </SpotlightCard>
+            </div>
           ))}
         </div>
       </section>
